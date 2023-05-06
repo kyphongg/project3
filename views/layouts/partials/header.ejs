@@ -3,71 +3,34 @@
         <a href="/">
             <img src="/images/gamingstore-logoo.png" alt="LogoImage">
         </a>
-        <form>
+        <form class="search-form">
             <input name="kw_submit" type="text" placeholder="Tìm kiếm sản phẩm...">
             <button class="btn" type="submit">
                 <i class="bi bi-search" style="color: white"></i>
             </button>
         </form>
         <div class="icon">
-            <img src="/images/user (2).png" alt="UserImage" onclick="toggleMenu()">
-            <?php
-            $customer_id = Session::get('customer_id');
-            $admin_id = Session::get('admin_id');
-            if ($customer_id) {
-                $customer_name = Session::get('customer_name');
-                echo '<a href="/profile/' . $customer_id . '">';
-                echo $customer_name;
-                echo '</a>';
-                echo '<div class="sub-menu-wrap" id="subMenu">
-                <div class="sub-menu">
-                    <a href="/profile/' . $customer_id . '" class="sub-menu-link">
-                        <p>Quản lý tài khoản</p>
-                    </a>
-                    <a href="/orders/'.$customer_id.'" class="sub-menu-link">
-                        <p>Lịch sử đơn hàng</p>
-                    </a>
-                    <a href="/security" class="sub-menu-link">
-                        <p>Mật khẩu</p>
-                    </a>
-                    <a href="/customer_logout" class="sub-menu-link">
-                        <p>Đăng xuất</p></a>
+            <img src="/images/user (2).png" alt="UserImage" onclick="toggleMenu()"> 
+            <a href="/"> Đăng nhập </a>
+            <div class="sub-menu-wrap" id="subMenu">
+                    <div class="sub-menu">
+                        <a href="/" class="sub-menu-link">
+                            <p>Quản lý tài khoản</p>
+                        </a>
+                        <a href="/" class="sub-menu-link">
+                            <p>Lịch sử đơn hàng</p>
+                        </a>
+                        <a href="/" class="sub-menu-link">
+                            <p>Mật khẩu</p>
+                        </a>
+                        <a href="/" class="sub-menu-link">
+                            <p>Đăng xuất</p></a>
+                    </div>
                 </div>
-            </div>';
-            } elseif ($admin_id) {
-                $admin_name = Session::get('admin_name');
-                echo '<a href="/admin/home">';
-                echo $admin_name;
-                echo '</a>';
-            } else {
-                echo '<a href="/login">Đăng nhập/Đăng ký</a>';
-            }
-            ?>
-
-            <?php
-            if ($customer_id) {
-                echo '<a class="cart" href="/cart/' . $customer_id . '">
+                <a class="cart" href="/">
                 <img src="/images/shopping-cart.png" alt="UserImage">
                 Giỏ hàng
-            </a>';
-            } else {
-                echo '<a href="/login"><img src="/images/shopping-cart.png" alt="UserImage">Giỏ hàng</a>';
-            }
-            ?>
-
-            <?php
-            if ($admin_id) {
-                echo '<a class="cart" href="/admin/home">
-                <img src="/images/gear.png" alt="UserImage">Quản lý
-            </a>';
-            } elseif ($customer_id)
-                echo '';
-            else {
-                echo '<a class="cart" href="/admin/login">
-                <img src="/images/gear.png" alt="UserImage">Quản lý
-            </a>';
-            }
-            ?>
+                </a>
         </div>
     </div>
 
@@ -81,29 +44,31 @@
                         Danh mục sản phẩm
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        @foreach($category as $kw => $cate)
-                            <li><a class="dropdown-item"
-                                   href="{{'/category/'.$cate->category_id}}">{{$cate->category_name}}</a></li>
-                        @endforeach
+                            <li><a class="dropdown-item" href="/">Hành Động</a></li>
+                            <li><a class="dropdown-item" href="/">Thể thao</a>
+                            <li><a class="dropdown-item" href="/">Mô Phỏng</a></li>
+                            <li><a class="dropdown-item" href="/">Chiến Thuật</a></li>
+                            <li><a class="dropdown-item" href="/">Phiêu lưu</a></li>
+                            <li><a class="dropdown-item" href="/">Nhập vai</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="col">
                 <div class="icon-menu">
-                    <a class="introduction" href="{{url('/about')}}">
+                    <a class="introduction" href="/">
                         <img src="/images/introduction.png" alt="UserImage">
                         Giới thiệu
                     </a>
-                    <a class="news" href="{{url('/news')}}">
+                    <a class="news" href="/">
                         <img src="/images/newspaper.png" alt="UserImage">
                         Tin tức
                     </a>
-                    <a class="Hiring" href="{{url('/hiring')}}">
+                    <a class="Hiring" href="/">
                         <img src="/images/hiring.png" alt="UserImage">
                         Tuyển dụng
                     </a>
-                    <a class="support" href="{{url('/help')}}">
+                    <a class="support" href="/">
                         <img src="/images/headphones.png" alt="UserImage">
                         Hỗ trợ
                     </a>
