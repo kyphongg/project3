@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thống kê</title>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <!--sidebar start-->
+    <%- include('../partials/sidebar') %>
+    <!-- sidebar end -->
+
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="table-agile-info">
+                <h3>Nhập kho</h3>
+                <div class="panel-body">
+                    <div class="position-center">
+                        <form>
+                            <div class="form-group">
+                                <label>Game</label>
+                                <select name="game_id" class="form-control m-bot15">
+                                        <option value="0">God of War: Ragnarok</option>
+                                        <option value="1">God of War: Ragnaruk</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Số lượng</label>
+                                <input name="quantity_in" type="text" class="form-control">
+                            </div>
+        <!-- {{--                    <div class="form-group">--}}
+        {{--                        <label>Ngày nhập (Năm-Tháng-Ngày Giờ:Phút)</label>--}}
+        {{--                        <input name="date_in" type="text" class="form-control">--}}
+        {{--                    </div>--}} -->
+                            <div class="form-group">
+                                <label>Người nhập</label>
+                                <select name="admin_id" class="form-control m-bot15">
+                                        <option value="0">Kỳ Phong</option>
+                                        <option value="1">Phong</option>
+                                </select>
+                            </div>
+                            <a href="/warehouse"><button type="button" class="btn btn-info" ><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button></a>
+                            <button type="submit" class="btn btn-info"><i class="fa-solid fa-plus"></i> Nhập mới</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!--main content end-->
+
+</section>
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

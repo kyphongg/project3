@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <div class="container">
+        <div class="profile">
+            <div class="row">
+                <div class="col-3">
+                    <div class="side-nav" style="margin-bottom: 85px">
+                        <ul class="nav-links">
+                            <li style="border-bottom: 1px solid #E6E8EB;">
+                                <a href="/profile" ><i class="fa-solid fa-user"></i>Tài khoản</a>
+                            </li>
+                            <li style="border-bottom: 1px solid #E6E8EB;">
+                                <a href="/orders"><i class="fa-solid fa-cart-shopping"></i>Lịch sử đơn hàng</a>
+                            </li>
+                            <li style="border-bottom: 1px solid #E6E8EB;">
+                                <a href="password"><i class="fa-solid fa-user-lock"></i>Mật khẩu và bảo mật</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa-solid fa-heart"></i>Sản phẩm yêu thích</a>
+                            </li>
+                            <div class="animation"></div>
+                        </ul>
+                    </div>
+                </div>
+    
+                <div class="col-9">
+                    <div class="orders">
+                        <div class="order-heading">
+                            <h3>Lịch sử đơn hàng</h3>
+                        </div>
+                        <div class=orders-table>
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                <tr>
+                                    <th style="width: 75px;">Thứ tự</th>
+                                    <th style="width: 120px;">Mã đơn hàng</th>
+                                    <th>Ngày đặt hàng</th>
+                                    <th>TT thanh toán</th>
+                                    <th>Trạng thái</th>
+                                    <th>Tùy biến</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td style="text-align: center;">1</td>
+                                    <td style="width: 120px;">abcd</td>
+                                    <td>10:31 07/05/2023</td>
+                                    <td>55.000 VNĐ</td>
+                                    <td>Đang chờ xử lý</td>
+                                    <td>
+                                        <a href="/orders_detail">
+                                            <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;">2</td>
+                                    <td style="width: 120px;">abcd</td>
+                                    <td>10:31 07/05/2023</td>
+                                    <td>55.000 VNĐ</td>
+                                    <td>Đã xác nhận</td>
+                                    <td>
+                                        <a href="/orders_detail">
+                                            <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;">3</td>
+                                    <td style="width: 120px;">abcd</td>
+                                    <td>10:31 07/05/2023</td>
+                                    <td>55.000 VNĐ</td>
+                                    <td>Đang vận chuyển</td>
+                                    <td>
+                                        <a href="/orders_detail">
+                                            <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;">4</td>
+                                    <td style="width: 120px;">abcd</td>
+                                    <td>10:31 07/05/2023</td>
+                                    <td>55.000 VNĐ</td>
+                                    <td>Hoàn thành</td>
+                                    <td>
+                                        <a href="/orders_detail">
+                                            <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;">5</td>
+                                    <td style="width: 120px;">abcd</td>
+                                    <td>10:31 07/05/2023</td>
+                                    <td>55.000 VNĐ</td>
+                                    <td>Đã hủy</td>
+                                    <td>
+                                        <a href="/orders_detail">
+                                            <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <%- include('partials/footer') %>
+</body>
+</html>

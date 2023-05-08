@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thống kê</title>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <!--sidebar start-->
+    <%- include('../partials/sidebar') %>
+    <!-- sidebar end -->
+
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="table-agile-info">
+                <h3>Nhập sản phẩm mới</h3>
+                <div class="panel-body">
+                    <div class="position-center">
+                        <form>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Tên sản phẩm</label>
+                                <input type="text" class="form-control" name="product_name" placeholder="Tên sản phẩm" required="">
+                            </div>
+        
+                            <div class="form-group">
+                                <label for="exampleInputFile">Hình ảnh sản phẩm</label>
+                                <input type="file" name="product_image">
+                            </div>
+        
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Thể loại</label>
+                                <select name="category_id" class="form-control m-bot15">
+                                    <option value="0">Hành Động</option>
+                                    <option value="1">Nhập vai</option>
+                                </select>
+                            </div>
+        
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Nhà sản xuất</label>
+                                <select name="producer_id" class="form-control m-bot15">
+                                    <option value="0">PS4</option>
+                                    <option value="1">PS5</option>
+                                </select>
+                            </div>
+        
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Mô tả</label>
+                                <textarea id="editor" name="product_description"></textarea>
+                            </div>
+        
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Giá nhập</label>
+                                <input type="text" class="form-control" name="product_price_in" placeholder="Giá nhập" required="">
+                            </div>
+        
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Giá bán</label>
+                                <input type="text" class="form-control" name="product_price_out" placeholder="Giá bán" required="">
+                            </div>
+        
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Trạng thái</label>
+                                <select name="product_status" class="form-control m-bot15">
+                                    <option value="0">Nổi bật</option>
+                                    <option value="1">Mới</option>
+                                    <option value="2">Ẩn</option>
+                                </select>
+                            </div>
+        
+                            <a href="/admin_product"><button type="button" class="btn btn-info" ><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button></a>
+                            <button type="submit" class="btn btn-info" name="add_product"><i class="fa-solid fa-plus"></i> Nhập SP mới</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!--main content end-->
+
+</section>
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

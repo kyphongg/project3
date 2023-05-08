@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <div class="product-box">
+        <div class="p-left">
+            <div class="big-img">
+                <img src="images/ps5(sp2).jpg" style="text-align: center" height="300px"
+                     width="100px" alt="">
+            </div>
+        </div>
+
+        <div class="p-right">
+            <div class="url">
+                <a href="/home">Trang chủ</a> > <a
+                    href="/category">Nhập vai</a>
+            </div>
+            <div class="pname"> God of War: Ragnarok
+                <div class="p-favorite">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+            </div>
+            <div class="pid">
+                <p style="font-weight: bold">Mã sản phẩm: &nbsp</p>
+                <p>abc</p>
+            </div>
+            <div class="pstatus">
+                <p style="font-weight: bold">Tình trạng: &nbsp</p>
+                    <p>Còn Hàng</p>
+            </div>
+            <div class="pid">
+                <p style="font-weight: bold">Số lượng: &nbsp</p>
+                <p>10</p>
+            </div>
+            <div class="pcategory">
+                <p style="font-weight: bold">Thể loại: &nbsp</p>
+                <p>Nhập vai</p>
+            </div>
+            <div class="pproducer">
+                <p style="font-weight: bold">Nhà sản xuất: &nbsp</p>
+                <p>PS5</p>
+            </div>
+            <div class="p-price">55.000 VNĐ</div>
+
+            <form>
+            
+                <div class="quantity">
+                    <p>Số lượng :</p>
+                    <input name="quantity" type="number" min="1" max="25" value="1">
+                    <input name="product_id_hidden" type="hidden" value="">
+                </div>
+                <div class="btn-box">
+                <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
+                 <div class="alert hide">
+                    <span class="fas fa-exclamation-circle"></span>
+                    <span class="msg">Thêm vào giỏ hàng thành công!</span>
+                    <span class="close-btnn">
+                        <span class="fas fa-times"></span>
+                    </span>
+                </div>
+                </div>
+            </div>
+            
+            </form>
+        </div>
+    </div>
+
+    <div class="description">
+        <div class="row">
+            <div class="col-3 p-title">
+                <h5>Chi tiết sản phẩm</h5>
+            </div>
+
+            <div class="col-8 p-info">
+                <p>Chi tiết sản phẩm</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="comment">
+            <h3>Bình luận</h3>
+            <form action="#">
+                <!-- {{--                <input type="hidden" name="customer_id" class="customer_id" value="{{$customer_id}}">--}} -->
+                <textarea name="comment" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
+                <button type="button" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
+                </button>
+            </form>
+            <!-- <div id="notify_comment"></div>
+            <form>
+                <input type="hidden" name="game_id" class="game_id" value="">
+                <div id="comment_show"></div>
+            </form> -->
+        </div>
+    </div>
+    
+     <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <div class="container">
+        <div class="my-login">
+            <form>
+                <h3>Đăng nhập</h3>
+                <span>Email</span>
+                <input type="email" name="customer_email" class="box" placeholder="Email" required="">
+                <span>Mật khẩu</span>
+                <input type="password" name="customer_password" class="box" placeholder="Mật khẩu" required="">
+                <div class="checkbox">
+                    <input type="checkbox" name="" id="remember-me">
+                    <label for="remember-me">Ghi nhớ tài khoản</label>
+                </div>
+                <input type="submit" value="Đăng nhập" class="btn">
+                <p>Quên mật khẩu ? <a href="#">Ấn tại đây</a></p>
+                <p>Bạn chưa có tài khoản ? <a href="/signup">Tạo tài khoản</a></p>
+            </form>
+        </div>
+    </div>
+    
+     <%- include('partials/footer') %>
+</body>
+</html>

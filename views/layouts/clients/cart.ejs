@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <div class="container">
+        <div class="cart-p">
+            <div class="cart-heading">
+                <h3>Giỏ hàng</h3>
+            </div>
+            <div class="cart-body">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Ảnh sản phẩm</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Giá tiền</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><img src="images/ps5(sp2).jpg" alt=""></td>
+                            <td>God of War: Ragnarok</td>
+                            <form>
+                                <td>
+                                    <input type="number" min="1" max="15" value="" name="quantity_cart" style="width: 40px; height: 40px; padding-left: 13px;">
+                                    <input type="hidden" value="" name="rowId_cart" class="btn btn-default btn-sm">
+                                    <input type="submit" value="Cập nhật" name="update_quantity" class="btn btn-primary update-quantity" style="margin-bottom: 5px; margin-left: 5px;">
+                                </td>
+                            </form>
+                            <td>55.000 VNĐ</td>
+                            <td><a href="#" style="text-decoration: none;;" class="btn btn-danger"><i class="fa-solid fa-ban" style="color: white;"></i> Xóa sản phẩm</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="cart-price">
+                <table>
+                    <tr>
+                        <td style="font-weight: bold;">Tổng giá sản phẩm:</td>
+                        <td>55.000 VNĐ</td>
+                    </tr>
+    <!-- {{--                <tr>--}}
+    {{--                    <td style="font-weight: bold;">Thuế:</td>--}}
+    {{--                    <td style="padding-left: 20px;">{{Cart::tax(0).' VNĐ'}}</td>--}}
+    {{--                </tr>--}} -->
+                    <tr>
+                        <td style="font-weight: bold;">Phí vận chuyển:</td>
+                        <td style="padding-left: 40px;">Miễn Phí</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Tổng thành tiền:</td>
+                        <td>55.000 VNĐ</td>
+                    </tr>
+                </table>
+    
+            </div>
+            <div class="two-btn">
+                <div class="row">
+                    <div class="col">
+                        <a href="/home">
+                            <button class="btn btn-secondary btn-back">Tiếp tục mua hàng</button>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="/checkout">
+                            <button class="btn btn-secondary btn-next">Thanh toán</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+     <%- include('partials/footer') %>
+</body>
+</html>

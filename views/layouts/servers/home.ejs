@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thống kê</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <!--sidebar start-->
+    <%- include('partials/sidebar') %>
+    <!-- sidebar end -->
+
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="market-updates">
+                <div class="col-md-3 market-update-gd">
+                    <div class="market-update-block clr-block-2">
+                        <a href="#">
+                        <div class="col-md-4 market-update-right">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="col-md-8 market-update-left">
+                            <h4>Khách hàng</h4>
+                            <h3>50</h3>
+                            <p>Số lượt đăng ký tài khoản</p>
+                        </div>
+                        </a>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 market-update-gd">
+                    <div class="market-update-block clr-block-1">
+                        <a href="#">
+                        <div class="col-md-4 market-update-right">
+                            <i style="color: white;" class="fa fa-comments fa-3x" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-md-8 market-update-left">
+                            <h4>Bình luận</h4>
+                            <h3>22</h3>
+                            <p>Số lượng bình luận</p>
+                        </div>
+                        </a>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 market-update-gd">
+                    <div class="market-update-block clr-block-3">
+                        <a href="#">
+                        <div class="col-md-4 market-update-right">
+                            <i class="far fa-address-card"></i>
+                        </div>
+                        <div class="col-md-8 market-update-left">
+                                <h4>Nhân viên</h4>
+                                <h3>5</h3>
+                                <p>Số lượng nhân viên</p>
+                        </div>
+                        </a>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 market-update-gd">
+                    <div class="market-update-block clr-block-4">
+                        <a href="#">
+                        <div class="col-md-4 market-update-right">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="col-md-8 market-update-left">
+                                <h4>Đơn mới</h4>
+                                <h3>15</h3>
+                                <p>Số lượng đơn chưa duyệt</p>
+                        </div>
+                        </a>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+
+                <div class="graphBox">
+                    <div class="box">
+                        <h3 style="text-align: center;">Sản phẩm bán chạy nhất</h3>
+                        <canvas id="myChart" style="margin-top: 15px;"></canvas>
+                    </div>
+                    <div class="box">
+                        <h3 style="text-align: center;">Biểu đồ doanh thu</h3>
+                        <canvas id="earning"></canvas>
+        </section>
+    </section>
+    <!--main content end-->
+
+</section>
+    <%- include('partials/footer') %>
+</body>
+</html>
+
