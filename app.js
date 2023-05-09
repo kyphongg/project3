@@ -6,6 +6,14 @@ const port = 3000;
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
+//Mongodb
+const mongoose = require("mongoose");
+mongoose.connect("mongodb+srv://lam:WBz1E8R60tx79jBO@cluster0.19fbi9g.mongodb.net/?retryWrites=true&w=majority",{ useNewUrlParser: true, useUnifiedTopology: true })
+.then(() => console.log("Connected to mongo successfully"))
+.catch((err) => {
+  console.error(err);
+});
+
 //Client
 //Trang chủ
 app.get('/', (req, res) => {
