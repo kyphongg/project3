@@ -222,6 +222,11 @@ app.get("/category", (req, res) => {
 });
 
 //Servers
+//Trang đăng nhập
+app.get("/admin_login", (req, res) => {
+  res.render("layouts/servers/login");
+});
+
 //Trang home
 app.get("/admin_home", (req, res) => {
   res.render("layouts/servers/home");
