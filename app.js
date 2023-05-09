@@ -64,7 +64,7 @@ app.post("/save", function (req, res) {
     fullname: req.body.fullname,
     email: req.body.email,
     password: req.body.password,
-    address: req.body.address,
+    username: req.body.username,
     phone: req.body.phone,
   });
 

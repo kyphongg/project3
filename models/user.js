@@ -11,7 +11,7 @@ var User = new Schema({
     password: {
         type: String
     },
-    address: {
+    username: {
         type: String
     },
     phone: {
