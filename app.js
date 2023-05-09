@@ -54,7 +54,9 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/signup", (req, res) => {
-  res.render("layouts/clients/signup");
+  res.render("layouts/clients/signup",{
+    nhanvat:1
+  });
 });
 
 app.post("/save", function (req, res) {
@@ -128,60 +130,95 @@ app.get("/", (req, res) => {
 
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
 app.get("/about", (req, res) => {
-  res.render("layouts/clients/about");
+  res.render("layouts/clients/about",{
+    nhanvat:1
+  });
 });
 
 app.get("/news", (req, res) => {
-  res.render("layouts/clients/news");
+  res.render("layouts/clients/news",{
+    nhanvat:1
+  });
 });
 
 app.get("/hiring", (req, res) => {
-  res.render("layouts/clients/hiring");
+  res.render("layouts/clients/hiring",{
+    nhanvat:1
+  });
 });
 
 app.get("/support", (req, res) => {
-  res.render("layouts/clients/support");
+  res.render("layouts/clients/support",{
+    nhanvat:1
+  });
 });
 
 //Trang profile, lịch sử đơn hàng, mật khẩu
-app.get("/profile", (req, res) => {
-  res.render("layouts/clients/profile");
+app.get("/profile/:id", async (req, res) => {
+  let data = await User.findById(req.params.id);
+  console.log("nhan vat" ,data);
+  res.render("layouts/clients/profile",{
+    nhanvat: data
+  });
 });
 
-app.get("/orders", (req, res) => {
-  res.render("layouts/clients/orders");
+app.get("/profile",(req, res)  => {
+  res.render("layouts/clients/profile",{
+    nhanvat: 1
+  });
+});
+
+app.get("/orders/:id", async (req, res) => {
+  let data = await User.findById(req.params.id);
+  res.render("layouts/clients/orders",{
+    nhanvat: data
+  });
 });
 
 app.get("/password", (req, res) => {
-  res.render("layouts/clients/password");
+  res.render("layouts/clients/password",{
+    nhanvat:1
+  });
 });
 
 //Trang chi tiết lịch sử đơn hàng
 app.get("/orders_detail", (req, res) => {
-  res.render("layouts/clients/orders_detail");
+  res.render("layouts/clients/orders_detail",{
+    nhanvat:1
+  });
 });
 
 //Trang giỏ hàng và thanh toán và trang thông báo đặt hàng thành công
 app.get("/cart", (req, res) => {
-  res.render("layouts/clients/cart");
+  res.render("layouts/clients/cart",{
+    nhanvat:1
+  });
 });
 
 app.get("/checkout", (req, res) => {
-  res.render("layouts/clients/checkout");
+  res.render("layouts/clients/checkout",{
+    nhanvat:1
+  });
 });
 
 app.get("/success", (req, res) => {
-  res.render("layouts/clients/success");
+  res.render("layouts/clients/success",{
+    nhanvat:1
+  });
 });
 
 //Trang chi tiết sản phẩm
 app.get("/product", (req, res) => {
-  res.render("layouts/clients/product");
+  res.render("layouts/clients/product",{
+    nhanvat:1
+  });
 });
 
 //Trang category
 app.get("/category", (req, res) => {
-  res.render("layouts/clients/category");
+  res.render("layouts/clients/category",{
+    nhanvat:1
+  });
 });
 
 //Servers

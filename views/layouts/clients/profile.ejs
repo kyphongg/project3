@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title>Thông tin tài khoản</title>
     <%- include('partials/head') %>
 </head>
 <body>
@@ -17,13 +17,13 @@
                     <div class="side-nav">
                         <ul class="nav-links">
                             <li style="border-bottom: 1px solid #E6E8EB;">
-                                <a href="/profile" ><i class="fa-solid fa-user"></i>Tài khoản</a>
+                                <a href="/profile/<%= nhanvat._id %>" ><i class="fa-solid fa-user"></i>Tài khoản</a>
                             </li>
                             <li style="border-bottom: 1px solid #E6E8EB;">
                                 <a href="/orders"><i class="fa-solid fa-cart-shopping"></i>Lịch sử đơn hàng</a>
                             </li>
                             <li style="border-bottom: 1px solid #E6E8EB;">
-                                <a href="password"><i class="fa-solid fa-user-lock"></i>Mật khẩu và bảo mật</a>
+                                <a href="password/<%= nhanvat._id %>"><i class="fa-solid fa-user-lock"></i>Mật khẩu và bảo mật</a>
                             </li>
                             <li>
                                 <a href="#"><i class="fa-solid fa-heart"></i>Sản phẩm yêu thích</a>
@@ -39,11 +39,11 @@
                         <div class="row user-detail">
                             <div class="col-2">
                                 <p>Họ và tên</p>
-                                <p style="font-weight: 600;">Mai Kỳ Phong</p>
+                                <p style="font-weight: 600;"><%= nhanvat.fullname %></p>
                             </div>
                             <div class="col-4">
                                 <p>Địa chỉ email</p>
-                                <p style="font-weight: 600;">kyphong2802@gmail.com</p>
+                                <p style="font-weight: 600;"><%= nhanvat.email %></p>
                             </div>
                         </div>
                     </div>
