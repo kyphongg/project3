@@ -10,8 +10,12 @@
             </button>
         </form>
         <div class="icon">
-            <img src="/images/user (2).png" alt="UserImage" onclick="toggleMenu()"> 
-            <a href="/login"> Đăng nhập </a>
+            <img src="/images/user (2).png" alt="UserImage" onclick="toggleMenu()">
+            <% if(nhanvat == 1) {%>
+                <a href="/login"> Đăng nhập </a>
+                <% }else{ %>
+                    <p> <%= nhanvat.fullname %></p>
+                <% } %>
             <div class="sub-menu-wrap" id="subMenu">
                     <div class="sub-menu">
                         <a href="/profile" class="sub-menu-link">
@@ -23,7 +27,7 @@
                         <a href="/password" class="sub-menu-link">
                             <p>Mật khẩu</p>
                         </a>
-                        <a href="/" class="sub-menu-link">
+                        <a href="/logout" class="sub-menu-link">
                             <p>Đăng xuất</p></a>
                     </div>
                 </div>
