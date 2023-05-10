@@ -14,7 +14,9 @@
             <% if(id == 1) {%>
                 <a href="/login"> Đăng nhập </a>
                 <% }else { %>
+                    <a href="/profile/<%= id %>">
                     <p> <%= fullname %> </p>
+                    </a>
                 <% } %>
             <div class="sub-menu-wrap" id="subMenu">
                     <div class="sub-menu">
