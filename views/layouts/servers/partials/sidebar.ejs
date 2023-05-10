@@ -24,8 +24,8 @@
                         </span>
                     </a>
                     <ul class="dropdown-menu extended logout">
-                        <li><a href="#"><i class="far fa-address-card"></i> Hồ sơ cá nhân</a></li>
-                        <li><a href="#"><i class="fas fa-lock"></i> Cài đặt</a></li>
+                        <li><a href="/admin_profile/<%= id %>"><i class="far fa-address-card"></i> Hồ sơ cá nhân</a></li>
+                        <li><a href="/admin_setting/<%= id %>"><i class="fas fa-lock"></i> Cài đặt</a></li>
                         <li><a href="/admin_logout"><i class="fas fa-power-off"></i> Đăng xuất</a></li>
                     </ul>
                 </li>
@@ -50,7 +50,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="/">
                             <i class="fas fa-home"></i>
                             <span>Trang website</span>
                         </a>
@@ -96,9 +96,9 @@
                         </a>
                         <ul class="sub">
                             <li><a href="/employees"><i class="fa-solid fa-list-ol"></i>Danh sách nhân viên</a></li>
-                            <li><a href="#"><i class="fa-solid fa-people-carry-box"></i>Nhân viên kho</a></li>
-                            <li><a href="#"><i class="fa-solid fa-user-check"></i>Nhân viên đơn hàng</a></li>
-                            <li><a href="#"><i class="fa-solid fa-user-doctor"></i>Nhân viên CSKH</a></li>
+                            <li><a href="/employees_store"><i class="fa-solid fa-people-carry-box"></i>Nhân viên kho</a></li>
+                            <li><a href="/employees_order"><i class="fa-solid fa-user-check"></i>Nhân viên đơn hàng</a></li>
+                            <li><a href="/employees_customer_care"><i class="fa-solid fa-user-doctor"></i>Nhân viên CSKH</a></li>
                         </ul>
                     </li>
 

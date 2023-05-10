@@ -378,10 +378,15 @@ app.post("/admin_login", async function (req, res) {
       //Kiểm tra mật khẩu
       const result = req.body.password === admin.password;
       if (result) {
-        console.log("Đăng nhập thành công với", admin);
+        console.log("Đăng nhập thành công với", admin.id);
+        const customer = await User.find().count();
+        const employee = await Admin.find().count();
         var sess = req.session;
         sess.daDangNhap = true;
         sess.fullname = admin.fullname;
+        sess.admin_id = admin._id;
+        sess.number = customer;
+        sess.numberal = employee;
         if (sess.back) {
           console.log(sess.back);
           res.redirect(sess.back);
@@ -405,11 +410,14 @@ app.get("/admin_logout", function (req, res) {
   res.redirect("/admin_login");
 });
 
-//Trang home
+//Trang home admin
 app.get("/admin_home", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/home", {
       fullname: req.session.fullname,
+      number: req.session.number,
+      numberal: req.session.numberal,
+      id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -419,71 +427,160 @@ app.get("/admin_home", (req, res) => {
 
 //Trang thể loại
 app.get("/admin_categories", (req, res) => {
-  res.render("layouts/servers/categories/categories", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/categories/categories", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/add_categories", (req, res) => {
-  res.render("layouts/servers/categories/add_categories", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/categories/add_categories", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/edit_categories", (req, res) => {
-  res.render("layouts/servers/categories/edit_categories", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/categories/edit_categories", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 //Trang nhà sản xuất
 app.get("/admin_producers", (req, res) => {
-  res.render("layouts/servers/producers/producers", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/producers/producers", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/add_producers", (req, res) => {
-  res.render("layouts/servers/producers/add_producers", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/producers/add_producers", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/edit_producers", (req, res) => {
-  res.render("layouts/servers/producers/edit_producers", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/producers/edit_producers", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 //Trang sản phẩm
 app.get("/admin_product", (req, res) => {
-  res.render("layouts/servers/product/product", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/product/product", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/add_product", (req, res) => {
-  res.render("layouts/servers/product/add_product", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/product/add_product", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/edit_product", (req, res) => {
-  res.render("layouts/servers/product/edit_product");
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/product/edit_product", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 //Trang danh sách khách hàng và (danh sách và thêm nhân viên)
-app.get("/customers", (req, res) => {
-  res.render("layouts/servers/customer/customer", {
-    un: 1,
-  });
+app.get("/customers", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await User.find();
+    res.render("layouts/servers/customer/customer", {
+      fullname: req.session.fullname,
+      nhanvat: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
+//Nhân viên
 app.get("/employees", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await Admin.find();
-    console.log(data);
     res.render("layouts/servers/employee/employee", {
+      fullname: req.session.fullname,
+      nhanvat: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/admin_profile/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await Admin.findById({ _id: req.params.id });
+    res.render("layouts/servers/employee/profile", {
+      fullname: req.session.fullname,
+      nhanvat: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/admin_setting/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await Admin.findById({ _id: req.params.id });
+    res.render("layouts/servers/employee/setting", {
       fullname: req.session.fullname,
       nhanvat: data,
     });
@@ -567,58 +664,156 @@ app.get("/delete/:id", function (req, res) {
   }
 });
 
+app.get("/employees_store", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await Admin.find({ role: 1 });
+    console.log(data);
+    res.render("layouts/servers/employee/store_employee", {
+      fullname: req.session.fullname,
+      nhanvat: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/employees_order", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await Admin.find({ role: 2 });
+    console.log(data);
+    res.render("layouts/servers/employee/order_employee", {
+      fullname: req.session.fullname,
+      nhanvat: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/employees_customer_care", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await Admin.find({ role: 3 });
+    console.log(data);
+    res.render("layouts/servers/employee/customer_care_employee", {
+      fullname: req.session.fullname,
+      nhanvat: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
 //Trang quản lý đơn hàng
 app.get("/all_orders", (req, res) => {
-  res.render("layouts/servers/orders/all_orders", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/orders/all_orders", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/new_orders", (req, res) => {
-  res.render("layouts/servers/orders/new_orders", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/orders/new_orders", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/order_detail", (req, res) => {
-  res.render("layouts/servers/orders/order_detail", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/orders/order_detail", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/accept_orders", (req, res) => {
-  res.render("layouts/servers/orders/accept_orders", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/orders/accept_orders", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/done_orders", (req, res) => {
-  res.render("layouts/servers/orders/done_orders", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/orders/done_orders", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/cancel_orders", (req, res) => {
-  res.render("layouts/servers/orders/cancel_orders");
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/orders/cancel_orders", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 //Trang nhập kho
 app.get("/warehouse", (req, res) => {
-  res.render("layouts/servers/warehouse/warehouse", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/warehouse/warehouse", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/add_warehouse", (req, res) => {
-  res.render("layouts/servers/warehouse/add_warehouse", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/warehouse/add_warehouse", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/edit_warehouse", (req, res) => {
-  res.render("layouts/servers/warehouse/edit_warehouse", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/warehouse/edit_warehouse", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 app.listen(port, () => {
