@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Thống kê</title>
+    <title>Danh sách nhân viên</title>
     <%- include('../partials/head') %>
 </head>
 <body>
@@ -30,6 +30,7 @@
                                 <th>Tên nhân viên</th>
                                 <th>Email</th>
                                 <th>Chức vụ</th>
+                                <th>Trạng thái</th>
                                 <th>Tùy biến</th>
                             </tr>
                             </thead>
@@ -43,10 +44,14 @@
                                         if(nhanvat[i].role == 1){ %> Nhân viên kho <% }else if(nhanvat[i].role ==
                                         2){ %> Nhân viên đơn hàng <% }else if(danhsach[i].role == 4){ %> Nhân viên CSKH <% } %></td>
                                     <td>
-                                        <a href="#" class="active">
+                                        <% if(nhanvat[i].status == 0){ %> Kích hoạt <% }else
+                                        if(nhanvat[i].status == 1){ %> Không kích hoạt <% } %>
+                                    </td> 
+                                    <td>
+                                        <a href="/edit/<%= nhanvat[i].id %>" class="active">
                                             <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
                                         </a>
-                                        <a href="#" class="active">
+                                        <a href="/delete/<%= nhanvat[i].id %>" class="active" onclick="return confirm('Xoá ?')">
                                             <i class="fa-solid fa-square-xmark" style="font-size: 25px; color: #D9534F;"></i>
                                         </a>
                                     </td>

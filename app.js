@@ -381,7 +381,7 @@ app.get("/employees", async (req, res) => {
     console.log(data);
     res.render("layouts/servers/employee/employee", {
       fullname: req.session.fullname,
-      nhanvat: data
+      nhanvat: data,
     });
   } else {
     req.session.back = "/admin_home";
@@ -412,6 +412,50 @@ app.get("/add_employee", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/employee/add_employee", {
       fullname: req.session.fullname,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/edit/:id", async function (req, res) {
+  if (req.session.daDangNhap) {
+    let data = await Admin.findById(req.params.id);
+    res.render("layouts/servers/employee/edit_employee", {
+      fullname: req.session.fullname,
+      nhanvat: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/edit_save", async function (req, res) {
+  if (req.session.daDangNhap) {
+    Admin.updateOne(
+      { _id: req.body.id },
+      {
+        fullname: req.body.fullname,
+        email: req.body.email,
+        username: req.body.username,
+        role: req.body.role,
+        status: req.body.status,
+      }
+    ).then(function () {
+      res.redirect("/employees");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/delete/:id", function (req, res) {
+  if (req.session.daDangNhap) {
+    Admin.deleteOne({ _id: req.params.id }).then(function () {
+      res.redirect("/employees");
     });
   } else {
     req.session.back = "/admin_home";
