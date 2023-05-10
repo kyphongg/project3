@@ -191,10 +191,21 @@ app.get("/orders/:id", (req, res) => {
   }
 });
 
-app.get("/password", (req, res) => {
-  res.render("layouts/clients/password", {
-    nhanvat: 1,
-  });
+app.get("/password/:id", (req, res) => {
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/password", {
+      fullname: req.session.fullname,
+      email: req.session.email,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/home", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
 });
 
 //Trang chi tiết lịch sử đơn hàng
