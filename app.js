@@ -59,7 +59,7 @@ app.get("/signup", (req, res) => {
   res.render("layouts/clients/signup", {
     sID: req.sessionID,
     id: 1,
-    fullname: 1
+    fullname: 1,
   });
 });
 
@@ -216,10 +216,21 @@ app.get("/orders_detail", (req, res) => {
 });
 
 //Trang giỏ hàng và thanh toán và trang thông báo đặt hàng thành công
-app.get("/cart", (req, res) => {
-  res.render("layouts/clients/cart", {
-    id: 1,
-  });
+app.get("/cart/:id", (req, res) => {
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/cart", {
+      fullname: req.session.fullname,
+      email: req.session.email,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/home", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
 });
 
 app.get("/checkout", (req, res) => {
@@ -387,7 +398,7 @@ app.get("/customers", (req, res) => {
 app.get("/employees", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/employee/employee", {
-      un: req.session.fullname,
+      fullname: req.session.fullname,
     });
   } else {
     req.session.back = "/admin_home";
