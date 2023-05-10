@@ -34,11 +34,14 @@
                             </tr>
                             </thead>
                                 <tbody>
+                                    <% for(let i=0; i < nhanvat.length; i++) { %>
                                 <tr>
-                                    <td>1</td>
-                                    <td>Kỳ Phong</td>
-                                    <td>kyphong2802@gmail.com</td>
-                                    <td>Quản lý</td>
+                                    <td><%= i+1 %></td>
+                                    <td><%= nhanvat[i].fullname %></td>
+                                    <td><%= nhanvat[i].email %></td>
+                                    <td><% if(nhanvat[i].role == 0){ %> Quản lý <% }else
+                                        if(nhanvat[i].role == 1){ %> Nhân viên kho <% }else if(nhanvat[i].role ==
+                                        2){ %> Nhân viên đơn hàng <% }else if(danhsach[i].role == 4){ %> Nhân viên CSKH <% } %></td>
                                     <td>
                                         <a href="#" class="active">
                                             <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
@@ -48,6 +51,7 @@
                                         </a>
                                     </td>
                                 </tr>
+                                <% } %>
                                 </tbody>
                         </table>
                     </div>

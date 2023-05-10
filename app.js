@@ -26,7 +26,7 @@ app.use(passport.session());
 const mongoose = require("mongoose");
 mongoose
   .connect(
-    "mongodb+srv://phong:ODiJ7TXfPD0XiClM@cluster0.19fbi9g.mongodb.net/?retryWrites=true&w=majority",
+    "mongodb+srv://lam:WBz1E8R60tx79jBO@cluster0.19fbi9g.mongodb.net/?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("Connected to mongo successfully"))
@@ -265,24 +265,6 @@ app.get("/admin_login", (req, res) => {
   res.render("layouts/servers/login");
 });
 
-app.post("/admin_save", function (req, res) {
-  var user = User({
-    fullname: req.body.fullname,
-    email: req.body.email,
-    password: req.body.password,
-    username: req.body.username,
-    phone: req.body.phone,
-  });
-
-  if (req.body.password != req.body.password2) {
-    res.status(400).json({ error: "Mật khẩu không trùng khớp" });
-  } else {
-    user.save().then(function () {
-      res.redirect("/");
-    });
-  }
-});
-
 //Xử lý đăng nhập
 app.post("/admin_login", async function (req, res) {
   try {
@@ -393,10 +375,32 @@ app.get("/customers", (req, res) => {
   });
 });
 
-app.get("/employees", (req, res) => {
+app.get("/employees", async (req, res) => {
   if (req.session.daDangNhap) {
+    let data = await Admin.find();
+    console.log(data);
     res.render("layouts/servers/employee/employee", {
       fullname: req.session.fullname,
+      nhanvat: data
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/admin_save", function (req, res) {
+  if (req.session.daDangNhap) {
+    var admin = Admin({
+      fullname: req.body.fullname,
+      email: req.body.email,
+      password: req.body.password,
+      username: req.body.username,
+      role: req.body.role,
+      status: req.body.status,
+    });
+    admin.save().then(function () {
+      res.redirect("/employees");
     });
   } else {
     req.session.back = "/admin_home";
@@ -405,7 +409,14 @@ app.get("/employees", (req, res) => {
 });
 
 app.get("/add_employee", (req, res) => {
-  res.render("layouts/servers/employee/add_employee");
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/employee/add_employee", {
+      fullname: req.session.fullname,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
 });
 
 //Trang quản lý đơn hàng
