@@ -27,20 +27,50 @@
                                 <p>Quản lý tài khoản</p>
                             </a>
                             <% } %>
-                        <a href="/orders/<%= id %>" class="sub-menu-link">
+
+                        <% if(id == 1) {%>
+                        <a href="/login" class="sub-menu-link">
                             <p>Lịch sử đơn hàng</p>
                         </a>
-                        <a href="/password" class="sub-menu-link">
-                            <p>Mật khẩu</p>
-                        </a>
-                        <a href="/logout" class="sub-menu-link">
-                            <p>Đăng xuất</p></a>
+                        <% }else{ %>
+                            <a href="/orders/<%= id %>" class="sub-menu-link">
+                                <p>Lịch sử đơn hàng</p>
+                            </a>
+                            <% } %>
+                        
+                        <% if(id == 1) {%>
+                        <a href="/login" class="sub-menu-link">
+                                    <p>Mật khẩu</p>
+                                </a>
+                                <% }else{ %>
+                                    <a href="/password/<%= id %>" class="sub-menu-link">
+                                        <p>Mật khẩu</p>
+                                    </a>
+                                    <% } %>
+                             
+                                    
+                                    <% if(id == 1) {%>
+                                        <a href="/" class="sub-menu-link">
+                                                    <p>Đăng xuất</p>
+                                                </a>
+                                                <% }else{ %>
+                                                    <a href="/logout" class="sub-menu-link">
+                                                        <p>Đăng xuất</p>
+                                                    </a>
+                                                    <% } %>            
                     </div>
                 </div>
-                <a class="cart" href="/cart">
+                <% if(id==1){ %>
+                    <a class="cart" href="/login">
+                        <img src="/images/shopping-cart.png" alt="UserImage">
+                        Giỏ hàng
+                        </a>
+                    <% }else { %>
+                <a class="cart" href="/cart/<%= id %>">
                 <img src="/images/shopping-cart.png" alt="UserImage">
                 Giỏ hàng
                 </a>
+                <% } %>
         </div>
     </div>
 
