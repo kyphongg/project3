@@ -26,7 +26,7 @@ app.use(passport.session());
 const mongoose = require("mongoose");
 mongoose
   .connect(
-    "mongodb+srv://lam:WBz1E8R60tx79jBO@cluster0.19fbi9g.mongodb.net/?retryWrites=true&w=majority",
+    "mongodb+srv://phong:ODiJ7TXfPD0XiClM@cluster0.19fbi9g.mongodb.net/?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("Connected to mongo successfully"))
@@ -351,12 +351,10 @@ app.get("/add_product", (req, res) => {
 });
 
 app.get("/edit_product", (req, res) => {
-  res.render("layouts/servers/product/edit_product", {
-    nhanvat: 1,
-  });
+  res.render("layouts/servers/product/edit_product");
 });
 
-//Trang danh sách khách hàng và danh sách nhân viên
+//Trang danh sách khách hàng và (danh sách và thêm nhân viên)
 app.get("/customers", (req, res) => {
   res.render("layouts/servers/customer/customer", {
     un: 1,
@@ -372,6 +370,10 @@ app.get("/employees", (req, res) => {
     req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
+});
+
+app.get("/add_employee", (req, res) => {
+  res.render("layouts/servers/employee/add_employee");
 });
 
 //Trang quản lý đơn hàng
