@@ -133,27 +133,131 @@ app.get("/", (req, res) => {
 
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
 app.get("/about", (req, res) => {
-  res.render("layouts/clients/about", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/about", {
+      fullname: req.session.fullname,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/about", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
+});
+
+app.get("/privacy_policy", (req, res) => {
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/privacy_policy", {
+      fullname: req.session.fullname,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/privacy_policy", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
+});
+
+app.get("/terms_of_service", (req, res) => {
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/terms_of_service", {
+      fullname: req.session.fullname,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/terms_of_service", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
 });
 
 app.get("/news", (req, res) => {
-  res.render("layouts/clients/news", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/news", {
+      fullname: req.session.fullname,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/news", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
 });
 
 app.get("/hiring", (req, res) => {
-  res.render("layouts/clients/hiring", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/hiring", {
+      fullname: req.session.fullname,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/hiring", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
 });
 
 app.get("/support", (req, res) => {
-  res.render("layouts/clients/support", {
-    nhanvat: 1,
-  });
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/support", {
+      fullname: req.session.fullname,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/support", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
+});
+
+app.get("/hotline", (req, res) => {
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/hotline", {
+      fullname: req.session.fullname,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/hotline", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
+});
+
+app.get("/customer_care", (req, res) => {
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/customer_care", {
+      fullname: req.session.fullname,
+      id: req.session.id,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/customer_care", {
+      fullname: 1,
+      id: 1,
+      sID: req.session.sessionID,
+    });
+  }
 });
 
 //Trang profile, lịch sử đơn hàng, mật khẩu
