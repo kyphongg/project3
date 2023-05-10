@@ -3,7 +3,7 @@
     <header class="header fixed-top clearfix">
         <!--logo start-->
         <div class="brand">
-            <a href="{{url('/admin/home')}}" class="logo">
+            <a href="/admin_home" class="logo">
                 <img src="/images/gamingstore-logoo.png">
             </a>
         </div>
@@ -20,13 +20,13 @@
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <img alt="" src="/images/userr.png">
                         <span class="username">
-                           Kỳ Phong
+                           <%= fullname %>
                         </span>
                     </a>
                     <ul class="dropdown-menu extended logout">
                         <li><a href="#"><i class="far fa-address-card"></i> Hồ sơ cá nhân</a></li>
                         <li><a href="#"><i class="fas fa-lock"></i> Cài đặt</a></li>
-                        <li><a href="#"><i class="fas fa-power-off"></i> Đăng xuất</a></li>
+                        <li><a href="/admin_logout"><i class="fas fa-power-off"></i> Đăng xuất</a></li>
                     </ul>
                 </li>
                 <!-- user login dropdown end -->

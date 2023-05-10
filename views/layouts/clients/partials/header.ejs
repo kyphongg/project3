@@ -11,23 +11,23 @@
         </form>
         <div class="icon">
             <img src="/images/user (2).png" alt="UserImage" onclick="toggleMenu()">
-            <% if(nhanvat == 1) {%>
+            <% if(id == 1) {%>
                 <a href="/login"> Đăng nhập </a>
-                <% }else{ %>
-                    <p> <%= nhanvat.fullname %></p>
+                <% }else { %>
+                    <p> <%= fullname %> </p>
                 <% } %>
             <div class="sub-menu-wrap" id="subMenu">
                     <div class="sub-menu">
-                        <% if(nhanvat == 1) {%>
+                        <% if(id == 1) {%>
                         <a href="/login" class="sub-menu-link">
                             <p>Quản lý tài khoản</p>
                         </a>
                         <% }else{ %>
-                            <a href="/profile/<%= nhanvat._id %>" class="sub-menu-link">
+                            <a href="/profile/<%= id %>" class="sub-menu-link">
                                 <p>Quản lý tài khoản</p>
                             </a>
                             <% } %>
-                        <a href="/orders/<%= nhanvat._id %>" class="sub-menu-link">
+                        <a href="/orders/<%= id %>" class="sub-menu-link">
                             <p>Lịch sử đơn hàng</p>
                         </a>
                         <a href="/password" class="sub-menu-link">
