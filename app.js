@@ -58,6 +58,8 @@ app.get("/login", (req, res) => {
 app.get("/signup", (req, res) => {
   res.render("layouts/clients/signup", {
     sID: req.sessionID,
+    id: 1,
+    fullname: 1
   });
 });
 
