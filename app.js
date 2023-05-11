@@ -63,7 +63,7 @@ var upload = multer({
     if (
       file.mimetype == "image/bmp" ||
       file.mimetype == "image/png" ||
-      file.mimetype == "image/jpeg" ||
+      file.mimetype == "image/jpeg"||
       file.mimetype == "image/jpg" ||
       file.mimetype == "image/gif"
     ) {
@@ -624,10 +624,11 @@ app.get("/delete_producers/:id", function (req, res) {
 //Trang sản phẩm
 app.get("/admin_product", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Product.find()
+    Product.find()
     .populate('categoryID')
     .populate('producerID')
     .then(data => {
+      console.log(data);
       res.render("layouts/servers/product/product", {
         fullname: req.session.fullname,
         id: req.session.admin_id,
