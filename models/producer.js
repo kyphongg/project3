@@ -7,7 +7,7 @@ var Producer = new Schema({
     },
     username:{
         type: Number
-    },  
+    },
 })
   
 Producer.plugin(passportLocalMongoose);

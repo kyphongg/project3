@@ -24,6 +24,7 @@ app.use(passport.session());
 
 //Mongodb
 const mongoose = require("mongoose");
+const mongoClient = require('mongodb').MongoClient;
 mongoose
   .connect(
     "mongodb+srv://lam:WBz1E8R60tx79jBO@cluster0.19fbi9g.mongodb.net/?retryWrites=true&w=majority",
@@ -39,10 +40,39 @@ const Admin = require("./models/admin.js");
 const User = require("./models/user.js");
 const Category = require("./models/category.js");
 const Producer = require("./models/producer.js");
+const Product = require("./models/product.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+//multer
+var multer = require("multer");
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+var upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    console.log(file);
+    if (
+      file.mimetype == "image/bmp" ||
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpeg" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/gif"
+    ) {
+      cb(null, true);
+    } else {
+      return cb(new Error("Chỉ được sử dụng hình ảnh cho tính năng này"));
+    }
+  },
+}).single("productImage");
 
 //body-parser
 var bodyParser = require("body-parser");
@@ -592,11 +622,21 @@ app.get("/delete_producers/:id", function (req, res) {
 });
 
 //Trang sản phẩm
-app.get("/admin_product", (req, res) => {
+app.get("/admin_product", async (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/product/product", {
-      fullname: req.session.fullname,
-      id: req.session.admin_id,
+    let data = await Product.find()
+    .populate('categoryID')
+    .populate('producerID')
+    .then(data => {
+      console.log(data);
+      res.render("layouts/servers/product/product", {
+        fullname: req.session.fullname,
+        id: req.session.admin_id,
+        danhsach: data,
+        }); 
+    })
+    .catch((err) => {
+      console.log(err);
     });
   } else {
     req.session.back = "/admin_home";
@@ -609,6 +649,35 @@ app.get("/add_product", (req, res) => {
     res.render("layouts/servers/product/add_product", {
       fullname: req.session.fullname,
       id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/save_product", (req, res) => {
+  if (req.session.daDangNhap) {
+    upload(req, res, function(err){
+      if(err instanceof multer.MulterError){
+        console.log("Lỗi Multer khi upload ảnh");
+      } else if (err){
+        console.log("Lỗi bất ngờ xảy ra: " + err);
+      }else{
+        var product = Product({
+          productName: req.body.productName,
+          productDescription: req.body.productDescription,
+          productImage: req.body.productImage,
+          categoryID: req.body.categoryID,
+          producerID: req.body.producerID,
+          priceIn: req.body.priceIn,
+          priceOut: req.body.priceOut,
+          productStatus: req.body.productStatus,
+        });
+        product.save().then(function () {
+          res.redirect("/admin_product");
+        });
+      }
     });
   } else {
     req.session.back = "/admin_home";
