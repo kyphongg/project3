@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Thống kê</title>
+    <title>Danh sách nhà sản xuất</title>
     <%- include('../partials/head') %>
 </head>
 <body>
@@ -26,36 +26,26 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                             <tr>
-                                <th style="text-align: center; width: 50px;">ID</th>
+                                <th style="text-align: center; width: 50px;">STT</th>
                                 <th style="text-align: center;">Tên nhà sản xuất</th>
                                 <th style="text-align: center;">Tùy biến</th>
                             </tr>
                             </thead>
                                 <tbody>
+                                    <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
-                                    <td>1</td>
-                                    <td>PS5</td>
+                                    <td><%= i+1 %></td>
+                                    <td><%= danhsach[i].producerName %></td>
                                     <td>
-                                        <a href="/edit_producers" class="active" ui-toggle-class="">
+                                        <a href="/edit_producers/<%= danhsach[i]._id %>" class="active" ui-toggle-class="">
                                             <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
                                         </a>
-                                        <a onclick="return confirm('Xoá ?')" href="" class="active" ui-toggle-class="">
+                                        <a onclick="return confirm('Xoá ?')" href="/delete_producers/<%= danhsach[i]._id %>" class="active" ui-toggle-class="">
                                             <i class="fa-solid fa-square-xmark" style="font-size: 25px; color: #D9534F;"></i>
                                         </a>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>PS4</td>
-                                    <td>
-                                        <a href="/edit_producers" class="active" ui-toggle-class="">
-                                            <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
-                                        </a>
-                                        <a onclick="return confirm('Xoá ?')" href="" class="active" ui-toggle-class="">
-                                            <i class="fa-solid fa-square-xmark" style="font-size: 25px; color: #D9534F;"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                    <% } %>
                                 </tbody>
                         </table>
                     </div>

@@ -20,10 +20,11 @@
                 <h3>Sửa thể loại</h3>
                 <div class="panel-body">
                     <div class="position-center">
-                        <form>
+                        <form action="/edit_categories_save" method="post">
                             <div class="form-group">
+                                <input name="categoryId" value="<%= danhsach._id %>" type="hidden" class="form-control">
                                 <label>Tên thể loại</label>
-                                <input name="category_name" value="" type="text" class="form-control" placeholder="Tên thể loại">
+                                <input name="categoryName" value="<%= danhsach.categoryName %>" type="text" class="form-control" placeholder="Tên thể loại">
                             </div>
                             <a href="/admin_categories"><button type="button" class="btn btn-info" ><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button></a>
                             <button type="submit" class="btn btn-info">Sửa</button>

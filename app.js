@@ -37,6 +37,8 @@ mongoose
 //models
 const Admin = require("./models/admin.js");
 const User = require("./models/user.js");
+const Category = require("./models/category.js");
+const Producer = require("./models/producer.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -426,11 +428,13 @@ app.get("/admin_home", (req, res) => {
 });
 
 //Trang thể loại
-app.get("/admin_categories", (req, res) => {
+app.get("/admin_categories", async (req, res) => {
   if (req.session.daDangNhap) {
+    let data = await Category.find();
     res.render("layouts/servers/categories/categories", {
       fullname: req.session.fullname,
       id: req.session.admin_id,
+      danhsach: data,
     });
   } else {
     req.session.back = "/admin_home";
@@ -450,11 +454,54 @@ app.get("/add_categories", (req, res) => {
   }
 });
 
-app.get("/edit_categories", (req, res) => {
+app.post("/categories_save", function (req, res) {
   if (req.session.daDangNhap) {
+    var category = Category({
+      categoryName: req.body.categoryName,
+    });
+    category.save().then(function () {
+      res.redirect("/admin_categories");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/edit_categories/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await Category.findById(req.params.id);
     res.render("layouts/servers/categories/edit_categories", {
       fullname: req.session.fullname,
       id: req.session.admin_id,
+      danhsach: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/edit_categories_save", async function (req, res) {
+  if (req.session.daDangNhap) {
+    Category.updateOne(
+      { _id: req.body.categoryId },
+      {
+        categoryName: req.body.categoryName,
+      }
+    ).then(function () {
+      res.redirect("/admin_categories");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/delete_categories/:id", function (req, res) {
+  if (req.session.daDangNhap) {
+    Category.deleteOne({ _id: req.params.id }).then(function () {
+      res.redirect("/admin_categories");
     });
   } else {
     req.session.back = "/admin_home";
@@ -463,11 +510,13 @@ app.get("/edit_categories", (req, res) => {
 });
 
 //Trang nhà sản xuất
-app.get("/admin_producers", (req, res) => {
+app.get("/admin_producers", async (req, res) => {
   if (req.session.daDangNhap) {
+    let data = await Producer.find();
     res.render("layouts/servers/producers/producers", {
       fullname: req.session.fullname,
       id: req.session.admin_id,
+      danhsach: data,
     });
   } else {
     req.session.back = "/admin_home";
@@ -487,11 +536,54 @@ app.get("/add_producers", (req, res) => {
   }
 });
 
-app.get("/edit_producers", (req, res) => {
+app.post("/producers_save", function (req, res) {
   if (req.session.daDangNhap) {
+    var producer = Producer({
+      producerName: req.body.producerName,
+    });
+    producer.save().then(function () {
+      res.redirect("/admin_producers");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/edit_producers/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await Producer.findById(req.params.id);
     res.render("layouts/servers/producers/edit_producers", {
       fullname: req.session.fullname,
       id: req.session.admin_id,
+      danhsach: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/edit_producers_save", async function (req, res) {
+  if (req.session.daDangNhap) {
+    Producer.updateOne(
+      { _id: req.body.producerId },
+      {
+        producerName: req.body.producerName,
+      }
+    ).then(function () {
+      res.redirect("/admin_producers");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/delete_producers/:id", function (req, res) {
+  if (req.session.daDangNhap) {
+    Producer.deleteOne({ _id: req.params.id }).then(function () {
+      res.redirect("/admin_producers");
     });
   } else {
     req.session.back = "/admin_home";
@@ -542,6 +634,7 @@ app.get("/customers", async (req, res) => {
     let data = await User.find();
     res.render("layouts/servers/customer/customer", {
       fullname: req.session.fullname,
+      id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -556,6 +649,7 @@ app.get("/employees", async (req, res) => {
     let data = await Admin.find();
     res.render("layouts/servers/employee/employee", {
       fullname: req.session.fullname,
+      id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -613,6 +707,7 @@ app.get("/add_employee", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/employee/add_employee", {
       fullname: req.session.fullname,
+      id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -625,6 +720,7 @@ app.get("/edit/:id", async function (req, res) {
     let data = await Admin.findById(req.params.id);
     res.render("layouts/servers/employee/edit_employee", {
       fullname: req.session.fullname,
+      id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -667,9 +763,9 @@ app.get("/delete/:id", function (req, res) {
 app.get("/employees_store", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await Admin.find({ role: 1 });
-    console.log(data);
     res.render("layouts/servers/employee/store_employee", {
       fullname: req.session.fullname,
+      id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -681,9 +777,9 @@ app.get("/employees_store", async (req, res) => {
 app.get("/employees_order", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await Admin.find({ role: 2 });
-    console.log(data);
     res.render("layouts/servers/employee/order_employee", {
       fullname: req.session.fullname,
+      id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -695,9 +791,9 @@ app.get("/employees_order", async (req, res) => {
 app.get("/employees_customer_care", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await Admin.find({ role: 3 });
-    console.log(data);
     res.render("layouts/servers/employee/customer_care_employee", {
       fullname: req.session.fullname,
+      id: req.session.admin_id,
       nhanvat: data,
     });
   } else {

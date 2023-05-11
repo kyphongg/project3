@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Thống kê</title>
+    <title>Thêm nhà sản xuất</title>
     <%- include('../partials/head') %>
 </head>
 <body>
@@ -20,10 +20,11 @@
                 <h3>Thêm nhà sản xuất</h3>
                 <div class="panel-body">
                     <div class="position-center">
-                        <form>
+                        <form action="/producers_save" method="post">
                             <div class="form-group">
                                 <label>Tên nhà sản xuất</label>
                                 <input name="producerName" type="text" class="form-control" placeholder="Tên nhà sản xuất">
+                                <input name="username" type="hidden" class="form-control" value="0">
                             </div>
                             <a href="/admin_producers"><button type="button" class="btn btn-info" ><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button></a>
                             <button type="submit" class="btn btn-info"><i class="fa-solid fa-plus"></i> Thêm NSX mới</button>
