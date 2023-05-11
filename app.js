@@ -628,7 +628,6 @@ app.get("/admin_product", async (req, res) => {
     .populate('categoryID')
     .populate('producerID')
     .then(data => {
-      console.log(data);
       res.render("layouts/servers/product/product", {
         fullname: req.session.fullname,
         id: req.session.admin_id,
@@ -667,7 +666,7 @@ app.post("/save_product", (req, res) => {
         var product = Product({
           productName: req.body.productName,
           productDescription: req.body.productDescription,
-          productImage: req.body.productImage,
+          productImage: req.file.filename,
           categoryID: req.body.categoryID,
           producerID: req.body.producerID,
           priceIn: req.body.priceIn,
