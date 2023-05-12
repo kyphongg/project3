@@ -7,7 +7,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Thống kê</title>
+    <title>Danh sách sản phẩm</title>
     <%- include('../partials/head') %>
   </head>
   <body>
@@ -75,19 +75,21 @@
                     >
                       <%= danhsach[i].productDescription %>
                     </td>
+
                     <td style="text-align: center">
-                      <%= danhsach[i].priceIn %>
+                      <%= VND.format(danhsach[i].priceIn) %>
                     </td>
                     <td style="text-align: center">
-                      <%= danhsach[i].priceOut %>
+                      <%= VND.format(danhsach[i].priceOut) %>
                     </td>
                     <td style="text-align: center">
-                      <% if(danhsach[i].productStatus == 0){ %> Nổi bật <% }else
-                      if(danhsach[i].prodcutStatus == 1){ %> Mới <% } else { %> Tắt <%
+                      <% if(danhsach[i].productStatus == 0){ %> 
+                        Nổi bật 
+                      <% }else if(danhsach[i].productStatus == 1){ %> Mới <% } else { %> Tắt <%
                       } %>
                     </td>
                     <td style="text-align: center">
-                      <a href="/edit_product" class="active" ui-toggle-class="">
+                      <a href="/edit_product/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
                         <i
                           class="fa-solid fa-square-pen"
                           style="font-size: 25px; color: #5cb85c"

@@ -22,6 +22,12 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+//Money format
+const VND = new Intl.NumberFormat('vi-VN', {
+  style: 'currency',
+  currency: 'VND',
+});
+
 //Mongodb
 const mongoose = require("mongoose");
 const mongoClient = require('mongodb').MongoClient;
@@ -624,15 +630,15 @@ app.get("/delete_producers/:id", function (req, res) {
 //Trang sản phẩm
 app.get("/admin_product", async (req, res) => {
   if (req.session.daDangNhap) {
-    Product.find()
+    await Product.find()
     .populate('categoryID')
     .populate('producerID')
     .then(data => {
-      console.log(data);
       res.render("layouts/servers/product/product", {
         fullname: req.session.fullname,
         id: req.session.admin_id,
         danhsach: data,
+        VND
         }); 
     })
     .catch((err) => {
@@ -649,6 +655,7 @@ app.get("/add_product", (req, res) => {
     res.render("layouts/servers/product/add_product", {
       fullname: req.session.fullname,
       id: req.session.admin_id,
+      VND
     });
   } else {
     req.session.back = "/admin_home";
@@ -685,11 +692,69 @@ app.post("/save_product", (req, res) => {
   }
 });
 
-app.get("/edit_product", (req, res) => {
+app.get("/edit_product/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/product/edit_product", {
-      fullname: req.session.fullname,
-      id: req.session.admin_id,
+    await Product.findById(req.params.id)
+    .populate('categoryID')
+    .populate('producerID')
+    .then(data => {
+      res.render("layouts/servers/product/edit_product", {
+        fullname: req.session.fullname,
+        id: req.session.admin_id,
+        danhsach: data,
+        VND
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/edit_product_save", (req, res) => {
+  if (req.session.daDangNhap) {
+    upload(req, res, function(err){
+      //Không chọn file mới
+      if(!req.file){
+        Product.updateOne({_id:req.body.productId},
+          {
+          productName: req.body.productName,
+          productDescription: req.body.productDescription,
+          categoryID: req.body.categoryID,
+          producerID: req.body.producerID,
+          priceIn: req.body.priceIn,
+          priceOut: req.body.priceOut,
+          productStatus: req.body.productStatus,
+        })
+        .then(function () {
+          res.redirect("/admin_product");
+        });
+      // Chọn file mới
+      } else{
+        if(err instanceof multer.MulterError){
+          console.log("Lỗi Multer khi upload ảnh");
+        } else if (err){
+          console.log("Lỗi bất ngờ xảy ra: " + err);
+        }else{
+          Product.updateOne({_id:req.body.productId},
+            {
+            productName: req.body.productName,
+            productDescription: req.body.productDescription,
+            productImage: req.file.filename,
+            categoryID: req.body.categoryID,
+            producerID: req.body.producerID,
+            priceIn: req.body.priceIn,
+            priceOut: req.body.priceOut,
+            productStatus: req.body.productStatus,
+          })
+          .then(function () {
+            res.redirect("/admin_product");
+          });
+        }
+      }
     });
   } else {
     req.session.back = "/admin_home";
