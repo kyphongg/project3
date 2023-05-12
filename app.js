@@ -155,27 +155,33 @@ app.get("/logout", function (req, res) {
 //Trang chủ
 app.get("/", async (req, res) => {
   if (req.session.daDangNhap) {
-  await Product.find()
-  .populate('categoryID')
-  .populate('producerID')
-  .then(async data => {
-    await Product.find({productStatus:0})
+    await Product.find()
     .populate('categoryID')
     .populate('producerID')
-    .then(test => {
-      res.render("layouts/clients/home", {
-        fullname: req.session.fullname,
-        id: req.session.id,
-        sID: req.session.sessionID,
-        danhsach: data,
-        noibat: test,
-        VND
+    .then(async data =>  {
+     await Product.find({productStatus:0})
+      .populate('categoryID')
+      .populate('producerID')
+      .then(async noibat => {
+        await Product.find({productStatus:1})
+        .populate('categoryID')
+        .populate('producerID')
+        .then(async moi => {
+          res.render("layouts/clients/home", {
+            fullname: req.session.fullname,
+            id: req.session.id,
+            sID: req.session.sessionID,
+            danhsach: data,
+            noibat: noibat,
+            moi: moi,
+            VND
+            });
         });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
   } else {
     await Product.find()
     .populate('categoryID')
@@ -426,6 +432,43 @@ app.get("/success", (req, res) => {
   });
 });
 
+//Trang tất cả các sản phẩm
+app.get("/all_product", async (req, res) => {
+  if (req.session.daDangNhap) {
+    await Product.find({$or:[{productStatus:0},{productStatus:1}]})
+    .populate('categoryID')
+    .populate('producerID')
+    .then(async data =>  {
+          res.render("layouts/clients/all_product", {
+            fullname: req.session.fullname,
+            id: req.session.id,
+            sID: req.session.sessionID,
+            danhsach: data,
+            VND
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  } else {
+    await Product.find({$or:[{productStatus:0},{productStatus:1}]})
+    .populate('categoryID')
+    .populate('producerID')
+    .then(async data =>  {
+          res.render("layouts/clients/all_product", {
+            fullname: 1,
+            id: 1,
+            sID: req.session.sessionID,
+            danhsach: data,
+            VND
+            });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+});
+
 //Trang chi tiết sản phẩm
 app.get("/product", (req, res) => {
   res.render("layouts/clients/product", {
@@ -437,6 +480,7 @@ app.get("/product", (req, res) => {
 app.get("/category", (req, res) => {
   res.render("layouts/clients/category", {
     nhanvat: 1,
+    id: 1,
   });
 });
 
