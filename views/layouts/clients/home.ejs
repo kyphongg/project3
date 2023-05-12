@@ -83,16 +83,16 @@
                 <p style="font-style: italic;font-size: 14px;">Danh sách những sản phẩm theo xu hướng mà có thể bạn sẽ thích</p>
             </div>
                 <ul class="autoWidth" class="cs-hidden">
-                    <% for(let i=0; i < danhsach.length; i++) { %>
+                    <% for(let i=0; i < noibat.length; i++) { %>
                             <li class="item-a">
                                 <div class="featured-box">
                                     <a href="/product">
-                                        <img src="images/<%= danhsach[i].productImage %>" height="100" width="100" alt="">
+                                        <img src="images/<%= noibat[i].productImage %>" height="100" width="100" alt="">
                                         <div class="p-title">
-                                            <p><%= danhsach[i].productName %></p>
+                                            <p><%= noibat[i].productName %></p>
                                         </div>
                                         <div class="price">
-                                            <p><%= VND.format(danhsach[i].priceOut) %></p>
+                                            <p><%= VND.format(noibat[i].priceOut) %></p>
                                         </div>
                                     </a>
                                 </div>
@@ -109,84 +109,21 @@
             </div>
 
             <ul class="autoWidth" class="cs-hidden">
+                <% for(let i=0; i < moi.length; i++) { %>
                 <li class="item-a">
                     <div class="featured-box">
                         <a href="/product">
-                            <img src="images/ps5(sp2).jpg" height="100" width="100" alt="">
+                            <img src="images/<%= moi[i].productImage %>" height="100" width="100" alt="">
                             <div class="p-title">
-                                <p>God of War: Ragnorok</p>
+                                <p><%= moi[i].productName %></p>
                             </div>
                             <div class="price">
-                                <p>380.000 VNĐ</p>
+                                <p><%= VND.format(moi[i].priceOut) %></p>
                             </div>
                         </a>
                     </div>
                 </li>
-                <li class="item-a">
-                    <div class="featured-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp2).jpg" height="100" width="100" alt="">
-                            <div class="p-title">
-                                <p>God of War: Ragnorok</p>
-                            </div>
-                            <div class="price">
-                                <p>380.000 VNĐ</p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-                <li class="item-a">
-                    <div class="featured-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp2).jpg" height="100" width="100" alt="">
-                            <div class="p-title">
-                                <p>God of War: Ragnorok</p>
-                            </div>
-                            <div class="price">
-                                <p>380.000 VNĐ</p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-                <li class="item-a">
-                    <div class="featured-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp2).jpg" height="100" width="100" alt="">
-                            <div class="p-title">
-                                <p>God of War: Ragnorok</p>
-                            </div>
-                            <div class="price">
-                                <p>380.000 VNĐ</p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-                <li class="item-a">
-                    <div class="featured-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp2).jpg" height="100" width="100" alt="">
-                            <div class="p-title">
-                                <p>God of War: Ragnorok</p>
-                            </div>
-                            <div class="price">
-                                <p>380.000 VNĐ</p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
-                <li class="item-a">
-                    <div class="featured-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp2).jpg" height="100" width="100" alt="">
-                            <div class="p-title">
-                                <p>God of War: Ragnorok</p>
-                            </div>
-                            <div class="price">
-                                <p>380.000 VNĐ</p>
-                            </div>
-                        </a>
-                    </div>
-                </li>
+                <% } %>
             </ul>
         </div>
     </div>
