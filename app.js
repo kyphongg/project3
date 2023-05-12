@@ -153,21 +153,43 @@ app.get("/logout", function (req, res) {
 });
 
 //Trang chủ
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   if (req.session.daDangNhap) {
+  await Product.find()
+  .populate('categoryID')
+  .populate('producerID')
+  .then(data => {
     res.render("layouts/clients/home", {
       fullname: req.session.fullname,
       id: req.session.id,
       sID: req.session.sessionID,
-    });
+      danhsach: data,
+      VND
+      });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
   } else {
+  await Product.find()
+  .populate('categoryID')
+  .populate('producerID')
+  .then(data => {
+    console.log(data);
     res.render("layouts/clients/home", {
       fullname: 1,
       id: 1,
       sID: req.session.sessionID,
-    });
+      danhsach: data,
+      VND
+      });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
   }
 });
+
 
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
 app.get("/about", (req, res) => {
