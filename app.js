@@ -155,57 +155,33 @@ app.get("/logout", function (req, res) {
 //Trang chủ
 app.get("/", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Product.find()
+    await Product.find({$or:[{productStatus:0},{productStatus:1}]})
     .populate('categoryID')
     .populate('producerID')
     .then(async data =>  {
-     await Product.find({productStatus:0})
-      .populate('categoryID')
-      .populate('producerID')
-      .then(async noibat => {
-        await Product.find({productStatus:1})
-        .populate('categoryID')
-        .populate('producerID')
-        .then(async moi => {
-          res.render("layouts/clients/home", {
-            fullname: req.session.fullname,
-            id: req.session.id,
-            sID: req.session.sessionID,
-            danhsach: data,
-            noibat: noibat,
-            moi: moi,
+      res.render("layouts/clients/home", {
+        fullname: req.session.fullname,
+        id: req.session.id,
+        sID: req.session.sessionID,
+        danhsach: data,
             VND
-            });
-        });
-      });
-    })
+    });
+  })
     .catch((err) => {
       console.log(err);
     });
   } else {
-    await Product.find()
+    await Product.find({$or:[{productStatus:0},{productStatus:1}]})
     .populate('categoryID')
     .populate('producerID')
     .then(async data =>  {
-     await Product.find({productStatus:0})
-      .populate('categoryID')
-      .populate('producerID')
-      .then(async noibat => {
-        await Product.find({productStatus:1})
-        .populate('categoryID')
-        .populate('producerID')
-        .then(async moi => {
-          res.render("layouts/clients/home", {
-            fullname: 1,
-            id: 1,
-            sID: req.session.sessionID,
-            danhsach: data,
-            noibat: noibat,
-            moi: moi,
-            VND
-            });
+      res.render("layouts/clients/home", {
+        fullname: 1,
+        id: 1,
+        sID: req.session.sessionID,
+        danhsach: data,
+        VND
         });
-      });
     })
     .catch((err) => {
       console.log(err);

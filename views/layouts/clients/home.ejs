@@ -83,20 +83,22 @@
                 <p style="font-style: italic;font-size: 14px;">Danh sách những sản phẩm theo xu hướng mà có thể bạn sẽ thích</p>
             </div>
                 <ul class="autoWidth" class="cs-hidden">
-                    <% for(let i=0; i < noibat.length; i++) { %>
+                    <% for(let i=0; i < danhsach.length; i++) { %>
+                        <% if(danhsach[i].productStatus == 0){ %>
                             <li class="item-a">
                                 <div class="featured-box">
                                     <a href="/product">
-                                        <img src="images/<%= noibat[i].productImage %>" height="100" width="100" alt="">
+                                        <img src="images/<%= danhsach[i].productImage %>" height="100" width="100" alt="">
                                         <div class="p-title">
-                                            <p><%= noibat[i].productName %></p>
+                                            <p><%= danhsach[i].productName %></p>
                                         </div>
                                         <div class="price">
-                                            <p><%= VND.format(noibat[i].priceOut) %></p>
+                                            <p><%= VND.format(danhsach[i].priceOut) %></p>
                                         </div>
                                     </a>
                                 </div>
                             </li>
+                        <% } %>    
                     <% } %>
                 </ul>
         </div>
@@ -109,20 +111,22 @@
             </div>
 
             <ul class="autoWidth" class="cs-hidden">
-                <% for(let i=0; i < moi.length; i++) { %>
+                <% for(let i=0; i < danhsach.length; i++) { %>
+                    <% if(danhsach[i].productStatus == 1){ %>
                 <li class="item-a">
                     <div class="featured-box">
                         <a href="/product">
-                            <img src="images/<%= moi[i].productImage %>" height="100" width="100" alt="">
+                            <img src="images/<%= danhsach[i].productImage %>" height="100" width="100" alt="">
                             <div class="p-title">
-                                <p><%= moi[i].productName %></p>
+                                <p><%= danhsach[i].productName %></p>
                             </div>
                             <div class="price">
-                                <p><%= VND.format(moi[i].priceOut) %></p>
+                                <p><%= VND.format(danhsach[i].priceOut) %></p>
                             </div>
                         </a>
                     </div>
                 </li>
+                <% } %>
                 <% } %>
             </ul>
         </div>
