@@ -11,10 +11,11 @@ var Product = new Schema({
     productImage:{
         type: String
     },
-    categoryID:{
+    categoryID:[{
+        //Thử cho biến id{type: mongoose.Schema.Types.ObjectId,}
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
-    },
+    }],
     producerID:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Producer'

@@ -689,11 +689,11 @@ app.get("/delete_producers/:id", function (req, res) {
 //Trang sản phẩm
 app.get("/admin_product", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Product.find()
+  await Product.find()
     .populate('categoryID')
     .populate('producerID')
     .then(data => {
-      console.log(data);
+      console.log(data)
       res.render("layouts/servers/product/product", {
         fullname: req.session.fullname,
         id: req.session.admin_id,
@@ -741,6 +741,7 @@ app.post("/save_product", (req, res) => {
           priceOut: req.body.priceOut,
           productStatus: req.body.productStatus,
         });
+        console.log(product);
         product.save().then(function () {
           res.redirect("/admin_product");
         });
