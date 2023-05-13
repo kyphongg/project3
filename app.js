@@ -693,6 +693,7 @@ app.get("/admin_product", async (req, res) => {
     .populate('categoryID')
     .populate('producerID')
     .then(data => {
+      console.log(data);
       res.render("layouts/servers/product/product", {
         fullname: req.session.fullname,
         id: req.session.admin_id,

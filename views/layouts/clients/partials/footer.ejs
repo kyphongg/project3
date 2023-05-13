@@ -30,10 +30,17 @@
     </div>
 </footer>
 
-
 <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightslider/1.1.6/js/lightslider.min.js" integrity="sha512-Gfrxsz93rxFuB7KSYlln3wFqBaXUc1jtt3dGCp+2jTb563qYvnUBM/GP2ZUtRC27STN/zUamFtVFAIsRFoT6/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="js/alert.js"></script>
+<script src="js/multi-select-tag.js"></script>
+<script>
+    new MultiSelectTag('categories',{ // id
+        rounded: true,
+        shadow: true
+    })  
+</script>
+
 <script>
     $(document).ready(function () {
         $('.autoWidth').lightSlider({
