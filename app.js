@@ -50,6 +50,7 @@ const User = require("./models/user.js");
 const Category = require("./models/category.js");
 const Producer = require("./models/producer.js");
 const Product = require("./models/product.js");
+const Warehouse = require("./models/warehouse.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -1079,11 +1080,22 @@ app.get("/cancel_orders", (req, res) => {
 });
 
 //Trang nhập kho
-app.get("/warehouse", (req, res) => {
+app.get("/warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/warehouse/warehouse", {
-      fullname: req.session.fullname,
-      id: req.session.admin_id,
+    await Warehouse.find()
+    .populate('productID')
+    .populate('created_by')
+    .then(data => {
+      console.log(data);
+      res.render("layouts/servers/warehouse/warehouse", {
+        fullname: req.session.fullname,
+        id: req.session.admin_id,
+        danhsach: data,
+        VND
+        }); 
+    })
+    .catch((err) => {
+      console.log(err);
     });
   } else {
     req.session.back = "/admin_home";
@@ -1091,11 +1103,17 @@ app.get("/warehouse", (req, res) => {
   }
 });
 
-app.get("/add_warehouse", (req, res) => {
+app.get("/add_warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/warehouse/add_warehouse", {
-      fullname: req.session.fullname,
-      id: req.session.admin_id,
+    await Product.find()
+    .populate('categoryID')
+    .populate('producerID')
+    .then(data => {
+      res.render("layouts/servers/warehouse/add_warehouse", {
+        fullname: req.session.fullname,
+        id: req.session.admin_id,
+        danhsach: data,
+      });
     });
   } else {
     req.session.back = "/admin_home";
@@ -1103,17 +1121,34 @@ app.get("/add_warehouse", (req, res) => {
   }
 });
 
-app.get("/edit_warehouse", (req, res) => {
+app.post("/save_warehouse", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/warehouse/edit_warehouse", {
-      fullname: req.session.fullname,
-      id: req.session.admin_id,
+    var warehouse = Warehouse({
+      productID: req.body.productID,
+      quantityIn: req.body.quantityIn,
+      created_by: req.session.admin_id,
+      created_date: dateVietNam,
+    });
+    warehouse.save().then(function () {
+      res.redirect("/warehouse");
     });
   } else {
     req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
+
+// app.get("/edit_warehouse/:id", (req, res) => {
+//   if (req.session.daDangNhap) {
+//     res.render("layouts/servers/warehouse/edit_warehouse", {
+//       fullname: req.session.fullname,
+//       id: req.session.admin_id,
+//     });
+//   } else {
+//     req.session.back = "/admin_home";
+//     res.redirect("/admin_login");
+//   }
+// });
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

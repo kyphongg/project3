@@ -14,7 +14,6 @@ var Product = new Schema({
         type: String
     },
     categoryID:[{
-        //Thử cho biến id{type: mongoose.Schema.Types.ObjectId,}
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     }],
@@ -30,7 +29,7 @@ var Product = new Schema({
     },
     productStatus:{
         type: Number
-    }, 
+    },
     created_date:{
         type: String
     },
