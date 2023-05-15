@@ -73,14 +73,18 @@
                     <input name="product_id_hidden" type="hidden" value="">
                 </div>
                 <div class="btn-box">
-                <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
-                 <div class="alert hide">
-                    <span class="fas fa-exclamation-circle"></span>
-                    <span class="msg">Thêm vào giỏ hàng thành công!</span>
-                    <span class="close-btnn">
-                        <span class="fas fa-times"></span>
-                    </span>
-                </div>
+                    <% if(fullname==1){ %>
+                        <button type="text" class="cart-btn"><a href="/login" style="text-decoration: none; color:white"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</a></button>
+                    <% }else{ %>
+                        <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
+                        <div class="alert hide">
+                            <span class="fas fa-exclamation-circle"></span>
+                            <span class="msg">Thêm vào giỏ hàng thành công!</span>
+                            <span class="close-btnn">
+                                <span class="fas fa-times"></span>
+                            </span>
+                        </div>
+                    <% } %>
                 </div>
             </div>
             
