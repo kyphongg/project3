@@ -450,14 +450,70 @@ app.get("/all_product", async (req, res) => {
 });
 
 //Trang chi tiết sản phẩm
-app.get("/product", (req, res) => {
-  res.render("layouts/clients/product", {
-    nhanvat: 1,
-  });
+app.get("/product/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    await Product.findById({ _id: req.params.id })
+      .populate("categoryID")
+      .populate("producerID")
+      .then((data) => {
+        res.render("layouts/clients/product", {
+          fullname: req.session.fullname,
+          id: req.session.id,
+          sID: req.session.sessionID,
+          danhsach: data,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+  } else {
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+      {$match:{_id: new mongoose.Types.ObjectId(req.params.id)}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+
+    ])
+      .then((data) => {
+        console.log(data);
+        res.render("layouts/clients/product", {
+          fullname: 1,
+          id: 1,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+  }
 });
 
 //Trang category
-app.get("/category", (req, res) => {
+app.get("/category/:id", (req, res) => {
   res.render("layouts/clients/category", {
     nhanvat: 1,
     id: 1,

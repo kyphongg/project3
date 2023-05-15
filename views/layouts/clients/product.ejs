@@ -4,57 +4,72 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title>Sản phẩm</title>
     <%- include('partials/head') %>
 </head>
 <body>
     <%- include('partials/header') %>
-    
+    <% for(let i=0; i < danhsach.length; i++) { %>
+        <% danhsach[i].productList.forEach(function(id) { %>
     <div class="product-box">
         <div class="p-left">
             <div class="big-img">
-                <img src="images/ps5(sp2).jpg" style="text-align: center" height="300px"
+                <img src="/images/<%= id.productImage %>" style="text-align: center" height="300px"
                      width="100px" alt="">
             </div>
         </div>
 
         <div class="p-right">
             <div class="url">
-                <a href="/home">Trang chủ</a> > <a
-                    href="/category">Nhập vai</a>
+                <a href="/home">Trang chủ</a> >
+                <% danhsach[i].categoryList.forEach(function(id) { %>
+                    <a href="/category/<%= id._id %>"><%= id.categoryName %>&nbsp/</a>
+                <% }); %>
             </div>
-            <div class="pname"> God of War: Ragnarok
+            <div class="pname"> 
+                <%= id.productName %>
+                
                 <div class="p-favorite">
                     <i class="fa-regular fa-heart"></i>
                 </div>
             </div>
-            <div class="pid">
+            <!-- <div class="pid">
                 <p style="font-weight: bold">Mã sản phẩm: &nbsp</p>
                 <p>abc</p>
-            </div>
+            </div> -->
             <div class="pstatus">
                 <p style="font-weight: bold">Tình trạng: &nbsp</p>
+                    <% if(danhsach[i].total <= 0 ){ %>
+                    <p>Hết Hàng</p>
+                    <% }else{ %>
                     <p>Còn Hàng</p>
+                    <% } %>
             </div>
             <div class="pid">
                 <p style="font-weight: bold">Số lượng: &nbsp</p>
-                <p>10</p>
+                <p><%= danhsach[i].total %></p>
             </div>
             <div class="pcategory">
                 <p style="font-weight: bold">Thể loại: &nbsp</p>
-                <p>Nhập vai</p>
+                <% danhsach[i].categoryList.forEach(function(id) { %>
+                <p><%= id.categoryName %>&nbsp</p>
+                <% }); %>
             </div>
             <div class="pproducer">
                 <p style="font-weight: bold">Nhà sản xuất: &nbsp</p>
-                <p>PS5</p>
+                <% danhsach[i].producerList.forEach(function(id) { %>
+                <p><%= id.producerName %>&nbsp</p>
+                <% }); %>
             </div>
-            <div class="p-price">55.000 VNĐ</div>
+            <div class="p-price">
+                <%= VND.format(id.priceOut) %>
+                </div>
 
             <form>
             
                 <div class="quantity">
                     <p>Số lượng :</p>
-                    <input name="quantity" type="number" min="1" max="25" value="1">
+                    <input name="quantity" type="number" min="1" max="<%= danhsach[i].total %>" value="1">
                     <input name="product_id_hidden" type="hidden" value="">
                 </div>
                 <div class="btn-box">
@@ -80,7 +95,7 @@
             </div>
 
             <div class="col-8 p-info">
-                <p>Chi tiết sản phẩm</p>
+                <%- id.productDescription %>
             </div>
         </div>
     </div>
@@ -101,7 +116,8 @@
             </form> -->
         </div>
     </div>
-    
+    <% }); %>
+    <% } %>
      <%- include('partials/footer') %>
 </body>
 </html>

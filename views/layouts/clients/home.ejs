@@ -87,7 +87,7 @@
                         <% if(danhsach[i].productStatus == 0){ %>
                             <li class="item-a">
                                 <div class="featured-box">
-                                    <a href="/product">
+                                    <a href="/product/<%= danhsach[i].id %>">
                                         <img src="images/<%= danhsach[i].productImage %>" height="100" width="100" alt="">
                                         <div class="p-title">
                                             <p><%= danhsach[i].productName %></p>
