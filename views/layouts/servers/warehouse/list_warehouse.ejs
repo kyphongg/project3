@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Kho</title>
+    <title>Dữ liệu nhập</title>
     <%- include('../partials/head') %>
 </head>
 <body>
@@ -18,8 +18,8 @@
         <section class="wrapper">
             <div class="table-agile-info">
                 <h3>Kho</h3>
-                <a href="/add_warehouse">
-                    <button class="btn btn-primary"><i class="fa-solid fa-plus"></i>  Nhập sản phẩm</button>
+                <a href="/warehouse">
+                    <button class="btn btn-primary">Kho</button>
                 </a>
                 <div class="panel panel-default">
                     <div class="table-responsive">
@@ -28,29 +28,19 @@
                             <tr>
                                 <th style="text-align: center; width: 45px;">STT</th>
                                 <th style="text-align: center;">Game</th>
-                                <th style="text-align: center;">Số lượng trong kho</th>
-                                <th style="text-align: center;">Lịch sử nhập</th>
-                                
+                                <th style="text-align: center;">Số lượng nhập</th>
+                                <th style="text-align: center;">Người nhập</th>
+                                <th style="text-align: center;">Ngày nhập</th>
                             </tr>
                             </thead>
                             <tbody>
-                                <% for(let i=0; i < danhsach.length; i++) { %>
+                            <% for(let i=0; i < danhsach.length; i++) { %>
                             <tr>
-                                <td style="text-align: center;"><%= i+1  %></td>
-                                <td style="text-align: center;">
-                                    <% danhsach[i].productList.forEach(function(id) { %>
-                                        <%= id.productName %>
-                                        <% }); %>
-                                </td>
-                                <td style="text-align: center;"><%= danhsach[i].total %></td>  
-                                <td style="text-align: center">
-                                    <a href="/list_warehouse/<%= danhsach[i]._id  %>" class="active" ui-toggle-class="">
-                                      <i
-                                        class="fa-solid fa-square-pen"
-                                        style="font-size: 25px; color: #5cb85c"
-                                      ></i>
-                                    </a>
-                                  </td>
+                                <td style="text-align: center;"><%= i+1 %></td>
+                                <td><%= danhsach[i].productID.productName %></td>
+                                <td style="text-align: center;"><%= danhsach[i].quantityIn %></td>
+                                <td style="text-align: center;"><%= danhsach[i].created_by.fullname %></td>
+                                <td style="text-align: center;"><%= danhsach[i].created_date %></td>
                             </tr>
                             <% } %>
                             </tbody>

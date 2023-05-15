@@ -8,8 +8,10 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
 const moment = require("moment-timezone");
 
-const dateVietNam = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY hh:mm");
-console.log(dateVietNam)
+const dateVietNam = moment
+  .tz(Date.now(), "Asia/Ho_Chi_Minh")
+  .format("DD/MM/YYYY hh:mm");
+console.log(dateVietNam);
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -26,14 +28,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Money format
-const VND = new Intl.NumberFormat('vi-VN', {
-  style: 'currency',
-  currency: 'VND',
+const VND = new Intl.NumberFormat("vi-VN", {
+  style: "currency",
+  currency: "VND",
 });
 
 //Mongodb
 const mongoose = require("mongoose");
-const mongoClient = require('mongodb').MongoClient;
+const mongoClient = require("mongodb").MongoClient;
 mongoose
   .connect(
     "mongodb+srv://lam:WBz1E8R60tx79jBO@cluster0.19fbi9g.mongodb.net/?retryWrites=true&w=majority",
@@ -72,7 +74,7 @@ var upload = multer({
     if (
       file.mimetype == "image/bmp" ||
       file.mimetype == "image/png" ||
-      file.mimetype == "image/jpeg"||
+      file.mimetype == "image/jpeg" ||
       file.mimetype == "image/jpg" ||
       file.mimetype == "image/gif"
     ) {
@@ -158,40 +160,39 @@ app.get("/logout", function (req, res) {
 //Trang chủ
 app.get("/", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Product.find({$or:[{productStatus:0},{productStatus:1}]})
-    .populate('categoryID')
-    .populate('producerID')
-    .then(async data =>  {
-      res.render("layouts/clients/home", {
-        fullname: req.session.fullname,
-        id: req.session.id,
-        sID: req.session.sessionID,
-        danhsach: data,
-            VND
-    });
-  })
-    .catch((err) => {
-      console.log(err);
-    });
-  } else {
-    await Product.find({$or:[{productStatus:0},{productStatus:1}]})
-    .populate('categoryID')
-    .populate('producerID')
-    .then(async data =>  {
-      res.render("layouts/clients/home", {
-        fullname: 1,
-        id: 1,
-        sID: req.session.sessionID,
-        danhsach: data,
-        VND
+    await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
+      .populate("categoryID")
+      .populate("producerID")
+      .then(async (data) => {
+        res.render("layouts/clients/home", {
+          fullname: req.session.fullname,
+          id: req.session.id,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
         });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
+      .populate("categoryID")
+      .populate("producerID")
+      .then(async (data) => {
+        res.render("layouts/clients/home", {
+          fullname: 1,
+          id: 1,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 });
-
 
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
 app.get("/about", (req, res) => {
@@ -414,37 +415,37 @@ app.get("/success", (req, res) => {
 //Trang tất cả các sản phẩm
 app.get("/all_product", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Product.find({$or:[{productStatus:0},{productStatus:1}]})
-    .populate('categoryID')
-    .populate('producerID')
-    .then(async data =>  {
-          res.render("layouts/clients/all_product", {
-            fullname: req.session.fullname,
-            id: req.session.id,
-            sID: req.session.sessionID,
-            danhsach: data,
-            VND
+    await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
+      .populate("categoryID")
+      .populate("producerID")
+      .then(async (data) => {
+        res.render("layouts/clients/all_product", {
+          fullname: req.session.fullname,
+          id: req.session.id,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
   } else {
-    await Product.find({$or:[{productStatus:0},{productStatus:1}]})
-    .populate('categoryID')
-    .populate('producerID')
-    .then(async data =>  {
-          res.render("layouts/clients/all_product", {
-            fullname: 1,
-            id: 1,
-            sID: req.session.sessionID,
-            danhsach: data,
-            VND
-            });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
+      .populate("categoryID")
+      .populate("producerID")
+      .then(async (data) => {
+        res.render("layouts/clients/all_product", {
+          fullname: 1,
+          id: 1,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 });
 
@@ -692,20 +693,20 @@ app.get("/delete_producers/:id", function (req, res) {
 //Trang sản phẩm
 app.get("/admin_product", async (req, res) => {
   if (req.session.daDangNhap) {
-  await Product.find()
-    .populate('categoryID')
-    .populate('producerID')
-    .then(data => {
-      res.render("layouts/servers/product/product", {
-        fullname: req.session.fullname,
-        id: req.session.admin_id,
-        danhsach: data,
-        VND
-        }); 
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    await Product.find()
+      .populate("categoryID")
+      .populate("producerID")
+      .then((data) => {
+        res.render("layouts/servers/product/product", {
+          fullname: req.session.fullname,
+          id: req.session.admin_id,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } else {
     req.session.back = "/admin_home";
     res.redirect("/admin_login");
@@ -717,7 +718,7 @@ app.get("/add_product", (req, res) => {
     res.render("layouts/servers/product/add_product", {
       fullname: req.session.fullname,
       id: req.session.admin_id,
-      VND
+      VND,
     });
   } else {
     req.session.back = "/admin_home";
@@ -727,12 +728,12 @@ app.get("/add_product", (req, res) => {
 
 app.post("/save_product", (req, res) => {
   if (req.session.daDangNhap) {
-    upload(req, res, function(err){
-      if(err instanceof multer.MulterError){
+    upload(req, res, function (err) {
+      if (err instanceof multer.MulterError) {
         console.log("Lỗi Multer khi upload ảnh");
-      } else if (err){
+      } else if (err) {
         console.log("Lỗi bất ngờ xảy ra: " + err);
-      }else{
+      } else {
         var product = Product({
           productName: req.body.productName,
           productDescription: req.body.productDescription,
@@ -761,19 +762,19 @@ app.post("/save_product", (req, res) => {
 app.get("/edit_product/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     await Product.findById(req.params.id)
-    .populate('categoryID')
-    .populate('producerID')
-    .then(data => {
-      res.render("layouts/servers/product/edit_product", {
-        fullname: req.session.fullname,
-        id: req.session.admin_id,
-        danhsach: data,
-        VND
+      .populate("categoryID")
+      .populate("producerID")
+      .then((data) => {
+        res.render("layouts/servers/product/edit_product", {
+          fullname: req.session.fullname,
+          id: req.session.admin_id,
+          danhsach: data,
+          VND,
         });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } else {
     req.session.back = "/admin_home";
     res.redirect("/admin_login");
@@ -782,36 +783,14 @@ app.get("/edit_product/:id", async (req, res) => {
 
 app.post("/edit_product_save", (req, res) => {
   if (req.session.daDangNhap) {
-    upload(req, res, function(err){
+    upload(req, res, function (err) {
       //Không chọn file mới
-      if(!req.file){
-        Product.updateOne({_id:req.body.productId},
+      if (!req.file) {
+        Product.updateOne(
+          { _id: req.body.productId },
           {
-          productName: req.body.productName,
-          productDescription: req.body.productDescription,
-          categoryID: req.body.categoryID,
-          producerID: req.body.producerID,
-          priceIn: req.body.priceIn,
-          priceOut: req.body.priceOut,
-          productStatus: req.body.productStatus,
-          updated_by: req.session.fullname,
-          updated_date: dateVietNam,
-        })
-        .then(function () {
-          res.redirect("/admin_product");
-        });
-      // Chọn file mới
-      } else{
-        if(err instanceof multer.MulterError){
-          console.log("Lỗi Multer khi upload ảnh");
-        } else if (err){
-          console.log("Lỗi bất ngờ xảy ra: " + err);
-        }else{
-          Product.updateOne({_id:req.body.productId},
-            {
             productName: req.body.productName,
             productDescription: req.body.productDescription,
-            productImage: req.file.filename,
             categoryID: req.body.categoryID,
             producerID: req.body.producerID,
             priceIn: req.body.priceIn,
@@ -819,8 +798,32 @@ app.post("/edit_product_save", (req, res) => {
             productStatus: req.body.productStatus,
             updated_by: req.session.fullname,
             updated_date: dateVietNam,
-          })
-          .then(function () {
+          }
+        ).then(function () {
+          res.redirect("/admin_product");
+        });
+        // Chọn file mới
+      } else {
+        if (err instanceof multer.MulterError) {
+          console.log("Lỗi Multer khi upload ảnh");
+        } else if (err) {
+          console.log("Lỗi bất ngờ xảy ra: " + err);
+        } else {
+          Product.updateOne(
+            { _id: req.body.productId },
+            {
+              productName: req.body.productName,
+              productDescription: req.body.productDescription,
+              productImage: req.file.filename,
+              categoryID: req.body.categoryID,
+              producerID: req.body.producerID,
+              priceIn: req.body.priceIn,
+              priceOut: req.body.priceOut,
+              productStatus: req.body.productStatus,
+              updated_by: req.session.fullname,
+              updated_date: dateVietNam,
+            }
+          ).then(function () {
             res.redirect("/admin_product");
           });
         }
@@ -1079,24 +1082,53 @@ app.get("/cancel_orders", (req, res) => {
   }
 });
 
-//Trang nhập kho
+//Trang kho
 app.get("/warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Warehouse.find()
-    .populate('productID')
-    .populate('created_by')
-    .then(data => {
+  Warehouse.aggregate([
+    {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+  ])
+    .then(async data => {
       console.log(data);
-      res.render("layouts/servers/warehouse/warehouse", {
-        fullname: req.session.fullname,
-        id: req.session.admin_id,
-        danhsach: data,
-        VND
-        }); 
-    })
-    .catch((err) => {
+        res.render("layouts/servers/warehouse/warehouse", {
+          fullname: req.session.fullname,
+          id: req.session.admin_id,
+          danhsach: data,
+          VND,
+        });
+    }).catch((err) => {
       console.log(err);
     });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/list_warehouse/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    await Warehouse.find({ productID: req.params.id })
+      .populate("productID")
+      .populate("created_by")
+      .then((data) => {
+        res.render("layouts/servers/warehouse/list_warehouse", {
+          fullname: req.session.fullname,
+          id: req.session.admin_id,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } else {
     req.session.back = "/admin_home";
     res.redirect("/admin_login");
@@ -1106,15 +1138,15 @@ app.get("/warehouse", async (req, res) => {
 app.get("/add_warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
     await Product.find()
-    .populate('categoryID')
-    .populate('producerID')
-    .then(data => {
-      res.render("layouts/servers/warehouse/add_warehouse", {
-        fullname: req.session.fullname,
-        id: req.session.admin_id,
-        danhsach: data,
+      .populate("categoryID")
+      .populate("producerID")
+      .then((data) => {
+        res.render("layouts/servers/warehouse/add_warehouse", {
+          fullname: req.session.fullname,
+          id: req.session.admin_id,
+          danhsach: data,
+        });
       });
-    });
   } else {
     req.session.back = "/admin_home";
     res.redirect("/admin_login");
