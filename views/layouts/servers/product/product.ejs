@@ -41,10 +41,6 @@
                     <th style="text-align: center; width: 150px">Giá nhập</th>
                     <th style="text-align: center; width: 150px">Giá bán</th>
                     <th style="text-align: center; width: 180px">Trạng thái</th>
-                    <th style="text-align: center; width: 180px">Người nhập</th>
-                    <th style="text-align: center; width: 180px">Ngày nhập</th>
-                    <th style="text-align: center; width: 180px">Người sửa</th>
-                    <th style="text-align: center; width: 180px">Ngày sửa</th>
                     <th style="text-align: center; width: 170px">Tùy biến</th>
                   </tr>
                 </thead>
@@ -96,10 +92,6 @@
                       <% }else if(danhsach[i].productStatus == 1){ %> Mới <% } else { %> Tắt <%
                       } %>
                     </td>
-                    <td style="text-align: center"><%= danhsach[i].created_by %></td>
-                    <td><%= danhsach[i].created_date %></td>
-                    <td style="text-align: center"><%= danhsach[i].updated_by %></td>
-                    <td><%= danhsach[i].updated_date %></td>
                     <td style="text-align: center">
                       <a href="/edit_product/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
                         <i
