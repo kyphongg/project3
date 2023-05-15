@@ -59,19 +59,7 @@
                     </td>
                     <td>
                     <% danhsach[i].categoryID.forEach(function(id) { %>
-                      <% if(id._id == '645c4d7b44e6642ff246597d'){ %>
-                        Hành động
-                        <% } else if(id._id == '645c54d3c72a21d65472d42b'){ %>
-                          Thể thao
-                        <% } else if(id._id == '645c554c5eca5bdb84a25d09'){ %>
-                          Chiến thuật
-                        <% } else if(id._id == '645c5a59cf52334165588922'){ %>
-                          Nhập vai
-                        <% } else if(id._id == '645c5a60cf52334165588925'){ %>
-                          Phiêu lưu
-                        <% } else if(id._id == '645c5a67cf52334165588928'){ %>
-                          Mô phỏng
-                        <% } %>
+                      <%= id.categoryName %> <br>
                       <% }); %>
                     </td>
                     <td style="text-align: center"><%= danhsach[i].producerID.producerName %></td>

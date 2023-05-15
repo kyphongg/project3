@@ -34,51 +34,16 @@
                             </div>
 
                             <div class="form-group">
-                                <label >Thể loại</label>
-                                <select name="categoryID" class="form-control m-bot15">
-                                    <% if(danhsach.categoryID._id == '645c4d7b44e6642ff246597d'){ %>
-                                        <option selected value="645c4d7b44e6642ff246597d">Hành động</option>
-                                        <option value="645c54d3c72a21d65472d42b">Thể thao</option>
-                                        <option value="645c554c5eca5bdb84a25d09">Chiến thuật</option>
-                                        <option value="645c5a59cf52334165588922">Nhập vai</option>
-                                        <option value="645c5a60cf52334165588925">Phiêu lưu</option>
-                                        <option value="645c5a67cf52334165588928">Mô phỏng</option>
-                                    <% }else if(danhsach.categoryID._id == '645c54d3c72a21d65472d42b'){ %>
-                                        <option selected value="645c54d3c72a21d65472d42b">Thể thao</option>
-                                        <option value="645c4d7b44e6642ff246597d">Hành động</option>
-                                        <option value="645c554c5eca5bdb84a25d09">Chiến thuật</option>
-                                        <option value="645c5a59cf52334165588922">Nhập vai</option>
-                                        <option value="645c5a60cf52334165588925">Phiêu lưu</option>
-                                        <option value="645c5a67cf52334165588928">Mô phỏng</option>  
-                                    <% }else if(danhsach.categoryID._id == '645c554c5eca5bdb84a25d09'){ %>
-                                        <option selected value="645c554c5eca5bdb84a25d09">Chiến thuật</option>
-                                        <option value="645c4d7b44e6642ff246597d">Hành động</option>
-                                        <option value="645c54d3c72a21d65472d42b">Thể thao</option>
-                                        <option value="645c5a59cf52334165588922">Nhập vai</option>
-                                        <option value="645c5a60cf52334165588925">Phiêu lưu</option>
-                                        <option value="645c5a67cf52334165588928">Mô phỏng</option>    
-                                    <% }else if(danhsach.categoryID._id == '645c5a59cf52334165588922'){ %>
-                                        <option selected value="645c5a59cf52334165588922">Nhập vai</option>
-                                        <option value="645c4d7b44e6642ff246597d">Hành động</option>
-                                        <option value="645c54d3c72a21d65472d42b">Thể thao</option>
-                                        <option value="645c554c5eca5bdb84a25d09">Chiến thuật</option>
-                                        <option value="645c5a60cf52334165588925">Phiêu lưu</option>
-                                        <option value="645c5a67cf52334165588928">Mô phỏng</option>
-                                    <% }else if(danhsach.categoryID._id == '645c5a60cf52334165588925'){ %>
-                                        <option selected value="645c5a60cf52334165588925">Phiêu lưu</option>
-                                        <option value="645c4d7b44e6642ff246597d">Hành động</option>
-                                        <option value="645c54d3c72a21d65472d42b">Thể thao</option>
-                                        <option value="645c554c5eca5bdb84a25d09">Chiến thuật</option>
-                                        <option value="645c5a59cf52334165588922">Nhập vai</option>
-                                        <option value="645c5a67cf52334165588928">Mô phỏng</option>
-                                    <% }else if(danhsach.categoryID._id == '645c5a67cf52334165588928'){ %>
-                                        <option selected value="645c5a67cf52334165588928">Mô phỏng</option>
-                                        <option value="645c4d7b44e6642ff246597d">Hành động</option>
-                                        <option value="645c54d3c72a21d65472d42b">Thể thao</option>
-                                        <option value="645c554c5eca5bdb84a25d09">Chiến thuật</option>
-                                        <option value="645c5a59cf52334165588922">Nhập vai</option>
-                                        <option value="645c5a60cf52334165588925">Phiêu lưu</option>
-                                    <% } %>
+                                <label >Thể loại: <% danhsach.categoryID.forEach(function(id) { %>
+                                    <%= id.categoryName %>
+                                    <% }); %></label>
+                                <select name="categoryID" class="form-control m-bot15" id="categories" multiple>
+                                    <option value="645c4d7b44e6642ff246597d">Hành Động</option>
+                                    <option value="645c54d3c72a21d65472d42b">Thể thao</option>
+                                    <option value="645c554c5eca5bdb84a25d09">Chiến thuật</option>
+                                    <option value="645c5a59cf52334165588922">Nhập vai</option>
+                                    <option value="645c5a60cf52334165588925">Phiêu lưu</option>
+                                    <option value="645c5a67cf52334165588928">Mô phỏng</option>
                                 </select>
                             </div>
 
