@@ -1097,7 +1097,6 @@ app.get("/warehouse", async (req, res) => {
     },
   ])
     .then(async data => {
-      console.log(data);
         res.render("layouts/servers/warehouse/warehouse", {
           fullname: req.session.fullname,
           id: req.session.admin_id,
