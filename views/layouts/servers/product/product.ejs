@@ -30,18 +30,22 @@
               <table id="myTable" class="table table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th style="width: 50px">STT</th>
+                    <th style="width: 20px">STT</th>
                     <th style="text-align: center; width: 240px">
                       Tên sản phẩm
                     </th>
-                    <th style="width: 50px">Hình ảnh</th>
+                    <th style="text-align: center; width: 20px">Hình ảnh</th>
                     <th style="text-align: center; width: 190px">Thể loại</th>
-                    <th style="width: 200px">Nhà sản xuất</th>
+                    <th style="text-align: center; width: 200px">Nhà sản xuất</th>
                     <th style="text-align: center; width: 220px">Mô tả</th>
                     <th style="text-align: center; width: 150px">Giá nhập</th>
                     <th style="text-align: center; width: 150px">Giá bán</th>
-                    <th style="width: 180px">Trạng thái</th>
-                    <th style="width: 170px">Tùy biến</th>
+                    <th style="text-align: center; width: 180px">Trạng thái</th>
+                    <th style="text-align: center; width: 180px">Người nhập</th>
+                    <th style="text-align: center; width: 180px">Ngày nhập</th>
+                    <th style="text-align: center; width: 180px">Người sửa</th>
+                    <th style="text-align: center; width: 180px">Ngày sửa</th>
+                    <th style="text-align: center; width: 170px">Tùy biến</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -92,6 +96,10 @@
                       <% }else if(danhsach[i].productStatus == 1){ %> Mới <% } else { %> Tắt <%
                       } %>
                     </td>
+                    <td style="text-align: center"><%= danhsach[i].created_by %></td>
+                    <td><%= danhsach[i].created_date %></td>
+                    <td style="text-align: center"><%= danhsach[i].updated_by %></td>
+                    <td><%= danhsach[i].updated_date %></td>
                     <td style="text-align: center">
                       <a href="/edit_product/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
                         <i

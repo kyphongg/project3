@@ -6,6 +6,10 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
+const moment = require("moment-timezone");
+
+const dateVietNam = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY hh:mm");
+console.log(dateVietNam)
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -64,7 +68,6 @@ var storage = multer.diskStorage({
 var upload = multer({
   storage: storage,
   fileFilter: function (req, file, cb) {
-    console.log(file);
     if (
       file.mimetype == "image/bmp" ||
       file.mimetype == "image/png" ||
@@ -738,8 +741,11 @@ app.post("/save_product", (req, res) => {
           priceIn: req.body.priceIn,
           priceOut: req.body.priceOut,
           productStatus: req.body.productStatus,
+          created_date: dateVietNam,
+          updated_date: dateVietNam,
+          created_by: req.session.fullname,
+          updated_by: req.session.fullname,
         });
-        console.log(product);
         product.save().then(function () {
           res.redirect("/admin_product");
         });
@@ -787,6 +793,8 @@ app.post("/edit_product_save", (req, res) => {
           priceIn: req.body.priceIn,
           priceOut: req.body.priceOut,
           productStatus: req.body.productStatus,
+          updated_by: req.session.fullname,
+          updated_date: dateVietNam,
         })
         .then(function () {
           res.redirect("/admin_product");
@@ -808,6 +816,8 @@ app.post("/edit_product_save", (req, res) => {
             priceIn: req.body.priceIn,
             priceOut: req.body.priceOut,
             productStatus: req.body.productStatus,
+            updated_by: req.session.fullname,
+            updated_date: dateVietNam,
           })
           .then(function () {
             res.redirect("/admin_product");
