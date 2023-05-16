@@ -534,8 +534,9 @@ app.get("/product/:id", async (req, res) => {
   }
 });
 
-//Trang category 
-app.get("/category/:id", (req, res) => {
+//Trang category
+//Hành động
+app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
   if (req.session.daDangNhap) {
     Warehouse.aggregate([
       {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
@@ -555,7 +556,7 @@ app.get("/category/:id", (req, res) => {
         as: "categoryList",
       }
     },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId(req.params.id)}},
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c4d7b44e6642ff246597d")}},
     {
       $lookup:{
         from: "producers",
@@ -566,7 +567,7 @@ app.get("/category/:id", (req, res) => {
     },
     ])
       .then((data) => {
-        res.render("layouts/clients/category", {
+        res.render("layouts/clients/hanhdong", {
           fullname: req.session.fullname,
           id: req.session.id,
           sID: req.session.sessionID,
@@ -596,7 +597,7 @@ app.get("/category/:id", (req, res) => {
         as: "categoryList",
       }
     },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId(req.params.id)}},
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c4d7b44e6642ff246597d")}},
     {
       $lookup:{
         from: "producers",
@@ -607,7 +608,437 @@ app.get("/category/:id", (req, res) => {
     },
     ])
     .then((data) => {
-      res.render("layouts/clients/category", {
+      res.render("layouts/clients/hanhdong", {
+        fullname: 1,
+        id: 1,
+        sID: req.session.sessionID,
+        danhsach: data,
+        VND,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+});
+
+//Phiêu lưu
+app.get("/category/645c5a60cf52334165588925", (req, res) => {
+  if (req.session.daDangNhap) {
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a60cf52334165588925")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+      .then((data) => {
+        res.render("layouts/clients/phieuluu", {
+          fullname: req.session.fullname,
+          id: req.session.id,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+  }
+  else{
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a60cf52334165588925")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+    .then((data) => {
+      res.render("layouts/clients/phieuluu", {
+        fullname: 1,
+        id: 1,
+        sID: req.session.sessionID,
+        danhsach: data,
+        VND,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+});
+
+//Thể thao
+app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
+  if (req.session.daDangNhap) {
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+      .then((data) => {
+        res.render("layouts/clients/thethao", {
+          fullname: req.session.fullname,
+          id: req.session.id,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+  }
+  else{
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+    .then((data) => {
+      res.render("layouts/clients/thethao", {
+        fullname: 1,
+        id: 1,
+        sID: req.session.sessionID,
+        danhsach: data,
+        VND,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+});
+
+//Chiến thuật
+app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
+  if (req.session.daDangNhap) {
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+      .then((data) => {
+        res.render("layouts/clients/chienthuat", {
+          fullname: req.session.fullname,
+          id: req.session.id,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+  }
+  else{
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+    .then((data) => {
+      res.render("layouts/clients/chienthuat", {
+        fullname: 1,
+        id: 1,
+        sID: req.session.sessionID,
+        danhsach: data,
+        VND,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+});
+
+//Nhập vai
+app.get("/category/645c5a59cf52334165588922", (req, res) => {
+  if (req.session.daDangNhap) {
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a59cf52334165588922")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+      .then((data) => {
+        res.render("layouts/clients/nhapvai", {
+          fullname: req.session.fullname,
+          id: req.session.id,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+  }
+  else{
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a59cf52334165588922")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+    .then((data) => {
+      res.render("layouts/clients/nhapvai", {
+        fullname: 1,
+        id: 1,
+        sID: req.session.sessionID,
+        danhsach: data,
+        VND,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+});
+
+//Mô phỏng
+app.get("/category/645c5a67cf52334165588928", (req, res) => {
+  if (req.session.daDangNhap) {
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a67cf52334165588928")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+      .then((data) => {
+        res.render("layouts/clients/mophong", {
+          fullname: req.session.fullname,
+          id: req.session.id,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+  }
+  else{
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a67cf52334165588928")}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+    .then((data) => {
+      res.render("layouts/clients/mophong", {
         fullname: 1,
         id: 1,
         sID: req.session.sessionID,

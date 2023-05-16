@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">          
+    <title>Thể thao</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <div class="container">
+        <div class="cart-p">
+            <div class="cart-heading">
+                <a href="/category/645c54d3c72a21d65472d42b" style="text-decoration: none; color:black"><h3>Thể thao</h3></a>      
+            </div>
+            <% for(let i=0; i < danhsach.length; i++) { %>
+                <% danhsach[i].productList.forEach(function(id) { %>
+        <div class="row row-cols-4">
+                <div class="col product">
+                    <div class="sp-box">
+                        <a href="/product/<%= id._id %>">
+                            <img src="/images/<%= id.productImage %>" style="text-align: center" height="300px" width="100px" alt="">
+                            <div class="p-title">
+                                <p><%= id.productName %></p>
+                            </div>
+                            <div class="price">
+                                <p><%= VND.format(id.priceOut) %></p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+        </div>
+        <% }); %>
+        <% } %>
+    </div>
+    
+     <%- include('partials/footer') %>
+</body>
+</html>
