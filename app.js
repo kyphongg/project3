@@ -53,6 +53,7 @@ const Category = require("./models/category.js");
 const Producer = require("./models/producer.js");
 const Product = require("./models/product.js");
 const Warehouse = require("./models/warehouse.js");
+const Coupon = require("./models/coupon.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -1749,6 +1750,101 @@ app.post("/save_warehouse", (req, res) => {
     });
     warehouse.save().then(function () {
       res.redirect("/warehouse");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+//Trang mã giảm giá
+app.get("/coupon", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await Coupon.find();
+    res.render("layouts/servers/coupon/coupon", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+      danhsach: data,
+      VND,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/add_coupon", async (req, res) => {
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/coupon/add_coupon", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/coupon_save", function (req, res) {
+  if (req.session.daDangNhap) {
+    var coupon = Coupon({
+      couponName: req.body.couponName,
+      couponCode: req.body.couponCode,
+      couponQuantity: req.body.couponQuantity,
+      couponType: req.body.couponType,
+      couponStatus: req.body.couponStatus,
+      start_date: req.body.start_date,
+      end_date: req.body.end_date,
+    });
+    coupon.save().then(function () {
+      res.redirect("/coupon");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/edit_coupon/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await Coupon.findById(req.params.id);
+    res.render("layouts/servers/coupon/edit_coupon", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+      danhsach: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/edit_coupon_save", async function (req, res) {
+  if (req.session.daDangNhap) {
+    Coupon.updateOne(
+      { _id: req.body.couponId },
+      {
+        couponName: req.body.couponName,
+        couponCode: req.body.couponCode,
+        couponQuantity: req.body.couponQuantity,
+        couponType: req.body.couponType,
+        couponStatus: req.body.couponStatus,
+        start_date: req.body.start_date,
+        end_date: req.body.end_date,
+      }
+    ).then(function () {
+      res.redirect("/coupon");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/delete_coupon/:id", function (req, res) {
+  if (req.session.daDangNhap) {
+    Coupon.deleteOne({ _id: req.params.id }).then(function () {
+      res.redirect("/coupon");
     });
   } else {
     req.session.back = "/admin_home";
