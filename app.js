@@ -534,12 +534,90 @@ app.get("/product/:id", async (req, res) => {
   }
 });
 
-//Trang category
+//Trang category 
 app.get("/category/:id", (req, res) => {
-  res.render("layouts/clients/category", {
-    nhanvat: 1,
-    id: 1,
-  });
+  if (req.session.daDangNhap) {
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId(req.params.id)}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+      .then((data) => {
+        res.render("layouts/clients/category", {
+          fullname: req.session.fullname,
+          id: req.session.id,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+  }
+  else{
+    Warehouse.aggregate([
+      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
+    {
+      $lookup: {
+        from: "products",
+        localField: "_id",
+        foreignField: "_id",
+        as: "productList",
+      },
+    },
+    {
+      $lookup:{
+        from: "categories",
+        localField: "productList.categoryID",
+        foreignField: "_id",
+        as: "categoryList",
+      }
+    },
+    {$match:{'productList.categoryID': new mongoose.Types.ObjectId(req.params.id)}},
+    {
+      $lookup:{
+        from: "producers",
+        localField: "productList.producerID",
+        foreignField: "_id",
+        as: "producerList",
+      }
+    },
+    ])
+    .then((data) => {
+      res.render("layouts/clients/category", {
+        fullname: 1,
+        id: 1,
+        sID: req.session.sessionID,
+        danhsach: data,
+        VND,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
 });
 
 //Servers

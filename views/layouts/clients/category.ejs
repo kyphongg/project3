@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">          
+    <title>Thể loại</title>
     <%- include('partials/head') %>
 </head>
 <body>
@@ -13,77 +13,27 @@
     <div class="container">
         <div class="cart-p">
             <div class="cart-heading">
-                    <h3>Nhập vai</h3>
+                <a href="/category/<%= id._id %>" style="text-decoration: none; color:black"><h3>Test</h3></a>      
             </div>
-    
+            <% for(let i=0; i < danhsach.length; i++) { %>
+                <% danhsach[i].productList.forEach(function(id) { %>
         <div class="row row-cols-4">
                 <div class="col product">
                     <div class="sp-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp1).jpg" style="text-align: center" height="300px" width="100px" alt="">
+                        <a href="/product/<%= id._id %>">
+                            <img src="/images/<%= id.productImage %>" style="text-align: center" height="300px" width="100px" alt="">
                             <div class="p-title">
-                                <p>God of War: Ragnarok</p>
+                                <p><%= id.productName %></p>
                             </div>
                             <div class="price">
-                                <p>55.000 VNĐ</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col product">
-                    <div class="sp-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp1).jpg" style="text-align: center" height="300px" width="100px" alt="">
-                            <div class="p-title">
-                                <p>God of War: Ragnarok</p>
-                            </div>
-                            <div class="price">
-                                <p>55.000 VNĐ</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col product">
-                    <div class="sp-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp1).jpg" style="text-align: center" height="300px" width="100px" alt="">
-                            <div class="p-title">
-                                <p>God of War: Ragnarok</p>
-                            </div>
-                            <div class="price">
-                                <p>55.000 VNĐ</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col product">
-                    <div class="sp-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp1).jpg" style="text-align: center" height="300px" width="100px" alt="">
-                            <div class="p-title">
-                                <p>God of War: Ragnarok</p>
-                            </div>
-                            <div class="price">
-                                <p>55.000 VNĐ</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col product">
-                    <div class="sp-box">
-                        <a href="/product">
-                            <img src="images/ps5(sp1).jpg" style="text-align: center" height="300px" width="100px" alt="">
-                            <div class="p-title">
-                                <p>God of War: Ragnarok</p>
-                            </div>
-                            <div class="price">
-                                <p>55.000 VNĐ</p>
+                                <p><%= VND.format(id.priceOut) %></p>
                             </div>
                         </a>
                     </div>
                 </div>
         </div>
-    
+        <% }); %>
+        <% } %>
     </div>
     
      <%- include('partials/footer') %>
