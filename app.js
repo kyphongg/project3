@@ -1422,7 +1422,7 @@ app.post("/edit_product_save", (req, res) => {
   }
 });
 
-//Trang danh sách khách hàng và (danh sách và thêm nhân viên)
+//Trang danh sách khách hàng 
 app.get("/customers", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await User.find();
@@ -1755,18 +1755,6 @@ app.post("/save_warehouse", (req, res) => {
     res.redirect("/admin_login");
   }
 });
-
-// app.get("/edit_warehouse/:id", (req, res) => {
-//   if (req.session.daDangNhap) {
-//     res.render("layouts/servers/warehouse/edit_warehouse", {
-//       fullname: req.session.fullname,
-//       id: req.session.admin_id,
-//     });
-//   } else {
-//     req.session.back = "/admin_home";
-//     res.redirect("/admin_login");
-//   }
-// });
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
