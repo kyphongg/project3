@@ -6,10 +6,18 @@ var Cart = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    productID:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
+    productList:[{
+        productID:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+        },
+        quantity:{
+            type: Number
+        },
     }],
+    status:{
+        type: Number
+    },
     username:{
         type: Number
     },  

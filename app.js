@@ -55,6 +55,7 @@ const Product = require("./models/product.js");
 const Warehouse = require("./models/warehouse.js");
 const Coupon = require("./models/coupon.js");
 const City = require("./models/city.js");
+const Cart = require("./models/cart.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -393,6 +394,40 @@ app.get("/cart/:id", (req, res) => {
       sID: req.session.sessionID,
     });
   } else {
+    res.render("layouts/clients/cart", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+    });
+  }
+});
+
+app.post("/cart_save/:id", (req, res) => {
+  if (req.session.daDangNhap) {
+    Cart.aggregate([
+      {$match:{
+        status:1,
+        userID: new mongoose.Types.ObjectId(req.body.user_id_hidden),
+      }}
+    ])
+    .then((data)=>{
+      Cart.updateOne(
+        { _id: data._id },
+        {
+          $push:{
+            productList:{
+              $each:[{
+                productID: req.body.product_id_hidden,
+                quantity: req.body.quantity,
+              }]
+            }
+        },
+        }
+      ).then(function () {
+        res.redirect("/cart/:id");
+      });
+    });
+  } else {
     res.render("layouts/clients/home", {
       fullname: 1,
       userid: 1,
@@ -482,7 +517,6 @@ app.get("/product/:id", async (req, res) => {
     },
     ])
       .then((data) => {
-        console.log(data);
         res.render("layouts/clients/product", {
           fullname: req.session.fullname,
           userid: req.session.userid,
@@ -1170,7 +1204,7 @@ app.get("/edit_categories/:id", async (req, res) => {
   }
 });
 
-app.post("/edit_categories_save", async function (req, res) {
+app.post("/edit_categories_save", async function (req, res) { 
   if (req.session.daDangNhap) {
     Category.updateOne(
       { _id: req.body.categoryId },

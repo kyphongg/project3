@@ -65,11 +65,13 @@
                 <%= VND.format(id.priceOut) %>
                 </div>
 
-            <form action="/cart_save/<%= userid %>">
+            <form action="/cart_save/<%= userid %>" method="post">
                 <div class="quantity">
                     <p>Số lượng :</p>
                     <input name="quantity" type="number" min="1" max="<%= danhsach[i].total %>" value="1">
-                    <input name="product_id_hidden" type="hidden" value="">
+                    <input name="product_id_hidden" type="hidden" value="<%= danhsach[i]._id %>">
+                    <input name="user_id_hidden" type="hidden" value="<%= userid %>">
+                    <input name="status" type="hidden" value="1">
                 </div>
                 
                 <div class="btn-box">
