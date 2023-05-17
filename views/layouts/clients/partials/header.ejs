@@ -11,47 +11,47 @@
         </form>
         <div class="icon">
             <img src="/images/user (2).png" alt="UserImage" onclick="toggleMenu()">
-            <% if(id == 1) {%>
+            <% if(userid == 1) {%>
                 <a href="/login"> Đăng nhập </a>
                 <% }else { %>
-                    <a href="/profile/<%= id %>">
+                    <a href="/profile/<%= userid %>">
                     <p> <%= fullname %> </p>
                     </a>
                 <% } %>
             <div class="sub-menu-wrap" id="subMenu">
                     <div class="sub-menu">
-                        <% if(id == 1) {%>
+                        <% if(userid == 1) {%>
                         <a href="/login" class="sub-menu-link">
                             <p>Quản lý tài khoản</p>
                         </a>
                         <% }else{ %>
-                            <a href="/profile/<%= id %>" class="sub-menu-link">
+                            <a href="/profile/<%= userid %>" class="sub-menu-link">
                                 <p>Quản lý tài khoản</p>
                             </a>
                             <% } %>
 
-                        <% if(id == 1) {%>
+                        <% if(userid == 1) {%>
                         <a href="/login" class="sub-menu-link">
                             <p>Lịch sử đơn hàng</p>
                         </a>
                         <% }else{ %>
-                            <a href="/orders/<%= id %>" class="sub-menu-link">
+                            <a href="/orders/<%= userid %>" class="sub-menu-link">
                                 <p>Lịch sử đơn hàng</p>
                             </a>
                             <% } %>
                         
-                        <% if(id == 1) {%>
+                        <% if(userid == 1) {%>
                         <a href="/login" class="sub-menu-link">
                                     <p>Mật khẩu</p>
                                 </a>
                                 <% }else{ %>
-                                    <a href="/password/<%= id %>" class="sub-menu-link">
+                                    <a href="/password/<%= userid %>" class="sub-menu-link">
                                         <p>Mật khẩu</p>
                                     </a>
                                     <% } %>
                              
                                     
-                                    <% if(id == 1) {%>
+                                    <% if(userid == 1) {%>
                                         <a href="/" class="sub-menu-link">
                                                     <p>Đăng xuất</p>
                                                 </a>
@@ -62,13 +62,13 @@
                                                     <% } %>            
                     </div>
                 </div>
-                <% if(id==1){ %>
+                <% if(userid==1){ %>
                     <a class="cart" href="/login">
                         <img src="/images/shopping-cart.png" alt="UserImage">
                         Giỏ hàng
                         </a>
                     <% }else { %>
-                <a class="cart" href="/cart/<%= id %>">
+                <a class="cart" href="/cart/<%= userid %>">
                 <img src="/images/shopping-cart.png" alt="UserImage">
                 Giỏ hàng
                 </a>

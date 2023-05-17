@@ -65,26 +65,30 @@
                 <%= VND.format(id.priceOut) %>
                 </div>
 
-            <form>
-            
+            <form action="/cart_save/<%= userid %>">
                 <div class="quantity">
                     <p>Số lượng :</p>
                     <input name="quantity" type="number" min="1" max="<%= danhsach[i].total %>" value="1">
                     <input name="product_id_hidden" type="hidden" value="">
                 </div>
+                
                 <div class="btn-box">
-                    <% if(fullname==1){ %>
-                        <button type="text" class="cart-btn"><a href="/login" style="text-decoration: none; color:white"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</a></button>
-                    <% }else{ %>
-                        <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
-                        <div class="alert hide">
-                            <span class="fas fa-exclamation-circle"></span>
-                            <span class="msg">Thêm vào giỏ hàng thành công!</span>
-                            <span class="close-btnn">
-                                <span class="fas fa-times"></span>
-                            </span>
-                        </div>
-                    <% } %>
+                    <% if(danhsach[i].total==0){ %>
+                        <button type="text" class="cart-btn" style="color:white">Liên hệ shop để đặt hàng</button>
+                        <% }else{ %>
+                            <% if(fullname==1){ %>
+                                <button type="text" class="cart-btn"><a href="/login" style="text-decoration: none; color:white"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</a></button>
+                                <% }else{ %>
+                                    <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
+                                    <div class="alert hide">
+                                        <span class="fas fa-exclamation-circle"></span>
+                                        <span class="msg">Thêm vào giỏ hàng thành công!</span>
+                                        <span class="close-btnn">
+                                            <span class="fas fa-times"></span>
+                                        </span>
+                                    </div>
+                                    <% } %>
+                            <% } %>
                 </div>
             </div>
             

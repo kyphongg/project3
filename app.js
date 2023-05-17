@@ -95,7 +95,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //Đăng nhập đăng ký tài khoản
 app.get("/login", (req, res) => {
   res.render("layouts/clients/login", {
-    id: 1,
+    userid: 1,
     fullname: 1,
   });
 });
@@ -103,7 +103,7 @@ app.get("/login", (req, res) => {
 app.get("/signup", (req, res) => {
   res.render("layouts/clients/signup", {
     sID: req.sessionID,
-    id: 1,
+    userid: 1,
     fullname: 1,
   });
 });
@@ -135,12 +135,11 @@ app.post("/login", async function (req, res) {
       //Kiểm tra mật khẩu
       const result = req.body.password === user.password;
       if (result) {
-        console.log("Đăng nhập thành công với", user);
         var sess = req.session;
         sess.daDangNhap = true;
         sess.fullname = user.fullname;
         sess.email = user.email;
-        sess.id = user._id;
+        sess.userid = user._id;
         res.redirect("/");
       } else {
         res.status(400).json({ error: "Sai mật khẩu" });
@@ -168,7 +167,7 @@ app.get("/", async (req, res) => {
       .then(async (data) => {
         res.render("layouts/clients/home", {
           fullname: req.session.fullname,
-          id: req.session.id,
+          userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -184,7 +183,7 @@ app.get("/", async (req, res) => {
       .then(async (data) => {
         res.render("layouts/clients/home", {
           fullname: 1,
-          id: 1,
+          userid: 1,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -201,13 +200,13 @@ app.get("/about", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/clients/about", {
       fullname: req.session.fullname,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/about", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -217,13 +216,13 @@ app.get("/privacy_policy", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/clients/privacy_policy", {
       fullname: req.session.fullname,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/privacy_policy", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -233,13 +232,13 @@ app.get("/terms_of_service", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/clients/terms_of_service", {
       fullname: req.session.fullname,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/terms_of_service", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -249,13 +248,13 @@ app.get("/news", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/clients/news", {
       fullname: req.session.fullname,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/news", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -265,13 +264,13 @@ app.get("/hiring", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/clients/hiring", {
       fullname: req.session.fullname,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/hiring", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -281,13 +280,13 @@ app.get("/support", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/clients/support", {
       fullname: req.session.fullname,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/support", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -297,13 +296,13 @@ app.get("/hotline", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/clients/hotline", {
       fullname: req.session.fullname,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/hotline", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -313,13 +312,13 @@ app.get("/customer_care", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/clients/customer_care", {
       fullname: req.session.fullname,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/customer_care", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -331,13 +330,13 @@ app.get("/profile/:id", (req, res) => {
     res.render("layouts/clients/profile", {
       fullname: req.session.fullname,
       email: req.session.email,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/home", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -348,13 +347,13 @@ app.get("/orders/:id", (req, res) => {
     res.render("layouts/clients/orders", {
       fullname: req.session.fullname,
       email: req.session.email,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/home", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -365,13 +364,13 @@ app.get("/password/:id", (req, res) => {
     res.render("layouts/clients/password", {
       fullname: req.session.fullname,
       email: req.session.email,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/home", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -390,13 +389,13 @@ app.get("/cart/:id", (req, res) => {
     res.render("layouts/clients/cart", {
       fullname: req.session.fullname,
       email: req.session.email,
-      id: req.session.id,
+      userid: req.session.userid,
       sID: req.session.sessionID,
     });
   } else {
     res.render("layouts/clients/home", {
       fullname: 1,
-      id: 1,
+      userid: 1,
       sID: req.session.sessionID,
     });
   }
@@ -423,7 +422,7 @@ app.get("/all_product", async (req, res) => {
       .then(async (data) => {
         res.render("layouts/clients/all_product", {
           fullname: req.session.fullname,
-          id: req.session.id,
+          userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -439,7 +438,7 @@ app.get("/all_product", async (req, res) => {
       .then(async (data) => {
         res.render("layouts/clients/all_product", {
           fullname: 1,
-          id: 1,
+          userid: 1,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -483,9 +482,10 @@ app.get("/product/:id", async (req, res) => {
     },
     ])
       .then((data) => {
+        console.log(data);
         res.render("layouts/clients/product", {
           fullname: req.session.fullname,
-          id: req.session.id,
+          userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -525,7 +525,7 @@ app.get("/product/:id", async (req, res) => {
       .then((data) => {
         res.render("layouts/clients/product", {
           fullname: 1,
-          id: 1,
+          userid: 1,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -571,7 +571,7 @@ app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
       .then((data) => {
         res.render("layouts/clients/hanhdong", {
           fullname: req.session.fullname,
-          id: req.session.id,
+          userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -612,7 +612,7 @@ app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
     .then((data) => {
       res.render("layouts/clients/hanhdong", {
         fullname: 1,
-        id: 1,
+        userid: 1,
         sID: req.session.sessionID,
         danhsach: data,
         VND,
@@ -657,7 +657,7 @@ app.get("/category/645c5a60cf52334165588925", (req, res) => {
       .then((data) => {
         res.render("layouts/clients/phieuluu", {
           fullname: req.session.fullname,
-          id: req.session.id,
+          userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -698,7 +698,7 @@ app.get("/category/645c5a60cf52334165588925", (req, res) => {
     .then((data) => {
       res.render("layouts/clients/phieuluu", {
         fullname: 1,
-        id: 1,
+        userid: 1,
         sID: req.session.sessionID,
         danhsach: data,
         VND,
@@ -743,7 +743,7 @@ app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
       .then((data) => {
         res.render("layouts/clients/thethao", {
           fullname: req.session.fullname,
-          id: req.session.id,
+          userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -784,7 +784,7 @@ app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
     .then((data) => {
       res.render("layouts/clients/thethao", {
         fullname: 1,
-        id: 1,
+        userid: 1,
         sID: req.session.sessionID,
         danhsach: data,
         VND,
@@ -829,7 +829,7 @@ app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
       .then((data) => {
         res.render("layouts/clients/chienthuat", {
           fullname: req.session.fullname,
-          id: req.session.id,
+          userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -870,7 +870,7 @@ app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
     .then((data) => {
       res.render("layouts/clients/chienthuat", {
         fullname: 1,
-        id: 1,
+        userid: 1,
         sID: req.session.sessionID,
         danhsach: data,
         VND,
@@ -915,7 +915,7 @@ app.get("/category/645c5a59cf52334165588922", (req, res) => {
       .then((data) => {
         res.render("layouts/clients/nhapvai", {
           fullname: req.session.fullname,
-          id: req.session.id,
+          userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -956,7 +956,7 @@ app.get("/category/645c5a59cf52334165588922", (req, res) => {
     .then((data) => {
       res.render("layouts/clients/nhapvai", {
         fullname: 1,
-        id: 1,
+        userid: 1,
         sID: req.session.sessionID,
         danhsach: data,
         VND,
@@ -1001,7 +1001,7 @@ app.get("/category/645c5a67cf52334165588928", (req, res) => {
       .then((data) => {
         res.render("layouts/clients/mophong", {
           fullname: req.session.fullname,
-          id: req.session.id,
+          userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
@@ -1042,7 +1042,7 @@ app.get("/category/645c5a67cf52334165588928", (req, res) => {
     .then((data) => {
       res.render("layouts/clients/mophong", {
         fullname: 1,
-        id: 1,
+        userid: 1,
         sID: req.session.sessionID,
         danhsach: data,
         VND,
@@ -1107,7 +1107,7 @@ app.get("/admin_home", (req, res) => {
       fullname: req.session.fullname,
       number: req.session.number,
       numberal: req.session.numberal,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1121,7 +1121,7 @@ app.get("/admin_categories", async (req, res) => {
     let data = await Category.find();
     res.render("layouts/servers/categories/categories", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       danhsach: data,
     });
   } else {
@@ -1134,7 +1134,7 @@ app.get("/add_categories", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/categories/add_categories", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1161,7 +1161,7 @@ app.get("/edit_categories/:id", async (req, res) => {
     let data = await Category.findById(req.params.id);
     res.render("layouts/servers/categories/edit_categories", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       danhsach: data,
     });
   } else {
@@ -1203,7 +1203,7 @@ app.get("/admin_producers", async (req, res) => {
     let data = await Producer.find();
     res.render("layouts/servers/producers/producers", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       danhsach: data,
     });
   } else {
@@ -1216,7 +1216,7 @@ app.get("/add_producers", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/producers/add_producers", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1243,7 +1243,7 @@ app.get("/edit_producers/:id", async (req, res) => {
     let data = await Producer.findById(req.params.id);
     res.render("layouts/servers/producers/edit_producers", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       danhsach: data,
     });
   } else {
@@ -1288,7 +1288,7 @@ app.get("/admin_product", async (req, res) => {
       .then((data) => {
         res.render("layouts/servers/product/product", {
           fullname: req.session.fullname,
-          id: req.session.admin_id,
+          admin_id: req.session.admin_id,
           danhsach: data,
           VND,
         });
@@ -1306,7 +1306,7 @@ app.get("/add_product", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/product/add_product", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       VND,
     });
   } else {
@@ -1356,7 +1356,7 @@ app.get("/edit_product/:id", async (req, res) => {
       .then((data) => {
         res.render("layouts/servers/product/edit_product", {
           fullname: req.session.fullname,
-          id: req.session.admin_id,
+          admin_id: req.session.admin_id,
           danhsach: data,
           VND,
         });
@@ -1430,7 +1430,7 @@ app.get("/customers", async (req, res) => {
     let data = await User.find();
     res.render("layouts/servers/customer/customer", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -1445,7 +1445,7 @@ app.get("/employees", async (req, res) => {
     let data = await Admin.find();
     res.render("layouts/servers/employee/employee", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -1459,6 +1459,7 @@ app.get("/admin_profile/:id", async (req, res) => {
     let data = await Admin.findById({ _id: req.params.id });
     res.render("layouts/servers/employee/profile", {
       fullname: req.session.fullname,
+      admin_id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -1472,6 +1473,7 @@ app.get("/admin_setting/:id", async (req, res) => {
     let data = await Admin.findById({ _id: req.params.id });
     res.render("layouts/servers/employee/setting", {
       fullname: req.session.fullname,
+      admin_id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -1503,7 +1505,7 @@ app.get("/add_employee", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/employee/add_employee", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1516,7 +1518,7 @@ app.get("/edit/:id", async function (req, res) {
     let data = await Admin.findById(req.params.id);
     res.render("layouts/servers/employee/edit_employee", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -1561,7 +1563,7 @@ app.get("/employees_store", async (req, res) => {
     let data = await Admin.find({ role: 1 });
     res.render("layouts/servers/employee/store_employee", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -1575,7 +1577,7 @@ app.get("/employees_order", async (req, res) => {
     let data = await Admin.find({ role: 2 });
     res.render("layouts/servers/employee/order_employee", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -1589,7 +1591,7 @@ app.get("/employees_customer_care", async (req, res) => {
     let data = await Admin.find({ role: 3 });
     res.render("layouts/servers/employee/customer_care_employee", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       nhanvat: data,
     });
   } else {
@@ -1603,7 +1605,7 @@ app.get("/all_orders", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/orders/all_orders", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1615,7 +1617,7 @@ app.get("/new_orders", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/orders/new_orders", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1627,7 +1629,7 @@ app.get("/order_detail", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/orders/order_detail", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1639,7 +1641,7 @@ app.get("/accept_orders", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/orders/accept_orders", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1651,7 +1653,7 @@ app.get("/done_orders", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/orders/done_orders", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1663,7 +1665,7 @@ app.get("/cancel_orders", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/orders/cancel_orders", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1688,7 +1690,7 @@ app.get("/warehouse", async (req, res) => {
     .then(async data => {
         res.render("layouts/servers/warehouse/warehouse", {
           fullname: req.session.fullname,
-          id: req.session.admin_id,
+          admin_id: req.session.admin_id,
           danhsach: data,
           VND,
         });
@@ -1709,7 +1711,7 @@ app.get("/list_warehouse/:id", async (req, res) => {
       .then((data) => {
         res.render("layouts/servers/warehouse/list_warehouse", {
           fullname: req.session.fullname,
-          id: req.session.admin_id,
+          admin_id: req.session.admin_id,
           danhsach: data,
           VND,
         });
@@ -1764,7 +1766,7 @@ app.get("/coupon", async (req, res) => {
     let data = await Coupon.find();
     res.render("layouts/servers/coupon/coupon", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       danhsach: data,
       VND,
     });
@@ -1778,7 +1780,7 @@ app.get("/add_coupon", async (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/coupon/add_coupon", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1811,7 +1813,7 @@ app.get("/edit_coupon/:id", async (req, res) => {
     let data = await Coupon.findById(req.params.id);
     res.render("layouts/servers/coupon/edit_coupon", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       danhsach: data,
     });
   } else {
@@ -1859,7 +1861,7 @@ app.get("/cities", async (req, res) => {
     let data = await City.find();
     res.render("layouts/servers/cities/cities", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       danhsach: data,
       VND,
     });
@@ -1873,7 +1875,7 @@ app.get("/add_cities", async (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/servers/cities/add_cities", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
     });
   } else {
     req.session.back = "/admin_home";
@@ -1901,7 +1903,7 @@ app.get("/edit_cities/:id", async (req, res) => {
     let data = await City.findById(req.params.id);
     res.render("layouts/servers/cities/edit_cities", {
       fullname: req.session.fullname,
-      id: req.session.admin_id,
+      admin_id: req.session.admin_id,
       danhsach: data,
     });
   } else {
