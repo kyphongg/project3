@@ -162,16 +162,24 @@ app.get("/logout", function (req, res) {
 //Trang chủ
 app.get("/", async (req, res) => {
   if (req.session.daDangNhap) {
+    let cartID = await Cart.aggregate([
+      {
+        $match: {
+          userID: new mongoose.Types.ObjectId(req.session.userid),
+        },
+      },
+    ]).then();
     await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
       .populate("categoryID")
       .populate("producerID")
-      .then(async (data) => {
+      .then((data) => {
         res.render("layouts/clients/home", {
           fullname: req.session.fullname,
           userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cartID,
         });
       })
       .catch((err) => {
@@ -188,6 +196,7 @@ app.get("/", async (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cartID: 0,
         });
       })
       .catch((err) => {
@@ -197,18 +206,27 @@ app.get("/", async (req, res) => {
 });
 
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
-app.get("/about", (req, res) => {
+app.get("/about", async (req, res) => {
   if (req.session.daDangNhap) {
+    let cartID = await Cart.aggregate([
+      {
+        $match: {
+          userID: new mongoose.Types.ObjectId(req.session.userid),
+        },
+      },
+    ]).then();
     res.render("layouts/clients/about", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cartID
     });
   } else {
     res.render("layouts/clients/about", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
+      cartID: 0,
     });
   }
 });
@@ -385,53 +403,130 @@ app.get("/orders_detail", (req, res) => {
 });
 
 //Trang giỏ hàng và thanh toán và trang thông báo đặt hàng thành công
-app.get("/cart/:id", (req, res) => {
+app.get("/cart/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/clients/cart", {
-      fullname: req.session.fullname,
-      email: req.session.email,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
+    let cartID = await Cart.aggregate([
+      {
+        $match: {
+          userID: new mongoose.Types.ObjectId(req.session.userid),
+        },
+      },
+    ]).then((data) => {
+      res.render("layouts/clients/cart", {
+        fullname: req.session.fullname,
+        userid: req.session.userid,
+        sID: req.session.sessionID,
+        danhsach: data,
+        VND,
+        cartID,
+      });
     });
   } else {
     res.render("layouts/clients/cart", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
+      cartID: 0,
     });
   }
 });
 
-app.post("/cart_save/:id", (req, res) => {
-  if (req.session.daDangNhap) {
-    Cart.aggregate([
-      {$match:{
-        status:1,
-        userID: new mongoose.Types.ObjectId(req.body.user_id_hidden),
-      }}
-    ])
-    .then((data)=>{
-      Cart.updateOne(
-        { _id: data._id }, 
-        {
-          $push:{
-            productList:{
-              $each:[{
-                productID: req.body.product_id_hidden,
-                quantity: req.body.quantity,
-              }]
-            }
+app.post("/add_to_cart", async (req, res) => {
+  const productId = req.body.product_id_hidden;
+  const quantity = req.body.quantity;
+  const userID = req.body.user_id_hidden;
+  try {
+    let productDetails = await Product.findById(productId);
+    let cart = await Cart.aggregate([
+      {
+        $match: {
+          userID: new mongoose.Types.ObjectId(req.session.userid),
         },
-        }
-      ).then(function () {
-        res.redirect("/cart/:id");
+      },
+    ]).then();
+
+    if (!productDetails) {
+      return res.status(500).json({
+        type: "Tìm không thấy sản phẩm",
+        msg: "Tìm không thấy sản phẩm",
       });
-    });
-  } else {
-    res.render("layouts/clients/home", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
+    }
+
+    //--If Cart Exists ----
+    if (cart) {
+      //---- Check if index exists ----
+      const indexFound = cart.find({items:{$elemMatch: {productId:productId}}});
+      //------This removes an item from the the cart if the quantity is set to zero, We can use this method to remove an item from the list  -------
+      if (indexFound !== -1 && quantity <= 0) {
+        cart.items.splice(indexFound, 1);
+        if (cart.items.length == 0) {
+          cart.subTotal = 0;
+        } else {
+          cart.subTotal = cart.items
+            .map((item) => item.total)
+            .reduce((acc, next) => acc + next);
+        }
+      }
+      //----------Check if product exist, just add the previous quantity with the new quantity and update the total price-------
+      else if (indexFound !== -1) {
+        cart.items[indexFound].quantity =
+          cart.items[indexFound].quantity + quantity;
+        cart.items[indexFound].total =
+          cart.items[indexFound].quantity * productDetails.priceOut;
+        cart.items[indexFound].price = productDetails.priceOut;
+        cart.subTotal = cart.items
+          .map((item) => item.total)
+          .reduce((acc, next) => acc + next);
+      }
+      //----Check if quantity is greater than 0 then add item to items array ----
+      else if (quantity > 0) {
+        cart.items.push({
+          productId: productId,
+          quantity: quantity,
+          price: productDetails.priceOut,
+          total: productDetails.priceOut * quantity,
+        });
+        cart.subTotal = cart.items
+          .map((item) => item.total)
+          .reduce((acc, next) => acc + next);
+        cart.userID = userID;
+      }
+      //----If quantity of price is 0 throw the error -------
+      else {
+        return res.status(400).json({
+          type: "Invalid",
+          msg: "Invalid request",
+        });
+      }
+      let data = await cart.save();
+      res.status(200).json({
+        type: "success",
+        mgs: "Process successful",
+        data: data,
+      });
+    }
+    //------------ This creates a new cart and then adds the item to the cart that has been created------------
+    else {
+      const cartData = {
+        items: [
+          {
+            productId: productId,
+            quantity: quantity,
+            total: productDetails.priceOut * quantity,
+            price: productDetails.priceOut,
+          },
+        ],
+        subTotal: productDetails.priceOut * quantity,
+        userID: userID,
+      };
+      cart = await Cart.addItem(cartData);
+      // let data = await cart.save();
+      res.json(cart);
+    }
+  } catch (error) {
+    res.status(400).json({
+      type: "Lỗi gì đấy",
+      msg: "Lỗi gì đấy",
     });
   }
 });
@@ -442,7 +537,7 @@ app.get("/checkout", (req, res) => {
   });
 });
 
-app.get("/success", (req,res)=> {
+app.get("/success", (req, res) => {
   if (req.session.daDangNhap) {
     res.render("layouts/clients/success", {
       fullname: req.session.fullname,
@@ -463,7 +558,9 @@ app.get("/search", async (req, res) => {
   let kw = req.query.kw;
   try {
     if (req.session.daDangNhap) {
-      await Product.find({"productName": { $regex: ".*"+kw+".*", $options: 'i'}})
+      await Product.find({
+        productName: { $regex: ".*" + kw + ".*", $options: "i" },
+      })
         .then(async (data) => {
           res.render("layouts/clients/search", {
             fullname: req.session.fullname,
@@ -477,7 +574,9 @@ app.get("/search", async (req, res) => {
           console.log(err);
         });
     } else {
-      await Product.find({"productName": { $regex: ".*"+kw+".*", $options: 'i'}})
+      await Product.find({
+        productName: { $regex: ".*" + kw + ".*", $options: "i" },
+      })
         .then(async (data) => {
           res.render("layouts/clients/search", {
             fullname: 1,
@@ -502,7 +601,7 @@ app.get("/all_product", async (req, res) => {
     await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
       .populate("categoryID")
       .populate("producerID")
-      .then(async (data) => {
+      .then((data) => {
         res.render("layouts/clients/all_product", {
           fullname: req.session.fullname,
           userid: req.session.userid,
@@ -537,32 +636,32 @@ app.get("/all_product", async (req, res) => {
 app.get("/product/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-      {$match:{_id: new mongoose.Types.ObjectId(req.params.id)}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
       .then((data) => {
         res.render("layouts/clients/product", {
@@ -572,37 +671,38 @@ app.get("/product/:id", async (req, res) => {
           danhsach: data,
           VND,
         });
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
   } else {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-      {$match:{_id: new mongoose.Types.ObjectId(req.params.id)}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
       .then((data) => {
         res.render("layouts/clients/product", {
@@ -612,7 +712,8 @@ app.get("/product/:id", async (req, res) => {
           danhsach: data,
           VND,
         });
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
   }
@@ -623,32 +724,38 @@ app.get("/product/:id", async (req, res) => {
 app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
   if (req.session.daDangNhap) {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c4d7b44e6642ff246597d")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c4d7b44e6642ff246597d"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
       .then((data) => {
         res.render("layouts/clients/hanhdong", {
@@ -658,50 +765,57 @@ app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
           danhsach: data,
           VND,
         });
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
-  }
-  else{
+  } else {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c4d7b44e6642ff246597d")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c4d7b44e6642ff246597d"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
-    .then((data) => {
-      res.render("layouts/clients/hanhdong", {
-        fullname: 1,
-        userid: 1,
-        sID: req.session.sessionID,
-        danhsach: data,
-        VND,
+      .then((data) => {
+        res.render("layouts/clients/hanhdong", {
+          fullname: 1,
+          userid: 1,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }).catch((err) => {
-      console.log(err);
-    });
   }
 });
 
@@ -709,32 +823,38 @@ app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
 app.get("/category/645c5a60cf52334165588925", (req, res) => {
   if (req.session.daDangNhap) {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a60cf52334165588925")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c5a60cf52334165588925"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
       .then((data) => {
         res.render("layouts/clients/phieuluu", {
@@ -744,50 +864,57 @@ app.get("/category/645c5a60cf52334165588925", (req, res) => {
           danhsach: data,
           VND,
         });
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
-  }
-  else{
+  } else {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a60cf52334165588925")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c5a60cf52334165588925"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
-    .then((data) => {
-      res.render("layouts/clients/phieuluu", {
-        fullname: 1,
-        userid: 1,
-        sID: req.session.sessionID,
-        danhsach: data,
-        VND,
+      .then((data) => {
+        res.render("layouts/clients/phieuluu", {
+          fullname: 1,
+          userid: 1,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }).catch((err) => {
-      console.log(err);
-    });
   }
 });
 
@@ -795,32 +922,38 @@ app.get("/category/645c5a60cf52334165588925", (req, res) => {
 app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
   if (req.session.daDangNhap) {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c54d3c72a21d65472d42b"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
       .then((data) => {
         res.render("layouts/clients/thethao", {
@@ -830,50 +963,57 @@ app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
           danhsach: data,
           VND,
         });
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
-  }
-  else{
+  } else {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c54d3c72a21d65472d42b"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
-    .then((data) => {
-      res.render("layouts/clients/thethao", {
-        fullname: 1,
-        userid: 1,
-        sID: req.session.sessionID,
-        danhsach: data,
-        VND,
+      .then((data) => {
+        res.render("layouts/clients/thethao", {
+          fullname: 1,
+          userid: 1,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }).catch((err) => {
-      console.log(err);
-    });
   }
 });
 
@@ -881,32 +1021,38 @@ app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
 app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
   if (req.session.daDangNhap) {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c554c5eca5bdb84a25d09"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
       .then((data) => {
         res.render("layouts/clients/chienthuat", {
@@ -916,50 +1062,57 @@ app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
           danhsach: data,
           VND,
         });
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
-  }
-  else{
+  } else {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c554c5eca5bdb84a25d09"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
-    .then((data) => {
-      res.render("layouts/clients/chienthuat", {
-        fullname: 1,
-        userid: 1,
-        sID: req.session.sessionID,
-        danhsach: data,
-        VND,
+      .then((data) => {
+        res.render("layouts/clients/chienthuat", {
+          fullname: 1,
+          userid: 1,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }).catch((err) => {
-      console.log(err);
-    });
   }
 });
 
@@ -967,32 +1120,38 @@ app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
 app.get("/category/645c5a59cf52334165588922", (req, res) => {
   if (req.session.daDangNhap) {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a59cf52334165588922")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c5a59cf52334165588922"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
       .then((data) => {
         res.render("layouts/clients/nhapvai", {
@@ -1002,50 +1161,57 @@ app.get("/category/645c5a59cf52334165588922", (req, res) => {
           danhsach: data,
           VND,
         });
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
-  }
-  else{
+  } else {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a59cf52334165588922")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c5a59cf52334165588922"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
-    .then((data) => {
-      res.render("layouts/clients/nhapvai", {
-        fullname: 1,
-        userid: 1,
-        sID: req.session.sessionID,
-        danhsach: data,
-        VND,
+      .then((data) => {
+        res.render("layouts/clients/nhapvai", {
+          fullname: 1,
+          userid: 1,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }).catch((err) => {
-      console.log(err);
-    });
   }
 });
 
@@ -1053,32 +1219,38 @@ app.get("/category/645c5a59cf52334165588922", (req, res) => {
 app.get("/category/645c5a67cf52334165588928", (req, res) => {
   if (req.session.daDangNhap) {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a67cf52334165588928")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c5a67cf52334165588928"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
       .then((data) => {
         res.render("layouts/clients/mophong", {
@@ -1088,50 +1260,57 @@ app.get("/category/645c5a67cf52334165588928", (req, res) => {
           danhsach: data,
           VND,
         });
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
-  }
-  else{
+  } else {
     Warehouse.aggregate([
-      {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-    {
-      $lookup:{
-        from: "categories",
-        localField: "productList.categoryID",
-        foreignField: "_id",
-        as: "categoryList",
-      }
-    },
-    {$match:{'productList.categoryID': new mongoose.Types.ObjectId("645c5a67cf52334165588928")}},
-    {
-      $lookup:{
-        from: "producers",
-        localField: "productList.producerID",
-        foreignField: "_id",
-        as: "producerList",
-      }
-    },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productList.categoryID",
+          foreignField: "_id",
+          as: "categoryList",
+        },
+      },
+      {
+        $match: {
+          "productList.categoryID": new mongoose.Types.ObjectId(
+            "645c5a67cf52334165588928"
+          ),
+        },
+      },
+      {
+        $lookup: {
+          from: "producers",
+          localField: "productList.producerID",
+          foreignField: "_id",
+          as: "producerList",
+        },
+      },
     ])
-    .then((data) => {
-      res.render("layouts/clients/mophong", {
-        fullname: 1,
-        userid: 1,
-        sID: req.session.sessionID,
-        danhsach: data,
-        VND,
+      .then((data) => {
+        res.render("layouts/clients/mophong", {
+          fullname: 1,
+          userid: 1,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }).catch((err) => {
-      console.log(err);
-    });
   }
 });
 
@@ -1252,7 +1431,7 @@ app.get("/edit_categories/:id", async (req, res) => {
   }
 });
 
-app.post("/edit_categories_save", async function (req, res) { 
+app.post("/edit_categories_save", async function (req, res) {
   if (req.session.daDangNhap) {
     Category.updateOne(
       { _id: req.body.categoryId },
@@ -1506,7 +1685,7 @@ app.post("/edit_product_save", (req, res) => {
   }
 });
 
-//Trang danh sách khách hàng 
+//Trang danh sách khách hàng
 app.get("/customers", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await User.find();
@@ -1758,27 +1937,28 @@ app.get("/cancel_orders", (req, res) => {
 //Trang kho
 app.get("/warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
-  Warehouse.aggregate([
-    {$group: {_id:"$productID", total : {$sum : "$quantityIn"}}},
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "productList",
+    Warehouse.aggregate([
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
       },
-    },
-  ])
-    .then(async data => {
+    ])
+      .then(async (data) => {
         res.render("layouts/servers/warehouse/warehouse", {
           fullname: req.session.fullname,
           admin_id: req.session.admin_id,
           danhsach: data,
           VND,
         });
-    }).catch((err) => {
-      console.log(err);
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } else {
     req.session.back = "/admin_home";
     res.redirect("/admin_login");

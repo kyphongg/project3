@@ -26,7 +26,7 @@
                     <a href="/category/<%= id._id %>"><%= id.categoryName %>&nbsp/</a>
                 <% }); %>
             </div>
-            <div class="pname"> 
+            <div class="pname" name="name"> 
                 <%= id.productName %>
                 
                 <div class="p-favorite">
@@ -61,12 +61,12 @@
                 <p><%= id.producerName %>&nbsp</p>
                 <% }); %>
             </div>
-            <div class="p-price">
+            <div class="p-price" name="price">
                 <%= VND.format(id.priceOut) %>
                 </div>
 
-            <form action="/cart_save/<%= userid %>" method="post">
-                <div class="quantity">
+            <form action="/add_to_cart" method="post">
+            <div class="quantity">
                     <p>Số lượng :</p>
                     <input name="quantity" type="number" min="1" max="<%= danhsach[i].total %>" value="1">
                     <input name="product_id_hidden" type="hidden" value="<%= danhsach[i]._id %>">
@@ -82,13 +82,6 @@
                                 <button type="text" class="cart-btn"><a href="/login" style="text-decoration: none; color:white"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</a></button>
                                 <% }else{ %>
                                     <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
-                                    <div class="alert hide">
-                                        <span class="fas fa-exclamation-circle"></span>
-                                        <span class="msg">Thêm vào giỏ hàng thành công!</span>
-                                        <span class="close-btnn">
-                                            <span class="fas fa-times"></span>
-                                        </span>
-                                    </div>
                                     <% } %>
                             <% } %>
                 </div>
