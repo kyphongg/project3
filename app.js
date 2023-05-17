@@ -442,10 +442,58 @@ app.get("/checkout", (req, res) => {
   });
 });
 
-app.get("/success", (req, res) => {
-  res.render("layouts/clients/success", {
-    nhanvat: 1,
-  });
+app.get("/success", (req,res)=> {
+  if (req.session.daDangNhap) {
+    res.render("layouts/clients/success", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+    });
+  } else {
+    res.render("layouts/clients/success", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+    });
+  }
+});
+
+//Trang tìm kiếm
+app.get("/search", async (req, res) => {
+  let kw = req.query.kw;
+  try {
+    if (req.session.daDangNhap) {
+      await Product.find({"productName": { $regex: ".*"+kw+".*", $options: 'i'}})
+        .then(async (data) => {
+          res.render("layouts/clients/search", {
+            fullname: req.session.fullname,
+            userid: req.session.userid,
+            sID: req.session.sessionID,
+            danhsach: data,
+            VND,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      await Product.find({"productName": { $regex: ".*"+kw+".*", $options: 'i'}})
+        .then(async (data) => {
+          res.render("layouts/clients/search", {
+            fullname: 1,
+            userid: 1,
+            sID: req.session.sessionID,
+            danhsach: data,
+            VND,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  } catch (error) {
+    res.status(400).json({ error: "Lỗi Tìm kiếm" });
+  }
 });
 
 //Trang tất cả các sản phẩm
