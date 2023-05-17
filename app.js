@@ -54,6 +54,7 @@ const Producer = require("./models/producer.js");
 const Product = require("./models/product.js");
 const Warehouse = require("./models/warehouse.js");
 const Coupon = require("./models/coupon.js");
+const City = require("./models/city.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -1845,6 +1846,91 @@ app.get("/delete_coupon/:id", function (req, res) {
   if (req.session.daDangNhap) {
     Coupon.deleteOne({ _id: req.params.id }).then(function () {
       res.redirect("/coupon");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+//Trang bảng giá từng thành phố
+app.get("/cities", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await City.find();
+    res.render("layouts/servers/cities/cities", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+      danhsach: data,
+      VND,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/add_cities", async (req, res) => {
+  if (req.session.daDangNhap) {
+    res.render("layouts/servers/cities/add_cities", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/cities_save", function (req, res) {
+  if (req.session.daDangNhap) {
+    var city = City({
+      cityName: req.body.cityName,
+      price: req.body.price,
+    });
+    city.save().then(function () {
+      res.redirect("/cities");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/edit_cities/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let data = await City.findById(req.params.id);
+    res.render("layouts/servers/cities/edit_cities", {
+      fullname: req.session.fullname,
+      id: req.session.admin_id,
+      danhsach: data,
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/edit_cities_save", async function (req, res) {
+  if (req.session.daDangNhap) {
+    City.updateOne(
+      { _id: req.body.cityId },
+      {
+        cityName: req.body.cityName,
+        price: req.body.price,
+      }
+    ).then(function () {
+      res.redirect("/cities");
+    });
+  } else {
+    req.session.back = "/admin_home";
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/delete_cities/:id", function (req, res) {
+  if (req.session.daDangNhap) {
+    City.deleteOne({ _id: req.params.id }).then(function () {
+      res.redirect("/cities");
     });
   } else {
     req.session.back = "/admin_home";
