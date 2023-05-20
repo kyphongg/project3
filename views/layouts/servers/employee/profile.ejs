@@ -1,12 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông tin cá nhân</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thống kê</title>
+    <%- include('../partials/head') %>
 </head>
 <body>
-    
+    <!--sidebar start-->
+    <%- include('../partials/sidebar') %>
+    <!-- sidebar end -->
+
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="table-agile-info">
+                <h3>Hồ sơ cá nhân</h3>
+                <div class="adminUser-detail" style="margin-top: 15px">
+                    <p>Họ và tên</p>
+                        <p style="font-weight: 600; margin-top: 10px; margin-bottom: 10px;">Kỳ Phong</p>
+                    <p>Địa chỉ email</p>
+                        <p style="font-weight: 600; margin-top: 10px; margin-bottom: 10px;">kyphong2802@gmail.com</p>
+                    <p>Chức vụ</p>
+                        <p style="font-weight: 600; margin-top: 10px; margin-bottom: 10px;">Quản lý</p>
+                </div>
+        </section>
+    </section>
+    <!--main content end-->
+    <%- include('../partials/footer') %>
 </body>
 </html>
+
