@@ -15,9 +15,10 @@
             <div class="cart-heading">
                 <a href="/category/645c5a60cf52334165588925" style="text-decoration: none; color:black"><h3>Phiêu lưu</h3></a>      
             </div>
+         
+        <div class="row row-cols-4">
             <% for(let i=0; i < danhsach.length; i++) { %>
                 <% danhsach[i].productList.forEach(function(id) { %>
-        <div class="row row-cols-4">
                 <div class="col product">
                     <div class="sp-box">
                         <a href="/product/<%= id._id %>">
@@ -31,9 +32,9 @@
                         </a>
                     </div>
                 </div>
+                <% }); %>
+                <% } %>
         </div>
-        <% }); %>
-        <% } %>
     </div>
     
      <%- include('partials/footer') %>
