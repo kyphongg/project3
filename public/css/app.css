@@ -188,6 +188,7 @@ input:focus{
 
 .icon-menu a:hover{
     color: #FF4057;
+    font-weight: 500;
 }
 
 .content{
@@ -197,11 +198,11 @@ input:focus{
 
 #footer{
     background-color: white;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
 .my-footer{
-    margin-top: 15px;
+    padding-top: 10px;
 }
 
 .my-footer h5{
@@ -214,6 +215,11 @@ input:focus{
     color: black;
     text-decoration: none;
     font-size: 14px;
+}
+
+.my-footer a:hover{
+    color: #FF4057;
+    font-weight: 500;
 }
 
 .my-footer img {
@@ -411,7 +417,7 @@ input:focus{
 .featured{
     width: 100%;
     height: auto;
-    margin-top: 25px;
+    margin-top: 40px;
     padding-bottom: 10px;
     border-radius: 10px;
 }
@@ -470,7 +476,7 @@ input:focus{
     width: 100%;
     height: auto;
     background-color: #000D21;
-    margin-top: 25px;
+    margin-top: 40px;
     padding-bottom: 10px;
 }
 
@@ -1335,6 +1341,117 @@ input:focus{
     color: #ce8500;
     font-size: 22px;
     line-height: 40px;
+}
+
+/* News */
+.newss{
+    width: 100%;
+    height: auto;
+    margin-top: 40px;   
+    padding-bottom: 10px;
+}
+
+.newss .newss-heading{
+    padding-left: 10px;
+    padding-top: 5px;
+    color: black;
+}
+
+.news-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0px;
+    flex-wrap: wrap;
+}
+
+.news-box {
+    width: 300px;
+    background-color: #ffffff;
+    border: 1px solid #ececec;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.news-img{
+    width: 100%;
+    height: auto;
+}
+
+.news-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;  
+}
+
+.news-text{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-text span{
+    color: #9b9b9b;
+    font-size: 0.7rem;
+    font-style: italic;
+}
+
+.news-text .news-title{
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #272727;
+    text-decoration: none;
+}
+
+.news-text .news-title:hover{
+    color: #0B7CC0;
+    transition: all ease 0.3s;
+}
+
+.news-text p{
+    color: #9b9b9b;
+    font-size: 0.9rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 20px 0px;
+}
+
+.news-text a{
+    color: #0f0f0f;
+    text-decoration: none;
+}
+
+.news-text a:hover{
+    color: #0B7CC0;
+    transition: all ease 0.3s;
+}
+
+.hiring{
+    width: 100%;
+    height: auto;
+    background-color: #101010;
+    margin-top: 40px;
+    padding: 15px;
+}
+
+.hiring img{
+    margin-left: 45px;
+    width: 250px;
+    height: 250px;
+}
+
+.hiring-text{
+    color: white;
+    padding: 20px;
+}
+
+.hiring-btn{
+    margin-top: 20px;
 }
 
 

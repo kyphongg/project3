@@ -1,12 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cài đặt</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bảo mật</title>
+    <%- include('../partials/head') %>
 </head>
 <body>
-    
+    <!--sidebar start-->
+    <%- include('../partials/sidebar') %>
+    <!-- sidebar end -->
+
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="table-agile-info">
+                <h3>Thay đổi mật khẩu</h3>
+                <div class="security-input">
+                    <input class="password_field" id="password" type="password" required>
+                    <label for="password" class="password_label">Nhập mật khẩu cũ</label>
+                </div>
+                <div class="security-input">
+                    <input class="password_field" id="password" type="password" required>
+                    <label for="password" class="password_label">Nhập mật khẩu mới</label>
+                </div>
+                <div class="security-input">
+                    <input class="password_field" id="password" type="password" required>
+                    <label for="password" class="password_label">Nhập lại mật khẩu mới</label>
+                </div>
+                <div></div>
+                <button class="passwordbtn-update">Cập nhật</button>
+            </div>
+        </section>
+    </section>
+    <!--main content end-->
+    <%- include('../partials/footer') %>
 </body>
 </html>
+
