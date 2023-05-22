@@ -7,6 +7,10 @@ const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
 const moment = require("moment-timezone");
+const morgan = require("morgan");
+const cors = require("cors");
+
+app.use(cors());
 
 const dateVietNam = moment
   .tz(Date.now(), "Asia/Ho_Chi_Minh")
@@ -219,7 +223,7 @@ app.get("/about", async (req, res) => {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
-      cartID
+      cartID,
     });
   } else {
     res.render("layouts/clients/about", {
@@ -434,99 +438,48 @@ app.get("/cart/:id", async (req, res) => {
 app.post("/add_to_cart", async (req, res) => {
   const productId = req.body.product_id_hidden;
   const quantity = req.body.quantity;
-  const userID = req.body.user_id_hidden;
-  try {
-    let productDetails = await Product.findById(productId);
-    let cart = await Cart.aggregate([
-      {
-        $match: {
-          userID: new mongoose.Types.ObjectId(req.session.userid),
-        },
-      },
-    ]).then();
+  let productDetails = await Product.findById(productId);
+  let cart = await Cart.find({ userID: req.body.user_id_hidden });
+  let convert = parseInt(quantity);
 
-    if (!productDetails) {
-      return res.status(500).json({
-        type: "Tìm không thấy sản phẩm",
-        msg: "Tìm không thấy sản phẩm",
+  if (cart[0]) {
+    for (let i = 0; i < cart.length; i++) {
+      cart[0].items.forEach(async function (element) {
+        if (element.productId != productId && quantity > 0) {
+          Cart.updateOne(
+            { userID: req.body.user_id_hidden },
+            {
+              $push: {
+                items: {
+                  productId: productId,
+                  quantity: convert,
+                  price: productDetails.priceOut,
+                  total: productDetails.priceOut * convert,
+                },
+              },
+            }
+          ).then();
+        } else {
+          console.log("Error");
+        }
       });
     }
-
-    //--If Cart Exists ----
-    if (cart) {
-      //---- Check if index exists ----
-      const indexFound = cart.find({items:{$elemMatch: {productId:productId}}});
-      //------This removes an item from the the cart if the quantity is set to zero, We can use this method to remove an item from the list  -------
-      if (indexFound !== -1 && quantity <= 0) {
-        cart.items.splice(indexFound, 1);
-        if (cart.items.length == 0) {
-          cart.subTotal = 0;
-        } else {
-          cart.subTotal = cart.items
-            .map((item) => item.total)
-            .reduce((acc, next) => acc + next);
-        }
-      }
-      //----------Check if product exist, just add the previous quantity with the new quantity and update the total price-------
-      else if (indexFound !== -1) {
-        cart.items[indexFound].quantity =
-          cart.items[indexFound].quantity + quantity;
-        cart.items[indexFound].total =
-          cart.items[indexFound].quantity * productDetails.priceOut;
-        cart.items[indexFound].price = productDetails.priceOut;
-        cart.subTotal = cart.items
-          .map((item) => item.total)
-          .reduce((acc, next) => acc + next);
-      }
-      //----Check if quantity is greater than 0 then add item to items array ----
-      else if (quantity > 0) {
-        cart.items.push({
+    res.redirect("/");
+  } else {
+    var cartData = Cart({
+      items: [
+        {
           productId: productId,
           quantity: quantity,
-          price: productDetails.priceOut,
           total: productDetails.priceOut * quantity,
-        });
-        cart.subTotal = cart.items
-          .map((item) => item.total)
-          .reduce((acc, next) => acc + next);
-        cart.userID = userID;
-      }
-      //----If quantity of price is 0 throw the error -------
-      else {
-        return res.status(400).json({
-          type: "Invalid",
-          msg: "Invalid request",
-        });
-      }
-      let data = await cart.save();
-      res.status(200).json({
-        type: "success",
-        mgs: "Process successful",
-        data: data,
-      });
-    }
-    //------------ This creates a new cart and then adds the item to the cart that has been created------------
-    else {
-      const cartData = {
-        items: [
-          {
-            productId: productId,
-            quantity: quantity,
-            total: productDetails.priceOut * quantity,
-            price: productDetails.priceOut,
-          },
-        ],
-        subTotal: productDetails.priceOut * quantity,
-        userID: userID,
-      };
-      cart = await Cart.addItem(cartData);
-      // let data = await cart.save();
-      res.json(cart);
-    }
-  } catch (error) {
-    res.status(400).json({
-      type: "Lỗi gì đấy",
-      msg: "Lỗi gì đấy",
+          price: productDetails.priceOut,
+        },
+      ],
+      value: req.body.value,
+      userID: req.body.user_id_hidden,
+    });
+    cartData.save().then(function () {
+      res.redirect("/");
     });
   }
 });
@@ -1995,7 +1948,7 @@ app.get("/add_warehouse", async (req, res) => {
       .then((data) => {
         res.render("layouts/servers/warehouse/add_warehouse", {
           fullname: req.session.fullname,
-          id: req.session.admin_id,
+          admin_id: req.session.admin_id,
           danhsach: data,
         });
       });

@@ -70,8 +70,8 @@
                     <p>Số lượng :</p>
                     <input name="quantity" type="number" min="1" max="<%= danhsach[i].total %>" value="1">
                     <input name="product_id_hidden" type="hidden" value="<%= danhsach[i]._id %>">
+                    <input name="username" type="hidden" class="form-control" value="0">
                     <input name="user_id_hidden" type="hidden" value="<%= userid %>">
-                    <input name="status" type="hidden" value="1">
                 </div>
                 
                 <div class="btn-box">
@@ -107,7 +107,7 @@
         <div class="comment">
             <h3>Bình luận</h3>
             <form action="#">
-                <!-- {{--                <input type="hidden" name="customer_id" class="customer_id" value="{{$customer_id}}">--}} -->
+                <!-- {{-- <input type="hidden" name="customer_id" class="customer_id" value="{{$customer_id}}">--}} -->
                 <textarea name="comment" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
                 <button type="button" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
                 </button>

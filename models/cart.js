@@ -24,14 +24,13 @@ let Item = new Schema({
 
 const Cart = new Schema({
     items: [Item],
-    subTotal: {
-        default: 0,
-        type: Number
-    },
     userID:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
+    username:{
+        type: Number
+    },  
 })
 Cart.plugin(passportLocalMongoose);
 
