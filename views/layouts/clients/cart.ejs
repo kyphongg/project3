@@ -32,7 +32,6 @@
                         <p style="margin-top: 8px; margin-left: 10px; font-size: 16px;">(0)</p>
                     </div>
                     <div class="cart-table">
-                        <div id = "leftbox">
                             <table class="table">
                                 <thead>
                                     
@@ -42,23 +41,45 @@
                                     
                                 </thead>
                                 <tbody>
-                                    <% for(let i=0; i < danhsach.length; i++) { %>
-                                        <% danhsach[i].productList.forEach(function(pid) { %>
                                     <tr>
-                                        
+                                        <% for(let i=0; i < danhsach.length; i++) { %>
+                                            <% danhsach[i].productList.forEach(function(pid) { %>  
                                         <td style="width: 25px;"><img style="width: 100px; height: 120px;" src="/images/<%= pid.productImage %>" alt=""></td>
                                         <td style="width: 320px;">
                                             <p style="line-height: 5px;"><%= pid.productName %></p>
                                             <b style="color: #DC4E45;"><%= VND.format(pid.priceOut) %></b>
                                         </td>
-                                    </tr>
                                         <% }); %>
-                                    <% } %>
+                                        <% } %>
+                                        <% for(let i=0; i < danhsach.length; i++) { %>
+                                            <% danhsach[i].items.forEach(function(id) { %>
+                                                <td>    
+                                                    <form>                     
+                                                        <td>
+                                                            <input name="product_id_hidden" type="hidden" value="<%= id.productId %>">
+                                                            <input name="user_id_hidden" type="hidden" value="<%= userid %>">
+                                                            
+                                                            <input type="number" min="1" max="" value="<%= id.quantity %>" name="quantity" style="width: 45px; height: 30px; padding-left: 10px;">
+                                                                
+                                                            <input type="submit" value="Cập nhật" name="update_quantity" class="btn btn-primary update-quantity" style="margin-bottom: 5px; margin-left: 5px;">
+                                                        </td>                 
+                                                    </form>
+                                                    
+                                                </td>
+                                                <td style="text-align: right; vertical-align: middle;">
+                                                    <a>
+                                                        <i class="fa-regular fa-trash-can" style="font-size: 25px; color: #A6A6A6;"></i>
+                                                    </a>
+                                                </td>
+                                                <% }); %>
+                                                <% } %>
+                                    </tr>
+
                                 </tbody>
                             </table>
                         </div>
 
-                        <div id = "rightbox">
+                        <!-- <div id = "rightbox">
                             <table class="table">
                                 <tbody>
                                     
@@ -92,9 +113,8 @@
                                     <% } %>
                                 </tbody>
                             </table>
-                        </div>
+                        </div> -->
                     </div>
-                </div>
                 
                 <div class="col-5">
                     <div class="cart-price">
@@ -106,10 +126,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr style="border: white;">
-                                    <td>Tạm tính:</td>
-                                    <td style="text-align: right;"></td>
-                                </tr>
                                 <tr>
                                     <td>Phí vận chuyển:</td>
                                     <td style="text-align: right;">0 đ</td>
