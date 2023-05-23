@@ -714,14 +714,28 @@ input:focus{
 }
 
 .cart-heading{
-    margin: 15px;
+    margin-top: 15px;
+    margin-left: 25px;
     display: flex;
+    color: #0358FF;
 }
 
-.cart-table table{
-    text-align: left;
+.cart-table{
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-table table th{
+    text-align: center;
+    background-color: #61A2FF;
+}
+
+.cart-table table td{
+    text-align: center;
     vertical-align: middle;
-    margin-left: 10px;
+    margin: 10px;
 }
 
 .cart-table table input{
@@ -743,9 +757,10 @@ input:focus{
 
 
 .cart-price{
-    margin-top: 80px;
+    margin-top: 10px;
     padding: 15px;
-    margin-right: 15px;
+    margin-bottom: 25px;
+    margin-right: 55px;
     border-radius: 10px;
     border: 1px solid rgba(0,0,0,0.10);
 }

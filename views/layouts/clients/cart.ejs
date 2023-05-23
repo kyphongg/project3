@@ -1,157 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Giỏ hàng</title>
     <%- include('partials/head') %>
-    <style>
-        #leftbox {
-            float:left;
-            width:25%;
-            height:280px;
-        }
-        #rightbox{
-            float:right;
-            width:25%;
-            height:280px;
-        }
-    </style>
-</head>
-<body>
+  </head>
+  <body>
     <%- include('partials/header') %>
-    
+
     <div class="container">
-        <div class="cartt">
-            <div class="row">
-                <div class="col-7">
-                    <div class="cart-heading">
-                        <img style="margin-top: 5px; margin-right: 10px; width: 25px; height: 25px;" src="/images/carttt.png" alt="">
-                        <h3>Giỏ hàng</h3>
-                        <p style="margin-top: 8px; margin-left: 10px; font-size: 16px;">(0)</p>
-                    </div>
-                    <div class="cart-table">
-                            <table class="table">
-                                <thead>
-                                    
-                                    <tr>
-                                        
-                                    </tr>
-                                    
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <% for(let i=0; i < danhsach.length; i++) { %>
-                                            <% danhsach[i].productList.forEach(function(pid) { %>  
-                                        <td style="width: 25px;"><img style="width: 100px; height: 120px;" src="/images/<%= pid.productImage %>" alt=""></td>
-                                        <td style="width: 320px;">
-                                            <p style="line-height: 5px;"><%= pid.productName %></p>
-                                            <b style="color: #DC4E45;"><%= VND.format(pid.priceOut) %></b>
-                                        </td>
-                                        <% }); %>
-                                        <% } %>
-                                        <% for(let i=0; i < danhsach.length; i++) { %>
-                                            <% danhsach[i].items.forEach(function(id) { %>
-                                                <td>    
-                                                    <form>                     
-                                                        <td>
-                                                            <input name="product_id_hidden" type="hidden" value="<%= id.productId %>">
-                                                            <input name="user_id_hidden" type="hidden" value="<%= userid %>">
-                                                            
-                                                            <input type="number" min="1" max="" value="<%= id.quantity %>" name="quantity" style="width: 45px; height: 30px; padding-left: 10px;">
-                                                                
-                                                            <input type="submit" value="Cập nhật" name="update_quantity" class="btn btn-primary update-quantity" style="margin-bottom: 5px; margin-left: 5px;">
-                                                        </td>                 
-                                                    </form>
-                                                    
-                                                </td>
-                                                <td style="text-align: right; vertical-align: middle;">
-                                                    <a>
-                                                        <i class="fa-regular fa-trash-can" style="font-size: 25px; color: #A6A6A6;"></i>
-                                                    </a>
-                                                </td>
-                                                <% }); %>
-                                                <% } %>
-                                    </tr>
+      <div class="cartt">
+        <div class="cart-heading">
+          <img
+            style="margin-top: 25px; margin-right: 10px; width: 25px; height: 25px;" src="/images/carttt.png" alt="" />
+          <h3 style="margin-top: 18px;">Giỏ hàng</h3>
+        </div>
+        <div class="cart-table">
+          <div id="leftbox">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th style="border-right:none;">Đơn giá</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(let i=0; i < danhsach.length; i++) { %> <%
+                danhsach[i].productList.forEach(function(pid) { %>
+                  <td style="width: 155px;">
+                    <img
+                      style="width: 60px; height: 80px;"
+                      src="/images/<%= pid.productImage %>"
+                      alt=""
+                    />
+                  </td>
+                  <td style="width: 320px;">
+                    <p style="line-height: 5px"><%= pid.productName %></p>
+                  </td>
+                  <td style="width: 125px">
+                    <p style="color: #dc4e45"><%= VND.format(pid.priceOut) %> </p>
+                  </td>
+                </tr>
+                <% }); %> <% } %>
+              </tbody>
+            </table>
+          </div>
 
-                                </tbody>
-                            </table>
-                        </div>
+          <div id="rightbox">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
 
-                        <!-- <div id = "rightbox">
-                            <table class="table">
-                                <tbody>
-                                    
-                                    <% for(let i=0; i < danhsach.length; i++) { %>
-                                        <% danhsach[i].items.forEach(function(id) { %>
-                                            <tr>
-                                <td>    
-                                    <form>                     
-                                        <td>
-                                            <input name="product_id_hidden" type="hidden" value="<%= id.productId %>">
-                                            <input name="user_id_hidden" type="hidden" value="<%= userid %>">
-                                            
-                                            <input type="number" min="1" max="" value="<%= id.quantity %>" name="quantity" style="width: 45px; height: 30px; padding-left: 10px;">
-                                                
-                                            <input type="submit" value="Cập nhật" name="update_quantity" class="btn btn-primary update-quantity" style="margin-bottom: 5px; margin-left: 5px;">
-                                        </td>                 
-                                    </form>
-                                    
-                                </td>
-                                <td style="text-align: right; vertical-align: middle;">
-                                    <a>
-                                        <i class="fa-regular fa-trash-can" style="font-size: 25px; color: #A6A6A6;"></i>
-                                    </a>
-                                </td>
-                                <td>
-                                    <p>Tổng</p>
-                                    <b style="color: #DC4E45;"><%= VND.format(id.total) %></b>
-                                </td>
+              <tbody>
+                <% for(let i=0; i < danhsach.length; i++) { %> <%
+                danhsach[i].items.forEach(function(id) { %>
+                <tr>
+                  <td style="width: 225px; height: 96.75px;">
+                    <form>
+                        <input name="product_id_hidden" type="hidden" value="<%= id.productId %>"/>
+                        <input name="user_id_hidden" type="hidden" value="<%= userid %>"/>
+                        <input type="number" min="1" max="" value="<%= id.quantity %>" name="quantity" style="width: 45px; height: 30px; padding-left: 10px"/>
+                        <input type="submit" value="Cập nhật" name="update_quantity" class="btn btn-primary update-quantity" style="margin-bottom: 5px; margin-left: 5px"/>
+                    </form>
+                  </td>
+                  <td style="width: 125px;">
+                    <p style="color: #dc4e45"><%= VND.format(id.total) %></p>
+                  </td>
+                  <td style="width: 200px;">
+                    <a href="/" style="text-decoration: none;;" class="btn btn-danger"><i class="fa-regular fa-trash-can" style="color: white;"></i> Xóa sản phẩm</a>
+                  </td>
+                </tr>
+                <% }); %> <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-8"></div>
+            <div class="col-4">
+                <div class="cart-price">
+                    <h4>Thông tin đơn hàng</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                
                             </tr>
-                                <% }); %>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div> -->
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Tổng tiền:</td>
+                                <td style="text-align: right; color:#DC4E45; font-weight:700;">35.000.000 đ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pay">
+                    <a href="/">
+                        <button class="btn btn-secondary btn-pay">THANH TOÁN</button>
+                    </a>
                     </div>
-                
-                <div class="col-5">
-                    <div class="cart-price">
-                        <h4>Tạm tính</h4>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Phí vận chuyển:</td>
-                                    <td style="text-align: right;">0 đ</td>
-                                </tr>
-                                <tr style="border: white;">
-                                    <td style="font-weight: 500;">Tổng tiền:</td>
-                                    <td style="text-align: right; color:#DC4E45; font-weight:500;"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="pay">
+                    <div class="back-home">
                         <a href="/">
-                            <button class="btn btn-secondary btn-pay">THANH TOÁN</button>
+                            <button class="btn btn-outline-dark btn-back-home">TIẾP TỤC MUA HÀNG</button>
                         </a>
-                        </div>
-                        <div class="back-home">
-                            <a href="/">
-                                <button class="btn btn-outline-dark btn-back-home">TIẾP TỤC MUA HÀNG</button>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+      </div>
     </div>
-    
-     <%- include('partials/footer') %>
-</body>
+
+    <%- include('partials/footer') %>
+  </body>
 </html>
