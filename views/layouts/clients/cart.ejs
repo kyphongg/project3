@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giỏ hàng</title>
     <%- include('partials/head') %>
+    <style>
+        #leftbox {
+            float:left;
+            width:25%;
+            height:280px;
+        }
+        #rightbox{
+            float:right;
+            width:25%;
+            height:280px;
+        }
+    </style>
 </head>
 <body>
     <%- include('partials/header') %>
@@ -20,41 +32,70 @@
                         <p style="margin-top: 8px; margin-left: 10px; font-size: 16px;">(0)</p>
                     </div>
                     <div class="cart-table">
-                        <table class="table">
-                            <% for(let i=0; i < danhsach.length; i++) { %>
-                                <% danhsach[i].items.forEach(function(id) { %>
-                            <thead>
-                                <tr>
-                            
-                                </tr>
-                            </thead>
-                            <tbody>
-                                
-                                <tr>
-                                    <td style="width: 25px;"><img style="width: 100px; height: 120px;" src="/images/ps5(sp2).jpg" alt=""></td>
-                                    <td style="width: 320px;">
-                                        <p style="line-height: 5px;"></p>
-                                        <b style="color: #DC4E45;"><%= VND.format(id.price) %></b>
-                                    </td>   
-                                    <td>
-                                        <form>                                          
-                                            <td>
-                                                <input type="number" min="1" max="15" value="<%= id.quantity %>" name="quantity_cart" style="width: 45px; height: 30px; padding-left: 10px;">
-                                                <input type="hidden" value="" name="rowId_cart" class="btn btn-default btn-sm">
-                                                <input type="submit" value="Cập nhật" name="update_quantity" class="btn btn-primary update-quantity" style="margin-bottom: 5px; margin-left: 5px;">
-                                            </td>                                      
-                                        </form>
-                                    </td>
-                                    <td style="text-align: right; vertical-align: middle;">
-                                        <a>
-                                            <i class="fa-regular fa-trash-can" style="font-size: 25px; color: #A6A6A6;"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div id = "leftbox">
+                            <table class="table">
+                                <thead>
+                                    
+                                    <tr>
+                                        
+                                    </tr>
+                                    
+                                </thead>
+                                <tbody>
+                                    <% for(let i=0; i < danhsach.length; i++) { %>
+                                        <% danhsach[i].productList.forEach(function(pid) { %>
+                                    <tr>
+                                        
+                                        <td style="width: 25px;"><img style="width: 100px; height: 120px;" src="/images/<%= pid.productImage %>" alt=""></td>
+                                        <td style="width: 320px;">
+                                            <p style="line-height: 5px;"><%= pid.productName %></p>
+                                            <b style="color: #DC4E45;"><%= VND.format(pid.priceOut) %></b>
+                                        </td>
+                                    </tr>
+                                        <% }); %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id = "rightbox">
+                            <table class="table">
+                                <tbody>
+                                    
+                                    <% for(let i=0; i < danhsach.length; i++) { %>
+                                        <% danhsach[i].items.forEach(function(id) { %>
+                                            <tr>
+                                <td>    
+                                    <form>                     
+                                        <td>
+                                            <input name="product_id_hidden" type="hidden" value="<%= id.productId %>">
+                                            <input name="user_id_hidden" type="hidden" value="<%= userid %>">
+                                            
+                                            <input type="number" min="1" max="" value="<%= id.quantity %>" name="quantity" style="width: 45px; height: 30px; padding-left: 10px;">
+                                                
+                                            <input type="submit" value="Cập nhật" name="update_quantity" class="btn btn-primary update-quantity" style="margin-bottom: 5px; margin-left: 5px;">
+                                        </td>                 
+                                    </form>
+                                    
+                                </td>
+                                <td style="text-align: right; vertical-align: middle;">
+                                    <a>
+                                        <i class="fa-regular fa-trash-can" style="font-size: 25px; color: #A6A6A6;"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <p>Tổng</p>
+                                    <b style="color: #DC4E45;"><%= VND.format(id.total) %></b>
+                                </td>
+                            </tr>
+                                <% }); %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+                
                 <div class="col-5">
                     <div class="cart-price">
                         <h4>Tạm tính</h4>
@@ -67,7 +108,7 @@
                             <tbody>
                                 <tr style="border: white;">
                                     <td>Tạm tính:</td>
-                                    <td style="text-align: right;"><%= VND.format(danhsach[i].subTotal) %></td>
+                                    <td style="text-align: right;"></td>
                                 </tr>
                                 <tr>
                                     <td>Phí vận chuyển:</td>
@@ -75,11 +116,9 @@
                                 </tr>
                                 <tr style="border: white;">
                                     <td style="font-weight: 500;">Tổng tiền:</td>
-                                    <td style="text-align: right; color:#DC4E45; font-weight:500;"><%= VND.format(danhsach[i].subTotal) %></td>
+                                    <td style="text-align: right; color:#DC4E45; font-weight:500;"></td>
                                 </tr>
                             </tbody>
-                            <% }); %>
-                            <% } %>
                         </table>
                         <div class="pay">
                         <a href="/">

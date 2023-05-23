@@ -409,10 +409,21 @@ app.get("/orders_detail", (req, res) => {
 //Trang giỏ hàng và thanh toán và trang thông báo đặt hàng thành công
 app.get("/cart/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    let cartID = await Cart.aggregate([
+    const number = await Warehouse.aggregate([
+      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+    ]).then();
+    await Cart.aggregate([
       {
         $match: {
           userID: new mongoose.Types.ObjectId(req.session.userid),
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.productId",
+          foreignField: "_id",
+          as: "productList",
         },
       },
     ]).then((data) => {
@@ -422,7 +433,7 @@ app.get("/cart/:id", async (req, res) => {
         sID: req.session.sessionID,
         danhsach: data,
         VND,
-        cartID,
+        number,
       });
     });
   } else {
@@ -430,7 +441,7 @@ app.get("/cart/:id", async (req, res) => {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
-      cartID: 0,
+      danhsach: 1,
     });
   }
 });
@@ -445,7 +456,7 @@ app.post("/add_to_cart", async (req, res) => {
   if (cart[0]) {
     for (let i = 0; i < cart.length; i++) {
       cart[0].items.forEach(async function (element) {
-        if (element.productId != productId && quantity > 0) {
+        if (element._id != element._id && element.productId != productId && quantity > 0) {
           Cart.updateOne(
             { userID: req.body.user_id_hidden },
             {
@@ -459,12 +470,20 @@ app.post("/add_to_cart", async (req, res) => {
               },
             }
           ).then();
+        } else if (element.productId == productId && element._id == element._id) {
+          if (quantity > 0) {
+            element.quantity += convert;
+            element.total = element.quantity * productDetails.priceOut;
+            cart[0].save();
+          } else {
+            console.log("Xoá");
+          }
         } else {
           console.log("Error");
         }
       });
     }
-    res.redirect("/");
+    res.redirect("/cart/:id");
   } else {
     var cartData = Cart({
       items: [
@@ -479,7 +498,7 @@ app.post("/add_to_cart", async (req, res) => {
       userID: req.body.user_id_hidden,
     });
     cartData.save().then(function () {
-      res.redirect("/");
+      res.redirect("/cart/:id");
     });
   }
 });
