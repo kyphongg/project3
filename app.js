@@ -412,30 +412,18 @@ app.get("/cart/:id", async (req, res) => {
     const number = await Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
     ]).then();
-    await Cart.aggregate([
-      {
-        $match: {
-          userID: new mongoose.Types.ObjectId(req.session.userid),
-        },
-      },
-      {
-        $lookup: {
-          from: "products",
-          localField: "items.productId",
-          foreignField: "_id",
-          as: "productList",
-        },
-      },
-    ]).then((data) => {
-      res.render("layouts/clients/cart", {
-        fullname: req.session.fullname,
-        userid: req.session.userid,
-        sID: req.session.sessionID,
-        danhsach: data,
-        VND,
-        number,
+    await Cart.find({ userID: new mongoose.Types.ObjectId(req.session.userid) })
+      .populate("items.productID")
+      .then((data) => {
+        res.render("layouts/clients/cart", {
+          fullname: req.session.fullname,
+          userid: req.session.userid,
+          sID: req.session.sessionID,
+          danhsach: data,
+          VND,
+          number,
+        });
       });
-    });
   } else {
     res.render("layouts/clients/cart", {
       fullname: 1,
@@ -448,38 +436,36 @@ app.get("/cart/:id", async (req, res) => {
 
 app.post("/add_to_cart", async (req, res) => {
   const productId = req.body.product_id_hidden;
-  const quantity = req.body.quantity;
-  let productDetails = await Product.findById(productId);
+  const quantity = Number.parseInt(req.body.quantity);
+  const uid = req.body.user_id_hidden;
   let cart = await Cart.find({ userID: req.body.user_id_hidden });
-  let convert = parseInt(quantity);
-
   if (cart[0]) {
     for (let i = 0; i < cart.length; i++) {
       cart[0].items.forEach(async function (element) {
-        if (element._id != element._id && element.productId != productId && quantity > 0) {
-          Cart.updateOne(
-            { userID: req.body.user_id_hidden },
-            {
-              $push: {
-                items: {
-                  productId: productId,
-                  quantity: convert,
-                  price: productDetails.priceOut,
-                  total: productDetails.priceOut * convert,
-                },
-              },
-            }
-          ).then();
-        } else if (element.productId == productId && element._id == element._id) {
+        if (element._id == productId && element.productID == productId) {
           if (quantity > 0) {
-            element.quantity += convert;
-            element.total = element.quantity * productDetails.priceOut;
-            cart[0].save();
+            element.quantity += quantity;
+            const count = element.quantity;
           } else {
             console.log("Xoá");
           }
-        } else {
-          console.log("Error");
+        } else if (
+          element._id != productId &&
+          element.productID != productId &&
+          quantity > 0
+        ) {
+          await Cart.updateOne(
+            { userID: uid },
+            {
+              $addToSet: {
+                items: {
+                  _id: productId,
+                  productID: productId,
+                  quantity: quantity,
+                },
+              },
+            }
+          );
         }
       });
     }
@@ -488,14 +474,12 @@ app.post("/add_to_cart", async (req, res) => {
     var cartData = Cart({
       items: [
         {
-          productId: productId,
           quantity: quantity,
-          total: productDetails.priceOut * quantity,
-          price: productDetails.priceOut,
+          productID: productId,
+          _id: productId,
         },
       ],
-      value: req.body.value,
-      userID: req.body.user_id_hidden,
+      userID: uid,
     });
     cartData.save().then(function () {
       res.redirect("/cart/:id");

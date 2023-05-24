@@ -65,12 +65,12 @@
                 <% if(userid==1){ %>
                     <a class="cart" href="/login">
                         <img src="/images/shopping-cart.png" alt="UserImage">
-                        Giỏ hàng
+                        Giỏ hàng ( 0 )
                         </a>
                     <% }else { %>
-                <a class="cart" href="/cart/<%= userid %>">
+                <a class="cart" href="/cart/<%= userid %>" id="count">
                 <img src="/images/shopping-cart.png" alt="UserImage">
-                Giỏ hàng
+                Giỏ hàng ( 0 )
                 </a>
                 <% } %>
         </div>

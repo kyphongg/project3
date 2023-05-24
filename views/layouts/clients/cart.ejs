@@ -29,19 +29,19 @@
               </thead>
               <tbody>
                 <% for(let i=0; i < danhsach.length; i++) { %> <%
-                danhsach[i].productList.forEach(function(pid) { %>
+                danhsach[i].items.forEach(function(pid) { %>
                   <td style="width: 155px;">
                     <img
                       style="width: 60px; height: 80px;"
-                      src="/images/<%= pid.productImage %>"
+                      src="/images/<%= pid.productID.productImage %>"
                       alt=""
                     />
                   </td>
                   <td style="width: 320px;">
-                    <p style="line-height: 5px"><%= pid.productName %></p>
+                    <a href="/product/<%= pid.productID._id %>" style="text-decoration: none; color: #000;"><p style="line-height: 5px"><%= pid.productID.productName %></p></a>
                   </td>
                   <td style="width: 125px">
-                    <p style="color: #dc4e45"><%= VND.format(pid.priceOut) %> </p>
+                    <p style="color: #dc4e45"><%= VND.format(pid.productID.priceOut) %> </p>
                   </td>
                 </tr>
                 <% }); %> <% } %>
@@ -72,7 +72,7 @@
                     </form>
                   </td>
                   <td style="width: 125px;">
-                    <p style="color: #dc4e45"><%= VND.format(id.total) %></p>
+                    <p style="color: #dc4e45"><%= VND.format(id.productID.priceOut * id.quantity) %></p>
                   </td>
                   <td style="width: 200px;">
                     <a href="/" style="text-decoration: none;;" class="btn btn-danger"><i class="fa-regular fa-trash-can" style="color: white;"></i> Xóa sản phẩm</a>
@@ -87,20 +87,6 @@
             <div class="col-8"></div>
             <div class="col-4">
                 <div class="cart-price">
-                    <h4>Thông tin đơn hàng</h4>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Tổng tiền:</td>
-                                <td style="text-align: right; color:#DC4E45; font-weight:700;">35.000.000 đ</td>
-                            </tr>
-                        </tbody>
-                    </table>
                     <div class="pay">
                     <a href="/">
                         <button class="btn btn-secondary btn-pay">THANH TOÁN</button>

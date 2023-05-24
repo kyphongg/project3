@@ -3,7 +3,10 @@ const Schema = mongoose.Schema
 const passportLocalMongoose = require('passport-local-mongoose');
 
 let Item = new Schema({
-    productId: {
+    _id:{
+        type: mongoose.Schema.Types.ObjectId
+    },
+    productID:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
     },
@@ -11,14 +14,6 @@ let Item = new Schema({
         type: Number,
         required: true,
         min: [1, 'Quantity can not be less then 1.']
-    },
-    price: {
-        type: Number,
-        required: true
-    },
-    total: {
-        type: Number,
-        required: true,
     }
 })
 
