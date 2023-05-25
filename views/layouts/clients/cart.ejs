@@ -18,7 +18,21 @@
           <h3 style="margin-top: 18px;">Giỏ hàng</h3>
         </div>
         <%if(!carti[0]){%>
-          <p>Trống</p>
+          <div class="cart-table">
+            <p style="margin-top: 18px; font-size: 18px; font-weight:500">Giỏ hàng của bạn đang trống!!</p>
+          </div>
+          <div class="container" style="display:flex; justify-content:center;">
+            <div class="cart-table-img">
+              <img src="/images/empty-cart.png" style="width: 280px;" alt="">
+            </div>
+            </div>
+          <div class="container" style="display:flex; justify-content:center;">
+            <div class="back-home" style="width: 300px;">
+              <a href="/">
+                  <button class="btn btn-outline-dark btn-back-home">TIẾP TỤC MUA HÀNG</button>
+              </a>
+          </div>
+          </div>
         <%}else{%>
           <div class="cart-table">
             <div id="leftbox">
@@ -102,7 +116,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+          </div>
         <%}%>
         
         
