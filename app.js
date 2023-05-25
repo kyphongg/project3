@@ -576,34 +576,43 @@ app.get("/delete_cart_items/:id", async function (req, res) {
   if (req.session.daDangNhap) {
     const uid = req.session.userid;
     const productId = req.params.id;
-    await Cart.updateOne(
-    {
-      "items._id": productId,
-      userID: uid,
-    },
-      { $pull: { items: { _id: productId } } },
-      { multi: true }
-    )
-    // Cart.aggregate([
-    //   { $match: { userID: new mongoose.Types.ObjectId(uid) } },
-    //   {
-    //     $addFields: {
-    //       size: {
-    //         $size: "$items",
-    //       },
-    //     },
-    //   },
-    //   {
-    //     $group: {
-    //       _id: null,
-    //       item_count: {
-    //         $sum: "$size",
-    //       },
-    //     },
-    //   },
-    // ])
-    .then((data) => {
-      res.redirect("/cart/:id");
+    const cart = await Cart.aggregate([
+      { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
+      {
+        $addFields: {
+          size: {
+            $size: "$items",
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          item_count: {
+            $sum: "$size",
+          },
+        },
+      },
+    ]);
+    cart.forEach(async function (item) {
+      if (item.item_count == 1) {
+        await Cart.deleteOne({
+          userID: new mongoose.Types.ObjectId(req.session.userid),
+        }).then(function () {
+          res.redirect("/cart/:id");
+        });
+      } else {
+        await Cart.updateOne(
+          {
+            "items._id": productId,
+            userID: uid,
+          },
+          { $pull: { items: { _id: productId } } },
+          { multi: true }
+        ).then(function () {
+          res.redirect("/cart/:id");
+        });
+      }
     });
   } else {
     res.redirect("/login");
