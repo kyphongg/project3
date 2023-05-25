@@ -70,7 +70,7 @@
                     <% }else { %>
                 <a class="cart" href="/cart/<%= userid %>" id="count">
                 <img src="/images/shopping-cart.png" alt="UserImage">
-                Giỏ hàng ( 0 )
+                Giỏ hàng ( <%cart.forEach(function(id){%><%= id.item_count %><%});%> )
                 </a>
                 <% } %>
         </div>

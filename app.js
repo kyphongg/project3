@@ -102,6 +102,7 @@ app.get("/login", (req, res) => {
   res.render("layouts/clients/login", {
     userid: 1,
     fullname: 1,
+    cart: 0,
   });
 });
 
@@ -110,6 +111,7 @@ app.get("/signup", (req, res) => {
     sID: req.sessionID,
     userid: 1,
     fullname: 1,
+    cart: 0,
   });
 });
 
@@ -166,13 +168,26 @@ app.get("/logout", function (req, res) {
 //Trang chủ
 app.get("/", async (req, res) => {
   if (req.session.daDangNhap) {
-    let cartID = await Cart.aggregate([
+    const cart = await Cart.aggregate([
+      { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
       {
-        $match: {
-          userID: new mongoose.Types.ObjectId(req.session.userid),
+        $addFields: {
+          size: {
+            $size: "$items",
+          },
         },
       },
-    ]).then();
+      {
+        $group: {
+          _id: null,
+          item_count: {
+            $sum: "$size",
+          },
+        },
+      },
+    ]);
+    var sess = req.session;
+    sess.cart = cart;
     await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
       .populate("categoryID")
       .populate("producerID")
@@ -183,7 +198,7 @@ app.get("/", async (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
-          cartID,
+          cart: req.session.cart,
         });
       })
       .catch((err) => {
@@ -200,7 +215,7 @@ app.get("/", async (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
-          cartID: 0,
+          cart: 0,
         });
       })
       .catch((err) => {
@@ -212,25 +227,38 @@ app.get("/", async (req, res) => {
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
 app.get("/about", async (req, res) => {
   if (req.session.daDangNhap) {
-    let cartID = await Cart.aggregate([
+    const cart = await Cart.aggregate([
+      { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
       {
-        $match: {
-          userID: new mongoose.Types.ObjectId(req.session.userid),
+        $addFields: {
+          size: {
+            $size: "$items",
+          },
         },
       },
-    ]).then();
+      {
+        $group: {
+          _id: null,
+          item_count: {
+            $sum: "$size",
+          },
+        },
+      },
+    ]);
+    var sess = req.session;
+    sess.cart = cart;
     res.render("layouts/clients/about", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
-      cartID,
+      cart: req.session.cart,
     });
   } else {
     res.render("layouts/clients/about", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
-      cartID: 0,
+      cart: 0,
     });
   }
 });
@@ -241,12 +269,14 @@ app.get("/privacy_policy", (req, res) => {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
     res.render("layouts/clients/privacy_policy", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
+      cart: 0,
     });
   }
 });
@@ -257,12 +287,14 @@ app.get("/terms_of_service", (req, res) => {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
     res.render("layouts/clients/terms_of_service", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
+      cart: 0,
     });
   }
 });
@@ -273,12 +305,14 @@ app.get("/news", (req, res) => {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
     res.render("layouts/clients/news", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
+      cart: 0,
     });
   }
 });
@@ -289,12 +323,14 @@ app.get("/hiring", (req, res) => {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
     res.render("layouts/clients/hiring", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
+      cart: 0,
     });
   }
 });
@@ -305,12 +341,14 @@ app.get("/support", (req, res) => {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
     res.render("layouts/clients/support", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
+      cart: 0,
     });
   }
 });
@@ -321,12 +359,14 @@ app.get("/hotline", (req, res) => {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
     res.render("layouts/clients/hotline", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
+      cart: 0,
     });
   }
 });
@@ -337,12 +377,14 @@ app.get("/customer_care", (req, res) => {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
     res.render("layouts/clients/customer_care", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
+      cart: 0,
     });
   }
 });
@@ -355,13 +397,10 @@ app.get("/profile/:id", (req, res) => {
       email: req.session.email,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/home", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-    });
+    res.redirect("/login");
   }
 });
 
@@ -372,13 +411,10 @@ app.get("/orders/:id", (req, res) => {
       email: req.session.email,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/home", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-    });
+    res.redirect("/login");
   }
 });
 
@@ -389,13 +425,10 @@ app.get("/password/:id", (req, res) => {
       email: req.session.email,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/home", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-    });
+    res.redirect("/login");
   }
 });
 
@@ -409,9 +442,32 @@ app.get("/orders_detail", (req, res) => {
 //Trang giỏ hàng và thanh toán và trang thông báo đặt hàng thành công
 app.get("/cart/:id", async (req, res) => {
   if (req.session.daDangNhap) {
+    const cart = await Cart.aggregate([
+      { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
+      {
+        $addFields: {
+          size: {
+            $size: "$items",
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          item_count: {
+            $sum: "$size",
+          },
+        },
+      },
+    ]);
+    var sess = req.session;
+    sess.cart = cart;
     const number = await Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
     ]).then();
+    const carti = await Cart.find({
+      userID: new mongoose.Types.ObjectId(req.session.userid),
+    });
     await Cart.find({ userID: new mongoose.Types.ObjectId(req.session.userid) })
       .populate("items.productID")
       .then((data) => {
@@ -422,21 +478,18 @@ app.get("/cart/:id", async (req, res) => {
           danhsach: data,
           VND,
           number,
+          cart: req.session.cart,
+          carti,
         });
       });
   } else {
-    res.render("layouts/clients/cart", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-      danhsach: 1,
-    });
+    res.redirect("/login");
   }
 });
 
 app.post("/add_to_cart", async (req, res) => {
   const productId = req.body.product_id_hidden;
-  const quantity = Number.parseInt(req.body.quantity);
+  const quantity = req.body.quantity;
   const uid = req.body.user_id_hidden;
   let cart = await Cart.find({ userID: req.body.user_id_hidden });
   if (cart[0]) {
@@ -444,8 +497,39 @@ app.post("/add_to_cart", async (req, res) => {
       cart[0].items.forEach(async function (element) {
         if (element._id == productId && element.productID == productId) {
           if (quantity > 0) {
-            element.quantity += quantity;
-            const count = element.quantity;
+            // const data = await Cart.findOneAndUpdate(
+            //   {
+            //     userID: uid,
+            //     items: { $elemMatch: { _id: productId } },
+            //   },
+            //   { "items.$": 1 },
+            //   { $inc: { "items.$.quantity": convert } },
+            //   { safe: true, upsert: true }
+            // );
+
+            // const data = await Cart.find(
+            //   { "items._id": productId, userID: uid },
+            //   { "items.$": 1 },
+            //   { upsert: true }
+            // );
+            // console.log("Item" + data);
+
+            // await Cart.updateOne(
+            //   { "items._id": productId, userID: uid },
+            //   { $addToSet: { "items.$.quantity": quantity } },
+            //   {
+            //     upsert: true,
+            //   }
+            // );
+            const data = await Cart.findOneAndUpdate(
+              {
+                userID: uid,
+                items: { $elemMatch: { _id: productId } },
+              },
+              { "items.$": 1 },
+              { $set: { "items.quantity": quantity } },
+              { upsert: true }
+            );
           } else {
             console.log("Xoá");
           }
@@ -464,7 +548,8 @@ app.post("/add_to_cart", async (req, res) => {
                   quantity: quantity,
                 },
               },
-            }
+            },
+            { safe: true, upsert: true }
           );
         }
       });
@@ -487,6 +572,44 @@ app.post("/add_to_cart", async (req, res) => {
   }
 });
 
+app.get("/delete_cart_items/:id", async function (req, res) {
+  if (req.session.daDangNhap) {
+    const uid = req.session.userid;
+    const productId = req.params.id;
+    await Cart.updateOne(
+    {
+      "items._id": productId,
+      userID: uid,
+    },
+      { $pull: { items: { _id: productId } } },
+      { multi: true }
+    )
+    // Cart.aggregate([
+    //   { $match: { userID: new mongoose.Types.ObjectId(uid) } },
+    //   {
+    //     $addFields: {
+    //       size: {
+    //         $size: "$items",
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $group: {
+    //       _id: null,
+    //       item_count: {
+    //         $sum: "$size",
+    //       },
+    //     },
+    //   },
+    // ])
+    .then((data) => {
+      res.redirect("/cart/:id");
+    });
+  } else {
+    res.redirect("/login");
+  }
+});
+
 app.get("/checkout", (req, res) => {
   res.render("layouts/clients/checkout", {
     nhanvat: 1,
@@ -499,13 +622,10 @@ app.get("/success", (req, res) => {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/success", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-    });
+    res.redirect("/login");
   }
 });
 
@@ -524,6 +644,7 @@ app.get("/search", async (req, res) => {
             sID: req.session.sessionID,
             danhsach: data,
             VND,
+            cart: req.session.cart,
           });
         })
         .catch((err) => {
@@ -540,6 +661,7 @@ app.get("/search", async (req, res) => {
             sID: req.session.sessionID,
             danhsach: data,
             VND,
+            cart: 0,
           });
         })
         .catch((err) => {
@@ -564,6 +686,7 @@ app.get("/all_product", async (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: req.session.cart,
         });
       })
       .catch((err) => {
@@ -580,6 +703,7 @@ app.get("/all_product", async (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: 0,
         });
       })
       .catch((err) => {
@@ -625,6 +749,7 @@ app.get("/product/:id", async (req, res) => {
           userid: req.session.userid,
           sID: req.session.sessionID,
           danhsach: data,
+          cart: req.session.cart,
           VND,
         });
       })
@@ -667,6 +792,7 @@ app.get("/product/:id", async (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: 0,
         });
       })
       .catch((err) => {
@@ -720,6 +846,7 @@ app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: req.session.cart,
         });
       })
       .catch((err) => {
@@ -767,6 +894,7 @@ app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: 0,
         });
       })
       .catch((err) => {
@@ -819,6 +947,7 @@ app.get("/category/645c5a60cf52334165588925", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: req.session.cart,
         });
       })
       .catch((err) => {
@@ -866,6 +995,7 @@ app.get("/category/645c5a60cf52334165588925", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: 0,
         });
       })
       .catch((err) => {
@@ -918,6 +1048,7 @@ app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: req.session.cart,
         });
       })
       .catch((err) => {
@@ -965,6 +1096,7 @@ app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: 0,
         });
       })
       .catch((err) => {
@@ -1017,6 +1149,7 @@ app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: req.session.cart,
         });
       })
       .catch((err) => {
@@ -1064,6 +1197,7 @@ app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: 0,
         });
       })
       .catch((err) => {
@@ -1116,6 +1250,7 @@ app.get("/category/645c5a59cf52334165588922", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: req.session.cart,
         });
       })
       .catch((err) => {
@@ -1163,6 +1298,7 @@ app.get("/category/645c5a59cf52334165588922", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: 0,
         });
       })
       .catch((err) => {
@@ -1215,6 +1351,7 @@ app.get("/category/645c5a67cf52334165588928", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: req.session.cart,
         });
       })
       .catch((err) => {
@@ -1262,6 +1399,7 @@ app.get("/category/645c5a67cf52334165588928", (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
+          cart: 0,
         });
       })
       .catch((err) => {
@@ -1294,12 +1432,7 @@ app.post("/admin_login", async function (req, res) {
         sess.admin_id = admin._id;
         sess.number = customer;
         sess.numberal = employee;
-        if (sess.back) {
-          console.log(sess.back);
-          res.redirect(sess.back);
-        } else {
-          res.redirect("/admin_home");
-        }
+        res.redirect("/admin_home");
       } else {
         res.status(400).json({ error: "Sai mật khẩu" });
       }
@@ -1327,7 +1460,6 @@ app.get("/admin_home", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1342,7 +1474,6 @@ app.get("/admin_categories", async (req, res) => {
       danhsach: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1354,7 +1485,6 @@ app.get("/add_categories", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1368,7 +1498,6 @@ app.post("/categories_save", function (req, res) {
       res.redirect("/admin_categories");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1382,7 +1511,6 @@ app.get("/edit_categories/:id", async (req, res) => {
       danhsach: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1398,7 +1526,6 @@ app.post("/edit_categories_save", async function (req, res) {
       res.redirect("/admin_categories");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1409,7 +1536,6 @@ app.get("/delete_categories/:id", function (req, res) {
       res.redirect("/admin_categories");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1424,7 +1550,6 @@ app.get("/admin_producers", async (req, res) => {
       danhsach: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1436,7 +1561,6 @@ app.get("/add_producers", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1450,7 +1574,6 @@ app.post("/producers_save", function (req, res) {
       res.redirect("/admin_producers");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1464,7 +1587,6 @@ app.get("/edit_producers/:id", async (req, res) => {
       danhsach: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1480,7 +1602,6 @@ app.post("/edit_producers_save", async function (req, res) {
       res.redirect("/admin_producers");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1491,7 +1612,6 @@ app.get("/delete_producers/:id", function (req, res) {
       res.redirect("/admin_producers");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1514,7 +1634,6 @@ app.get("/admin_product", async (req, res) => {
         console.log(err);
       });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1527,7 +1646,6 @@ app.get("/add_product", (req, res) => {
       VND,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1560,7 +1678,6 @@ app.post("/save_product", (req, res) => {
       }
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1582,7 +1699,6 @@ app.get("/edit_product/:id", async (req, res) => {
         console.log(err);
       });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1636,7 +1752,6 @@ app.post("/edit_product_save", (req, res) => {
       }
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1651,7 +1766,6 @@ app.get("/customers", async (req, res) => {
       nhanvat: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1666,7 +1780,6 @@ app.get("/employees", async (req, res) => {
       nhanvat: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1680,7 +1793,6 @@ app.get("/admin_profile/:id", async (req, res) => {
       nhanvat: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1694,7 +1806,6 @@ app.get("/admin_setting/:id", async (req, res) => {
       nhanvat: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1713,7 +1824,6 @@ app.post("/admin_save", function (req, res) {
       res.redirect("/employees");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1725,7 +1835,6 @@ app.get("/add_employee", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1739,7 +1848,6 @@ app.get("/edit/:id", async function (req, res) {
       nhanvat: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1759,7 +1867,6 @@ app.post("/edit_save", async function (req, res) {
       res.redirect("/employees");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1770,7 +1877,6 @@ app.get("/delete/:id", function (req, res) {
       res.redirect("/employees");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1784,7 +1890,6 @@ app.get("/employees_store", async (req, res) => {
       nhanvat: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1798,7 +1903,6 @@ app.get("/employees_order", async (req, res) => {
       nhanvat: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1812,7 +1916,6 @@ app.get("/employees_customer_care", async (req, res) => {
       nhanvat: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1825,7 +1928,6 @@ app.get("/all_orders", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1837,7 +1939,6 @@ app.get("/new_orders", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1849,7 +1950,6 @@ app.get("/order_detail", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1861,7 +1961,6 @@ app.get("/accept_orders", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1873,7 +1972,6 @@ app.get("/done_orders", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1885,7 +1983,6 @@ app.get("/cancel_orders", (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1916,7 +2013,6 @@ app.get("/warehouse", async (req, res) => {
         console.log(err);
       });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1938,7 +2034,6 @@ app.get("/list_warehouse/:id", async (req, res) => {
         console.log(err);
       });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1956,7 +2051,6 @@ app.get("/add_warehouse", async (req, res) => {
         });
       });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1973,7 +2067,6 @@ app.post("/save_warehouse", (req, res) => {
       res.redirect("/warehouse");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -1989,7 +2082,6 @@ app.get("/coupon", async (req, res) => {
       VND,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2001,7 +2093,6 @@ app.get("/add_coupon", async (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2021,7 +2112,6 @@ app.post("/coupon_save", function (req, res) {
       res.redirect("/coupon");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2035,7 +2125,6 @@ app.get("/edit_coupon/:id", async (req, res) => {
       danhsach: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2057,7 +2146,6 @@ app.post("/edit_coupon_save", async function (req, res) {
       res.redirect("/coupon");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2068,7 +2156,6 @@ app.get("/delete_coupon/:id", function (req, res) {
       res.redirect("/coupon");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2084,7 +2171,6 @@ app.get("/cities", async (req, res) => {
       VND,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2096,7 +2182,6 @@ app.get("/add_cities", async (req, res) => {
       admin_id: req.session.admin_id,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2111,7 +2196,6 @@ app.post("/cities_save", function (req, res) {
       res.redirect("/cities");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2125,7 +2209,6 @@ app.get("/edit_cities/:id", async (req, res) => {
       danhsach: data,
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2142,7 +2225,6 @@ app.post("/edit_cities_save", async function (req, res) {
       res.redirect("/cities");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });
@@ -2153,7 +2235,6 @@ app.get("/delete_cities/:id", function (req, res) {
       res.redirect("/cities");
     });
   } else {
-    req.session.back = "/admin_home";
     res.redirect("/admin_login");
   }
 });

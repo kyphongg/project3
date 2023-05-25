@@ -23,6 +23,10 @@ const Cart = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
+    count:{
+        type: Number,
+        default: 0,
+    },
     username:{
         type: Number
     },  
