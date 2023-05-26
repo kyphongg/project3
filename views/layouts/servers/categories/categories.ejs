@@ -40,11 +40,30 @@
                                         <a href="/edit_categories/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
                                             <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
                                         </a>
-                                        <a onclick="return confirm('Xoá ?')" href="/delete_categories/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
-                                            <i class="fa-solid fa-square-xmark" style="font-size: 25px; color: #D9534F;"></i>
+                                        <a class="active" ui-toggle-class="">
+                                            <i class="fa-solid fa-square-xmark js-buy-tickets" style="font-size: 25px; color: #D9534F;"></i>
                                         </a>
                                     </td>
                                 </tr>
+
+                                <div class="modal js-modal">
+                                    <div class="modal-container js-modal-container">
+                                        
+                                        <header class="modal-header">
+                                            Xóa thể loại!
+                                        </header>
+                              
+                                        <div class="modal-body">
+                                            <label for="tickets-quantity" class="modal-label">
+                                                Bạn có muốn xóa thể loại này?
+                                            </label>
+                                            <div class="btn-js" style="margin-top:50px; margin-left:200px;">
+                                                <a href="/delete_categories/<%= danhsach[i].id %>" id="buy-tickets" style="margin-right:15px; background-color: #DC3545;"> Xóa </a>
+                                                <a id="buy-tickets" class="modal-close js-modal-close" style="background-color: #6C757D;"> Hủy </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                     <% } %>
                                 </tbody>
                         </table>
