@@ -143,7 +143,7 @@ app.post("/login", async function (req, res) {
       const result = req.body.password === user.password;
       if (result) {
         var sess = req.session;
-        sess.daDangNhap = true;
+        sess.guest = true;
         sess.fullname = user.fullname;
         sess.email = user.email;
         sess.userid = user._id;
@@ -167,7 +167,7 @@ app.get("/logout", function (req, res) {
 
 //Trang chủ
 app.get("/", async (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     const cart = await Cart.aggregate([
       { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
       {
@@ -226,7 +226,7 @@ app.get("/", async (req, res) => {
 
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
 app.get("/about", async (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     const cart = await Cart.aggregate([
       { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
       {
@@ -264,7 +264,7 @@ app.get("/about", async (req, res) => {
 });
 
 app.get("/privacy_policy", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/privacy_policy", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -282,7 +282,7 @@ app.get("/privacy_policy", (req, res) => {
 });
 
 app.get("/terms_of_service", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/terms_of_service", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -300,7 +300,7 @@ app.get("/terms_of_service", (req, res) => {
 });
 
 app.get("/news", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/news", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -318,7 +318,7 @@ app.get("/news", (req, res) => {
 });
 
 app.get("/hiring", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/hiring", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -336,7 +336,7 @@ app.get("/hiring", (req, res) => {
 });
 
 app.get("/support", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/support", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -354,7 +354,7 @@ app.get("/support", (req, res) => {
 });
 
 app.get("/hotline", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/hotline", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -372,7 +372,7 @@ app.get("/hotline", (req, res) => {
 });
 
 app.get("/customer_care", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/customer_care", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -391,7 +391,7 @@ app.get("/customer_care", (req, res) => {
 
 //Trang profile, lịch sử đơn hàng, mật khẩu
 app.get("/profile/:id", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/profile", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -405,7 +405,7 @@ app.get("/profile/:id", (req, res) => {
 });
 
 app.get("/orders/:id", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/orders", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -419,7 +419,7 @@ app.get("/orders/:id", (req, res) => {
 });
 
 app.get("/password/:id", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/password", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -441,7 +441,7 @@ app.get("/orders_detail", (req, res) => {
 
 //Trang giỏ hàng và thanh toán và trang thông báo đặt hàng thành công
 app.get("/cart/:id", async (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     const cart = await Cart.aggregate([
       { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
       {
@@ -573,7 +573,7 @@ app.post("/add_to_cart", async (req, res) => {
 });
 
 app.get("/delete_cart_items/:id", async function (req, res) {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     const uid = req.session.userid;
     const productId = req.params.id;
     const cart = await Cart.aggregate([
@@ -626,7 +626,7 @@ app.get("/checkout", (req, res) => {
 });
 
 app.get("/success", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     res.render("layouts/clients/success", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -642,7 +642,7 @@ app.get("/success", (req, res) => {
 app.get("/search", async (req, res) => {
   let kw = req.query.kw;
   try {
-    if (req.session.daDangNhap) {
+    if (req.session.guest) {
       await Product.find({
         productName: { $regex: ".*" + kw + ".*", $options: "i" },
       })
@@ -684,7 +684,7 @@ app.get("/search", async (req, res) => {
 
 //Trang tất cả các sản phẩm
 app.get("/all_product", async (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
       .populate("categoryID")
       .populate("producerID")
@@ -723,7 +723,7 @@ app.get("/all_product", async (req, res) => {
 
 //Trang chi tiết sản phẩm
 app.get("/product/:id", async (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
@@ -813,7 +813,7 @@ app.get("/product/:id", async (req, res) => {
 //Trang category
 //Hành động
 app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       {
@@ -914,7 +914,7 @@ app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
 
 //Phiêu lưu
 app.get("/category/645c5a60cf52334165588925", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       {
@@ -1015,7 +1015,7 @@ app.get("/category/645c5a60cf52334165588925", (req, res) => {
 
 //Thể thao
 app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       {
@@ -1116,7 +1116,7 @@ app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
 
 //Chiến thuật
 app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       {
@@ -1217,7 +1217,7 @@ app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
 
 //Nhập vai
 app.get("/category/645c5a59cf52334165588922", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       {
@@ -1318,7 +1318,7 @@ app.get("/category/645c5a59cf52334165588922", (req, res) => {
 
 //Mô phỏng
 app.get("/category/645c5a67cf52334165588928", (req, res) => {
-  if (req.session.daDangNhap) {
+  if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       {
@@ -1432,7 +1432,7 @@ app.post("/admin_login", async function (req, res) {
       //Kiểm tra mật khẩu
       const result = req.body.password === admin.password;
       if (result) {
-        console.log("Đăng nhập thành công với", admin.id);
+        console.log("Đăng nhập thành công với", req.session.id);
         const customer = await User.find().count();
         const employee = await Admin.find().count();
         var sess = req.session;
