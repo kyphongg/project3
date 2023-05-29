@@ -34,6 +34,7 @@
                         <i class="fa-regular fa-credit-card"></i>
                         <h3>Đơn hàng</h3>
                     </div>
+                <form action="/creat_new_order" method="post">
                     <div class="payment-table">
                         <table style="vertical-align: middle;" class="table table-bordered">
                             <thead>
@@ -46,13 +47,16 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <input type="hidden" name="user_id_hidden" value="<%= userid %>">
                                 <% for(let i=0; i < danhsach.length; i++) { %> <%
                                     danhsach[i].items.forEach(function(pid) { %>
                                 <tr>
+                                    <input name="product_id_hidden" type="hidden" value="<%= pid._id %>"/>
                                     <td style="width: 220px;"><%= pid.productID.productName %></td>
                                     <td><img style="width:60px; height:80px" src="/images/<%= pid.productID.productImage %>"></td>
                                     <td><%= VND.format(pid.productID.priceOut) %></td>
                                     <td><%= pid.quantity %></td>
+                                    <input name="quantity_hidden" type="hidden" name="<%= pid.quantity %>" />
                                     <td><%= VND.format(pid.productID.priceOut * pid.quantity) %></td>
                                 </tr>
                                 <% }); %>
@@ -65,10 +69,10 @@
                         <h3>Thông tin vận chuyển</h3>
                     </div>
                     <div class="info-detail">
-                        <form action="" class="payment-infomation">
+                        <dive class="payment-infomation">
                             <div class="payment-form">
                                 <p>Tỉnh thành</p>
-                                <select id="selectBox" onchange="changeFunc();">
+                                <select id="selectBox" onchange="changeFunc();" required>
                                     <option value="0">Chọn thành phố</option>
                                     <% for(let i=0; i < city.length; i++) { %>
                                     <option value="<%= city[i].price %>"><%= city[i].cityName %></option>
@@ -77,19 +81,19 @@
                             </div>
                             <div class="payment-form">
                                 <p>Địa chỉ</p>
-                                <input type="text">
+                                <input type="text" name="shippingAddress" required>
                             </div>
-                        </form>
-                    </div>
-                </div>
+                        
+                    
+                
                 <div class="col-6">
                     <div class="payment-coupon">
                         <h4 style="font-weight: 700; line-height: 20px;">NHẬP MÃ COUPON ƯU ĐÃI</h4>
                         <p style="font-size: 14px;">Chỉ sử dụng 1 mã cho 1 đơn hàng</p>
-                        <form style="display:flex; margin-bottom: 15px" action="/couponIn" method="post">
-                            <input type="text" class="form-control" placeholder="Nhập mã giảm giá" style="width:300px; border-radius: 10px; margin-right: 10px;">
+                        <div style="display:flex; margin-bottom: 15px" >
+                            <input type="text" class="form-control" placeholder="Nhập mã giảm giá" style="width:300px; border-radius: 10px; margin-right: 10px;" name="couponCode">
                             <input type="submit" class="btn btn-primary" name="check_coupon" value="Áp dụng" style="font-weight: 600;">
-                        </form>    
+                        </div>
                     </div>
                     <div class="payment-price">
                         <table class="table">
@@ -102,33 +106,35 @@
                                 <tr style="border: white;">
                                     <td>Tạm tính:</td>
                                     <td style="text-align: right;"><%= VND.format(convert) %></td>
-                                    <td style="visibility: hidden;" id="cost"><%= convert %></td>
+                                    <td style="visibility: hidden; text-align: right;" id="cost"><%= convert %></td>
                                 </tr>
                                 <tr style="border: white;">
                                     <td>Phí vận chuyển:</td>
                                     <td style="text-align: right;" id="shippingcost"><%= VND.format(0) %></td>
+                                    <td style=" text-align: right;" id="shippingcost"></td>
+                                    <input type="text" name="shippingFee" value="0" id="fee">
                                 </tr>
                                 <tr>
                                     <td>Mã giảm giá:</td>
-                                    <td style="text-align: right;">0 đ</td>
+                                    <td style="text-align: right;" id="coupon">0 đ</td>
                                 </tr>
                                 <tr style="border: white;">
                                     <td style="font-weight: 500;">Tổng tiền:</td>
                                     <td style="text-align: right; color:#DC4E45; font-weight:500;" id="total"><%= VND.format(convert) %></td>
+                                    <input type="text" name="total" value="<%= convert %>" id="subTotal">
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
+            
         
             <div class="payment-method">
                 <h4>Phương thức thanh toán</h4>
-                <form>
                     <div class="payCash">
                         <span>
                             <label>
-                                <input name="payment_method" value="1" type="radio">
+                                <input name="paymentMethod" value="COD" type="radio">
                                 <img src="/images/GDTT.png" alt="">
                                     Thanh toán tiền mặt khi nhận hàng (COD)
                                 <p>Bạn chỉ phải thanh toán khi nhận được hàng. Nhân viên sẽ liên hệ bạn để xác nhận đơn hàng trong vòng 24h
@@ -136,11 +142,10 @@
                             </label>
                         </span>
                     </div>
-
                     <div class="payOnline">
                         <span>
                             <label>
-                                <input name="payment_method" value="2" type="radio">
+                                <input name="paymentMethod" value="BANKING" type="radio">
                                 <img src="/images/bank.png" alt="">
                                     Thanh toán chuyển khoản ngân hàng
                                 <p>Bạn chỉ phải thanh toán khi nhận được hàng. Nhân viên sẽ liên hệ bạn để xác nhận đơn hàng trong vòng 24h
@@ -157,13 +162,13 @@
                     <a href="/cart/<%= userid %>" style="margin-left: 15px;">
                         <button class="btn btn-secondary btn-backk" style="font-size: 20px">< Quay lại giỏ hàng</button>
                     </a>
-                    <button type="submit" class="btn btn-secondary btn-payment">Đặt hàng</button>
-                </form>
             </div>
+            <button type="submit" class="btn btn-secondary btn-payment">Đặt hàng</button>
+        
             <% } %>
-        </div>
-    </div>
+        
     
+    </div>
      <%- include('partials/footer') %>
 </body>
 </html>

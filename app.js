@@ -60,6 +60,7 @@ const Warehouse = require("./models/warehouse.js");
 const Coupon = require("./models/coupon.js");
 const City = require("./models/city.js");
 const Cart = require("./models/cart.js");
+const Order = require("./models/order.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -643,8 +644,53 @@ app.get("/checkout/:id", async (req, res) => {
   }
 });
 
-app.get("/success", (req, res) => {
+app.post("/creat_new_order", async (req, res) => {
+  const productId = req.body.product_id_hidden;
+  const quantity = parseInt(req.body.quantity_hidden);
+  const uid = req.body.user_id_hidden;
+  await Order({
+    items: [
+      {
+        productID: productId,
+        _id: productId,
+      },
+    ],
+    userID: uid,
+    paymentMethod: req.body.paymentMethod,
+    shippingAddress: req.body.shippingAddress,
+    shippingFee: req.body.shippingFee,
+    total: req.body.total,
+    timeIn: dateVietNam,
+    orderStatus: 0,
+  }).save();
+  await Cart.deleteOne({
+    userID: new mongoose.Types.ObjectId(req.session.userid),
+  });
+  res.redirect("/success");
+});
+
+app.get("/success", async (req, res) => {
   if (req.session.guest) {
+    const cart = await Cart.aggregate([
+      { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
+      {
+        $addFields: {
+          size: {
+            $size: "$items",
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          item_count: {
+            $sum: "$size",
+          },
+        },
+      },
+    ]);
+    var sess = req.session;
+    sess.cart = cart;
     res.render("layouts/clients/success", {
       fullname: req.session.fullname,
       userid: req.session.userid,

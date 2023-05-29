@@ -42,9 +42,13 @@
                       <th>Hình ảnh</th>
                       <th>Tên sản phẩm</th>
                       <th style="border-right:none;">Đơn giá</th>
+                      <th>Số lượng</th>
+                      <th>Thành tiền</th>
+                      <th>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
+                  <tr>
                   <% for(let i=0; i < danhsach.length; i++) { %> <%
                   danhsach[i].items.forEach(function(pid) { %>
                     <td style="width: 155px;">
@@ -60,65 +64,43 @@
                     <td style="width: 125px">
                       <p style="color: #dc4e45"><%= VND.format(pid.productID.priceOut) %> </p>
                     </td>
-                  </tr>
-                  <% }); %> <% } %>
-                </tbody>
-              </table>
-            </div>
-  
-            <div id="rightbox">
-              <table class="table table-bordered table-striped">
-                  <thead>
-                      <tr>
-                          <th>Số lượng</th>
-                          <th>Thành tiền</th>
-                          <th>Hành động</th>
-                      </tr>
-                  </thead>
-  
-                <tbody>
-                  <% for(let i=0; i < danhsach.length; i++) { %> <%
-                  danhsach[i].items.forEach(function(id) { %>
-                  <tr>
                     <td style="width: 225px; height: 96.75px;">
                       <form>
-                          <input name="product_id_hidden" type="hidden" value="<%= id._id %>"/>
+                          <input name="product_id_hidden" type="hidden" value="<%= pid._id %>"/>
                           <input name="user_id_hidden" type="hidden" value="<%= userid %>"/>
-                          <input type="number" min="1" max="" value="<%= id.quantity %>" name="quantity" style="width: 45px; height: 30px; padding-left: 10px"/>
+                          <input type="number" min="1" max="" value="<%= pid.quantity %>" name="quantity" style="width: 45px; height: 30px; padding-left: 10px"/>
                           <input type="submit" value="Cập nhật" name="update_quantity" class="btn btn-primary update-quantity" style="margin-bottom: 5px; margin-left: 5px"/>
                       </form>
                     </td>
                     <td style="width: 125px;">
-                      <p style="color: #dc4e45"><%= VND.format(id.productID.priceOut * parseInt(id.quantity)) %></p>
+                      <p style="color: #dc4e45"><%= VND.format(pid.productID.priceOut * parseInt(pid.quantity)) %></p>
                     </td>
                     <td style="width: 200px;">
                       <a style="text-decoration: none;;" class="btn btn-danger js-buy-tickets"><i class="fa-regular fa-trash-can" style="color: white;"></i> Xóa sản phẩm</a>
                     </td>
-                  </tr>
-
-                  <div class="modal js-modal">
-                    <div class="modal-container js-modal-container">
-                        
-                        <header class="modal-header">
-                            Xóa sản phẩm!
-                        </header>
-              
-                        <div class="modal-body">
-                            <label for="tickets-quantity" class="modal-label">
-                                Quý khách có muốn xóa sản phẩm này?
-                            </label>
-                            <div class="btn-js" style="margin-top:50px; margin-left:200px;">
-                                <a href="/delete_cart_items/<%= id._id %>" id="buy-tickets" style="margin-right:15px; background-color: #DC3545;"> Xóa </a>
-                                <a id="buy-tickets" class="modal-close js-modal-close" style="background-color: #6C757D;"> Hủy </a>
-                            </div>
-                        </div>
+                    <div class="modal js-modal">
+                      <div class="modal-container js-modal-container">
+                          
+                          <header class="modal-header">
+                              Xóa sản phẩm!
+                          </header>
+                
+                          <div class="modal-body">
+                              <label for="tickets-quantity" class="modal-label">
+                                  Quý khách có muốn xóa sản phẩm này?
+                              </label>
+                              <div class="btn-js" style="margin-top:50px; margin-left:200px;">
+                                  <a href="/delete_cart_items/<%= pid._id %>" id="buy-tickets" style="margin-right:15px; background-color: #DC3545;"> Xóa </a>
+                                  <a id="buy-tickets" class="modal-close js-modal-close" style="background-color: #6C757D;"> Hủy </a>
+                              </div>
+                          </div>
+                      </div>
                     </div>
-                </div>
-                  <% }); %> <% } %>
+                  </tr>
                 </tbody>
               </table>
             </div>
-          </div>
+                  <% }); %> <% } %>
           <div class="row">
             <div class="col-8"></div>
             <div class="col-4">

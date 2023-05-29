@@ -1,6 +1,20 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const passportLocalMongoose = require('passport-local-mongoose');
+let Item = new Schema({
+    _id:{
+        type: mongoose.Schema.Types.ObjectId
+    },
+    productID:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+    },
+    quantity: {
+        type: Number,
+        default: 1,
+    }
+})
+
 var Order = new Schema({
     userID:{
         type: mongoose.Schema.Types.ObjectId,
@@ -10,29 +24,20 @@ var Order = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Admin'
     },
-    cartID:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cart'
+    paymentMethod:{
+        type: String,
     },
-    paymentID:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Payment'
+    shippingAddress:{
+        type: String,
     },
-    couponID:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Coupon'
-    },
-    shippingID:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Shipping'
+    shippingFee:{
+        type: Number,
     },
     orderStatus:{
         type: Number
     },
-    productQuantity:{
-        type: Number
-    },
-    orderTotal:{
+    items: [Item],
+    total:{
         type: Number
     },
     timeIn:{
@@ -44,4 +49,4 @@ var Order = new Schema({
 })
 Order.plugin(passportLocalMongoose);
   
-module.exports = mongoose.model('Order', Order)
+module.exports = mongoose.model('Order', Order);

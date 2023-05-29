@@ -46,7 +46,10 @@
      var selectedValue = selectBox.options[selectBox.selectedIndex].value;
      document.getElementById("shippingcost").innerHTML = VND.format(selectedValue);
      var cost = document.getElementById("cost").innerHTML;
-     document.getElementById("total").innerHTML = VND.format(parseInt(selectedValue) + parseInt(cost));
+     var coupon = document.getElementById("coupon").innerHTML;
+     document.getElementById("total").innerHTML = VND.format(parseInt(selectedValue) + parseInt(cost) - parseInt(coupon));
+     document.getElementById("subTotal").value = parseInt(selectedValue) + parseInt(cost) - parseInt(coupon);
+     document.getElementById("fee").value = selectedValue;
     }
 </script>
 
