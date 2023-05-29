@@ -28,13 +28,14 @@
                 </div>
                 </div>
               <%}else{%>
+            <form action="/creat_new_order" method="post">
             <div class="row">
                 <div class="col-6" style="border-right: 1px solid rgba(0,0,0,0.10);">
                     <div class="payment-heading">
                         <i class="fa-regular fa-credit-card"></i>
                         <h3>Đơn hàng</h3>
                     </div>
-                <form action="/creat_new_order" method="post">
+               
                     <div class="payment-table">
                         <table style="vertical-align: middle;" class="table table-bordered">
                             <thead>
@@ -64,12 +65,56 @@
                             </tbody>
                         </table>
                     </div>
+
+                        <div class="payment-coupon">
+                            <h4 style="font-weight: 700; line-height: 20px;">NHẬP MÃ COUPON ƯU ĐÃI</h4>
+                            <p style="font-size: 14px;">Chỉ sử dụng 1 mã cho 1 đơn hàng</p>
+                            <div style="display:flex; margin-bottom: 15px;">
+                                <input type="text" class="form-control" placeholder="Nhập mã giảm giá" style="width:300px; border-radius: 10px; margin-right: 10px;" name="couponCode">
+                                <input type="submit" class="btn btn-primary" name="check_coupon" value="Áp dụng" style="font-weight: 600;">
+                            </div>
+                        </div>
+
+                        <div class="payment-price">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border: white;">
+                                        <td>Tạm tính:</td>
+                                        <td style="text-align: right;"><%= VND.format(convert) %></td>
+                                        <td style="visibility: hidden; text-align: right;" id="cost"><%= convert %></td>
+                                    </tr>
+                                    <tr style="border: white;">
+                                        <td>Phí vận chuyển:</td>
+                                        <td style="text-align: right;" id="shippingcost"><%= VND.format(0) %></td>
+                                        <td style=" text-align: right;" id="shippingcost"></td>
+                                        <input type="hidden" name="shippingFee" value="0" id="fee">
+                                    </tr>
+                                    <tr>
+                                        <td>Mã giảm giá:</td>
+                                        <td style="text-align: right;" id="coupon">0 đ</td>
+                                    </tr>
+                                    <tr style="border: white;">
+                                        <td style="font-weight: 500;">Tổng tiền:</td>
+                                        <td style="text-align: right; color:#DC4E45; font-weight:500;" id="total"><%= VND.format(convert) %></td>
+                                        <input type="hidden" name="total" value="<%= convert %>" id="subTotal">
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                <div class="col-6">
                     <div class="payment-delivery">
                         <i class="fa-solid fa-truck-fast"></i>
                         <h3>Thông tin vận chuyển</h3>
                     </div>
                     <div class="info-detail">
-                        <dive class="payment-infomation">
+                        <div class="payment-infomation">
                             <div class="payment-form">
                                 <p>Tỉnh thành</p>
                                 <select id="selectBox" onchange="changeFunc();" required>
@@ -83,52 +128,11 @@
                                 <p>Địa chỉ</p>
                                 <input type="text" name="shippingAddress" required>
                             </div>
-                        
-                    
-                
-                <div class="col-6">
-                    <div class="payment-coupon">
-                        <h4 style="font-weight: 700; line-height: 20px;">NHẬP MÃ COUPON ƯU ĐÃI</h4>
-                        <p style="font-size: 14px;">Chỉ sử dụng 1 mã cho 1 đơn hàng</p>
-                        <div style="display:flex; margin-bottom: 15px" >
-                            <input type="text" class="form-control" placeholder="Nhập mã giảm giá" style="width:300px; border-radius: 10px; margin-right: 10px;" name="couponCode">
-                            <input type="submit" class="btn btn-primary" name="check_coupon" value="Áp dụng" style="font-weight: 600;">
                         </div>
                     </div>
-                    <div class="payment-price">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr style="border: white;">
-                                    <td>Tạm tính:</td>
-                                    <td style="text-align: right;"><%= VND.format(convert) %></td>
-                                    <td style="visibility: hidden; text-align: right;" id="cost"><%= convert %></td>
-                                </tr>
-                                <tr style="border: white;">
-                                    <td>Phí vận chuyển:</td>
-                                    <td style="text-align: right;" id="shippingcost"><%= VND.format(0) %></td>
-                                    <td style=" text-align: right;" id="shippingcost"></td>
-                                    <input type="text" name="shippingFee" value="0" id="fee">
-                                </tr>
-                                <tr>
-                                    <td>Mã giảm giá:</td>
-                                    <td style="text-align: right;" id="coupon">0 đ</td>
-                                </tr>
-                                <tr style="border: white;">
-                                    <td style="font-weight: 500;">Tổng tiền:</td>
-                                    <td style="text-align: right; color:#DC4E45; font-weight:500;" id="total"><%= VND.format(convert) %></td>
-                                    <input type="text" name="total" value="<%= convert %>" id="subTotal">
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            
-        
+                </div>   
+            </form> 
+
             <div class="payment-method">
                 <h4>Phương thức thanh toán</h4>
                     <div class="payCash">
@@ -168,7 +172,8 @@
             <% } %>
         
     
-    </div>
+        </div>
+        </div>
      <%- include('partials/footer') %>
 </body>
 </html>
