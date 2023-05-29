@@ -227,26 +227,6 @@ app.get("/", async (req, res) => {
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
 app.get("/about", async (req, res) => {
   if (req.session.guest) {
-    const cart = await Cart.aggregate([
-      { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
-      {
-        $addFields: {
-          size: {
-            $size: "$items",
-          },
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          item_count: {
-            $sum: "$size",
-          },
-        },
-      },
-    ]);
-    var sess = req.session;
-    sess.cart = cart;
     res.render("layouts/clients/about", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -471,6 +451,12 @@ app.get("/cart/:id", async (req, res) => {
     await Cart.find({ userID: new mongoose.Types.ObjectId(req.session.userid) })
       .populate("items.productID")
       .then((data) => {
+        let money = 0;
+        for (let i = 0; i < data.length; i++) {
+          data[i].items.forEach(function (pid) {
+            money += pid.productID.priceOut * parseInt(pid.quantity);
+          });
+        }
         res.render("layouts/clients/cart", {
           fullname: req.session.fullname,
           userid: req.session.userid,
@@ -480,6 +466,7 @@ app.get("/cart/:id", async (req, res) => {
           number,
           cart: req.session.cart,
           carti,
+          money,
         });
       });
   } else {
@@ -489,7 +476,7 @@ app.get("/cart/:id", async (req, res) => {
 
 app.post("/add_to_cart", async (req, res) => {
   const productId = req.body.product_id_hidden;
-  const quantity = req.body.quantity;
+  const quantity = parseInt(req.body.quantity);
   const uid = req.body.user_id_hidden;
   let cart = await Cart.find({ userID: req.body.user_id_hidden });
   if (cart[0]) {
@@ -497,6 +484,9 @@ app.post("/add_to_cart", async (req, res) => {
       cart[0].items.forEach(async function (element) {
         if (element._id == productId && element.productID == productId) {
           if (quantity > 0) {
+            let a = 0;
+            a += quantity;
+            let newQuantity = String(a);
             // const data = await Cart.findOneAndUpdate(
             //   {
             //     userID: uid,
@@ -521,17 +511,15 @@ app.post("/add_to_cart", async (req, res) => {
             //     upsert: true,
             //   }
             // );
-            const data = await Cart.findOneAndUpdate(
+            await Cart.updateOne(
               {
                 userID: uid,
                 items: { $elemMatch: { _id: productId } },
               },
               { "items.$": 1 },
-              { $set: { "items.quantity": quantity } },
+              { $set: { "items.quantity": newQuantity } },
               { upsert: true }
             );
-          } else {
-            console.log("Xoá");
           }
         } else if (
           element._id != productId &&
@@ -619,10 +607,40 @@ app.get("/delete_cart_items/:id", async function (req, res) {
   }
 });
 
-app.get("/checkout", (req, res) => {
-  res.render("layouts/clients/checkout", {
-    nhanvat: 1,
-  });
+app.get("/checkout/:id", async (req, res) => {
+  if (req.session.guest) {
+    let carti = await Cart.find({
+      userID: new mongoose.Types.ObjectId(req.session.userid),
+    });
+    let address = await City.find();
+    await Cart.find({
+      userID: new mongoose.Types.ObjectId(req.session.userid),
+    })
+      .populate("items.productID")
+      .then((data) => {
+        let money = 0;
+        for (let i = 0; i < data.length; i++) {
+          data[i].items.forEach(function (pid) {
+            money += pid.productID.priceOut * parseInt(pid.quantity);
+          });
+        }
+        let convert = parseInt(money);
+        res.render("layouts/clients/checkout", {
+          fullname: req.session.fullname,
+          email: req.session.email,
+          userid: req.session.userid,
+          sID: req.session.sessionID,
+          cart: req.session.cart,
+          carti,
+          danhsach: data,
+          VND,
+          city: address,
+          convert,
+        });
+      });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/success", (req, res) => {

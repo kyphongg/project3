@@ -4,14 +4,30 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title>Thanh toán</title>
     <%- include('partials/head') %>
 </head>
 <body>
     <%- include('partials/header') %>
-    
     <div class="container">
         <div class="payment">
+            <%if(!carti[0]){%>
+                <div class="cart-table">
+                  <p style="margin-top: 18px; font-size: 18px; font-weight:500">Giỏ hàng của bạn đang trống!!</p>
+                </div>
+                <div class="container" style="display:flex; justify-content:center;">
+                  <div class="cart-table-img">
+                    <img src="/images/empty-cart.png" style="width: 280px;" alt="">
+                  </div>
+                  </div>
+                <div class="container" style="display:flex; justify-content:center;">
+                  <div class="back-home" style="width: 300px;">
+                    <a href="/">
+                        <button class="btn btn-outline-dark btn-back-home">TIẾP TỤC MUA HÀNG</button>
+                    </a>
+                </div>
+                </div>
+              <%}else{%>
             <div class="row">
                 <div class="col-6" style="border-right: 1px solid rgba(0,0,0,0.10);">
                     <div class="payment-heading">
@@ -30,20 +46,47 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <% for(let i=0; i < danhsach.length; i++) { %> <%
+                                    danhsach[i].items.forEach(function(pid) { %>
                                 <tr>
-                                    <td style="width: 220px;">God of War: Ragnarok</td>
-                                    <td><img style="width:60px; height:80px" src="/images/ps5(sp2).jpg"></td>
-                                    <td>550.000 đ</td>
-                                    <td>2</td>
-                                    <td>1.100.000 đ</td>
+                                    <td style="width: 220px;"><%= pid.productID.productName %></td>
+                                    <td><img style="width:60px; height:80px" src="/images/<%= pid.productID.productImage %>"></td>
+                                    <td><%= VND.format(pid.productID.priceOut) %></td>
+                                    <td><%= pid.quantity %></td>
+                                    <td><%= VND.format(pid.productID.priceOut * pid.quantity) %></td>
                                 </tr>
+                                <% }); %>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
+                    <div class="payment-delivery">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <h3>Thông tin vận chuyển</h3>
+                    </div>
+                    <div class="info-detail">
+                        <form action="" class="payment-infomation">
+                            <div class="payment-form">
+                                <p>Tỉnh thành</p>
+                                <select id="selectBox" onchange="changeFunc();">
+                                    <option value="0">Chọn thành phố</option>
+                                    <% for(let i=0; i < city.length; i++) { %>
+                                    <option value="<%= city[i].price %>"><%= city[i].cityName %></option>
+                                    <%}%>
+                                </select>
+                            </div>
+                            <div class="payment-form">
+                                <p>Địa chỉ</p>
+                                <input type="text">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-6">
                     <div class="payment-coupon">
                         <h4 style="font-weight: 700; line-height: 20px;">NHẬP MÃ COUPON ƯU ĐÃI</h4>
                         <p style="font-size: 14px;">Chỉ sử dụng 1 mã cho 1 đơn hàng</p>
-                        <form style="display:flex; margin-bottom: 15px">
+                        <form style="display:flex; margin-bottom: 15px" action="/couponIn" method="post">
                             <input type="text" class="form-control" placeholder="Nhập mã giảm giá" style="width:300px; border-radius: 10px; margin-right: 10px;">
                             <input type="submit" class="btn btn-primary" name="check_coupon" value="Áp dụng" style="font-weight: 600;">
                         </form>    
@@ -58,11 +101,12 @@
                             <tbody>
                                 <tr style="border: white;">
                                     <td>Tạm tính:</td>
-                                    <td style="text-align: right;">1.100.000 đ</td>
+                                    <td style="text-align: right;"><%= VND.format(convert) %></td>
+                                    <td style="visibility: hidden;" id="cost"><%= convert %></td>
                                 </tr>
                                 <tr style="border: white;">
                                     <td>Phí vận chuyển:</td>
-                                    <td style="text-align: right;">0 đ</td>
+                                    <td style="text-align: right;" id="shippingcost"><%= VND.format(0) %></td>
                                 </tr>
                                 <tr>
                                     <td>Mã giảm giá:</td>
@@ -70,64 +114,10 @@
                                 </tr>
                                 <tr style="border: white;">
                                     <td style="font-weight: 500;">Tổng tiền:</td>
-                                    <td style="text-align: right; color:#DC4E45; font-weight:500;">550.000 đ</td>
+                                    <td style="text-align: right; color:#DC4E45; font-weight:500;" id="total"><%= VND.format(convert) %></td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                    <a href="/" style="margin-left: 15px;">
-                        <button class="btn btn-secondary btn-backk" style="font-size: 20px">< Quay lại giỏ hàng</button>
-                    </a>
-             </form>
-                </div>
-                <div class="col-6">
-                    <div class="payment-delivery">
-                        <i class="fa-solid fa-truck-fast"></i>
-                        <h3>Thông tin vận chuyển</h3>
-                    </div>
-                    <div class="info-detail">
-                        <form action="" class="payment-infomation">
-                            <div class="payment-form">
-                                <p>Email</p>
-                                <input type="email" value="kyphong2802@gmail.com">
-                            </div>
-                            <div class="payment-form">
-                                <p>Họ và tên</p>
-                                <input type="text" value="Kỳ Phong">
-                            </div>
-                            <div class="payment-form">
-                                <p>Số điện thoại</p>
-                                <input type="text" value="0966331402">
-                            </div>
-                            <div class="payment-form">
-                                <p>Địa chỉ</p>
-                                <input type="text">
-                            </div>
-                            <div class="payment-form">
-                                <p>Tỉnh thành</p>
-                                <select>
-                                    <option value="0">Chọn thành phố</option>
-                                    <option value="1">Thành phố Hà Nội</option>
-                                    <option value="2">Thành phố Hồ Chí Minh</option>
-                                </select>
-                            </div>
-                            <div class="payment-form">
-                                <p>Quận huyện</p>
-                                <select>
-                                    <option value="0">Chọn quận huyện</option>
-                                    <option value="1">Thành phố Hà Nội</option>
-                                    <option value="2">Thành phố Hồ Chí Minh</option>
-                                </select>
-                            </div>
-                            <div class="payment-form">
-                                <p>Phường xã</p>
-                                <select>
-                                    <option value="0">Chọn phường xã</option>
-                                    <option value="1">Thành phố Hà Nội</option>
-                                    <option value="2">Thành phố Hồ Chí Minh</option>
-                                </select>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -164,9 +154,13 @@
                             </label>
                         </span>
                     </div>
+                    <a href="/cart/<%= userid %>" style="margin-left: 15px;">
+                        <button class="btn btn-secondary btn-backk" style="font-size: 20px">< Quay lại giỏ hàng</button>
+                    </a>
                     <button type="submit" class="btn btn-secondary btn-payment">Đặt hàng</button>
                 </form>
             </div>
+            <% } %>
         </div>
     </div>
     

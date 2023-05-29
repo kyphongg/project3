@@ -89,7 +89,7 @@
                       </form>
                     </td>
                     <td style="width: 125px;">
-                      <p style="color: #dc4e45"><%= VND.format(id.productID.priceOut * id.quantity) %></p>
+                      <p style="color: #dc4e45"><%= VND.format(id.productID.priceOut * parseInt(id.quantity)) %></p>
                     </td>
                     <td style="width: 200px;">
                       <a style="text-decoration: none;;" class="btn btn-danger js-buy-tickets"><i class="fa-regular fa-trash-can" style="color: white;"></i> Xóa sản phẩm</a>
@@ -123,8 +123,12 @@
             <div class="col-8"></div>
             <div class="col-4">
                 <div class="cart-price">
+                  <tr style="border: white;">
+                    <td>Tạm tính:</td>
+                    <td style="text-align: right;"><%= VND.format(money) %></td>
+                </tr>
                     <div class="pay">
-                    <a href="/">
+                    <a href="/checkout/<%= userid %>">
                         <button class="btn btn-secondary btn-pay">THANH TOÁN</button>
                     </a>
                     </div>

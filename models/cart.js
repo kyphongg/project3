@@ -12,8 +12,7 @@ let Item = new Schema({
     },
     quantity: {
         type: Number,
-        required: true,
-        min: [1, 'Quantity can not be less then 1.']
+        default: 1,
     }
 })
 
@@ -22,10 +21,6 @@ const Cart = new Schema({
     userID:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    },
-    count:{
-        type: Number,
-        default: 0,
     },
     username:{
         type: Number
