@@ -721,7 +721,7 @@ input:focus{
 }
 
 .cart-table{
-    margin-top: 15px;
+    padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;

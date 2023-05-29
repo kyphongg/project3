@@ -21,17 +21,19 @@
           <div class="cart-table">
             <p style="margin-top: 18px; font-size: 18px; font-weight:500">Giỏ hàng của bạn đang trống!!</p>
           </div>
+
           <div class="container" style="display:flex; justify-content:center;">
             <div class="cart-table-img">
               <img src="/images/empty-cart.png" style="width: 280px;" alt="">
             </div>
-            </div>
+          </div>
+
           <div class="container" style="display:flex; justify-content:center;">
             <div class="back-home" style="width: 300px;">
               <a href="/">
                   <button class="btn btn-outline-dark btn-back-home">TIẾP TỤC MUA HÀNG</button>
               </a>
-          </div>
+            </div>
           </div>
         <%}else{%>
           <div class="cart-table">
@@ -47,9 +49,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
                   <% for(let i=0; i < danhsach.length; i++) { %> <%
-                  danhsach[i].items.forEach(function(pid) { %>
+                    danhsach[i].items.forEach(function(pid) { %>
+                  <tr>
                     <td style="width: 155px;">
                       <img
                         style="width: 60px; height: 80px;"
@@ -96,10 +98,10 @@
                       </div>
                     </div>
                   </tr>
+                  <% }); %> <% } %>
                 </tbody>
               </table>
             </div>
-                  <% }); %> <% } %>
           <div class="row">
             <div class="col-8"></div>
             <div class="col-4">
@@ -121,9 +123,7 @@
                 </div>
             </div>
           </div>
-        <%}%>
-        
-        
+        <%}%> 
       </div>
     </div>
 
