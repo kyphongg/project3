@@ -51,7 +51,7 @@
                                         <a href="/edit/<%= nhanvat[i].id %>" class="active">
                                             <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
                                         </a>
-                                        <a class="active" onclick="return confirm('Xoá ?')">
+                                        <a href="/delete/<%= nhanvat[i].id %>" class="active" onclick="return confirm('Xoá ?')">
                                             <i class="fa-solid fa-square-xmark js-buy-tickets" style="font-size: 25px; color: #D9534F;"></i>
                                         </a>
                                     </td>
@@ -69,7 +69,7 @@
                                                 Bạn có muốn xóa nhân viên này?
                                             </label>
                                             <div class="btn-js" style="margin-top:50px; margin-left:200px;">
-                                                <a href="/delete/<%= nhanvat[i].id %>" id="buy-tickets" style="margin-right:15px; background-color: #DC3545;"> Xóa </a>
+                                                <a id="buy-tickets" style="margin-right:15px; background-color: #DC3545;"> Xóa </a>
                                                 <a id="buy-tickets" class="modal-close js-modal-close" style="background-color: #6C757D;"> Hủy </a>
                                             </div>
                                         </div>

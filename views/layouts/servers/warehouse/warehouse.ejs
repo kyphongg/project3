@@ -18,6 +18,11 @@
         <section class="wrapper">
             <div class="table-agile-info">
                 <h3>Kho</h3>
+                <%if(success.length > 0){%>
+                    <div class="alert alert-success">
+                        <%= success %>
+                    </div>
+                        <%}%>
                 <a href="/add_warehouse">
                     <button class="btn btn-primary"><i class="fa-solid fa-plus"></i>  Nhập sản phẩm</button>
                 </a>

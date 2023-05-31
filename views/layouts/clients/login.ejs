@@ -12,6 +12,11 @@
     
     <div class="container">
         <div class="my-login">
+            <%if(error.length > 0){%>
+                <div class="alert alert-danger">
+                    <%= error %>
+                </div>
+                    <%}%>
             <form action="/login" method="post">
                 <h3>Đăng nhập</h3>
                 <span>Tên đăng nhập</span>

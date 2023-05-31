@@ -11,6 +11,11 @@
 <body style="background-color: #313A46;">
     <div class="center">
         <h2>Đăng nhập quản trị</h2>
+        <%if(error.length > 0){%>
+          <div class="alert alert-danger">
+              <%= error %>
+          </div>
+              <%}%>
         <form action="admin_login" method="post">
           <div class="txt_field">
             <input type="email" name="email" required>

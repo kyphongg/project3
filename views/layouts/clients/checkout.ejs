@@ -53,11 +53,11 @@
                                     danhsach[i].items.forEach(function(pid) { %>
                                 <tr>
                                     <input name="product_id_hidden" type="hidden" value="<%= pid._id %>"/>
+                                    <input name="quantity_hidden" type="text" value="<%= pid.quantity %>" />
                                     <td style="width: 220px;"><%= pid.productID.productName %></td>
                                     <td><img style="width:60px; height:80px" src="/images/<%= pid.productID.productImage %>"></td>
                                     <td><%= VND.format(pid.productID.priceOut) %></td>
                                     <td><%= pid.quantity %></td>
-                                    <input name="quantity_hidden" type="hidden" name="<%= pid.quantity %>" />
                                     <td><%= VND.format(pid.productID.priceOut * pid.quantity) %></td>
                                 </tr>
                                 <% }); %>

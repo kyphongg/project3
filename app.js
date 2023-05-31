@@ -9,8 +9,10 @@ const session = require("express-session");
 const moment = require("moment-timezone");
 const morgan = require("morgan");
 const cors = require("cors");
+const flash = require("connect-flash");
 
 app.use(cors());
+app.use(flash());
 
 const dateVietNam = moment
   .tz(Date.now(), "Asia/Ho_Chi_Minh")
@@ -104,6 +106,7 @@ app.get("/login", (req, res) => {
     userid: 1,
     fullname: 1,
     cart: 0,
+    error: req.flash("error"),
   });
 });
 
@@ -113,24 +116,37 @@ app.get("/signup", (req, res) => {
     userid: 1,
     fullname: 1,
     cart: 0,
+    error: req.flash("error"),
   });
 });
 
-app.post("/save", function (req, res) {
-  var user = User({
-    fullname: req.body.fullname,
-    email: req.body.email,
-    password: req.body.password,
-    username: req.body.username,
-    phone: req.body.phone,
+app.post("/save", async function (req, res) {
+  const check = await User.findOne({
+    $or: [
+      { email: req.body.email },
+      { username: req.body.username },
+      { phone: req.body.phone },
+    ],
   });
-
-  if (req.body.password != req.body.password2) {
-    res.status(400).json({ error: "Mật khẩu không trùng khớp" });
+  if (check) {
+    req.flash("error", "Tài khoản đã tồn tại");
+    res.redirect("/signup");
   } else {
-    user.save().then(function () {
-      res.redirect("/");
+    var user = User({
+      fullname: req.body.fullname,
+      email: req.body.email,
+      password: req.body.password,
+      username: req.body.username,
+      phone: req.body.phone,
     });
+    if (req.body.password != req.body.password2) {
+      req.flash("error", "Mật khẩu không trùng khớp");
+      res.redirect("/signup");
+    } else {
+      user.save().then(function () {
+        res.redirect("/");
+      });
+    }
   }
 });
 
@@ -150,10 +166,12 @@ app.post("/login", async function (req, res) {
         sess.userid = user._id;
         res.redirect("/");
       } else {
-        res.status(400).json({ error: "Sai mật khẩu" });
+        req.flash("error", "Sai mật khẩu");
+        res.redirect("/login");
       }
     } else {
-      res.status(400).json({ error: "Tài khoản không tồn tại" });
+      req.flash("error", "Tài khoản không tồn tại");
+      res.redirect("/login");
     }
   } catch (error) {
     res.status(400).json({ error });
@@ -649,12 +667,10 @@ app.post("/creat_new_order", async (req, res) => {
   const quantity = parseInt(req.body.quantity_hidden);
   const uid = req.body.user_id_hidden;
   await Order({
-    items: [
-      {
-        productID: productId,
-        _id: productId,
-      },
-    ],
+    //items.0.productID
+    // dùng thử forEach giống trong cart xong save bằng order[0]
+    // nếu tìm thấy order[0] thì tạo order mới
+    items: [[{ productID: productId, quantity: quantity, _id: productId }]],
     userID: uid,
     paymentMethod: req.body.paymentMethod,
     shippingAddress: req.body.shippingAddress,
@@ -876,7 +892,7 @@ app.get("/product/:id", async (req, res) => {
 
 //Trang category
 //Hành động
-app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
+app.get("/category/6476b3651cde57b995f9a9ed", (req, res) => {
   if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
@@ -899,7 +915,7 @@ app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
       {
         $match: {
           "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c4d7b44e6642ff246597d"
+            "6476b3651cde57b995f9a9ed"
           ),
         },
       },
@@ -947,7 +963,7 @@ app.get("/category/645c4d7b44e6642ff246597d", (req, res) => {
       {
         $match: {
           "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c4d7b44e6642ff246597d"
+            "6476b3651cde57b995f9a9ed"
           ),
         },
       },
@@ -1484,7 +1500,9 @@ app.get("/category/645c5a67cf52334165588928", (req, res) => {
 //Servers
 //Trang đăng nhập
 app.get("/admin_login", (req, res) => {
-  res.render("layouts/servers/login");
+  res.render("layouts/servers/login", {
+    error: req.flash("error"),
+  });
 });
 
 //Xử lý đăng nhập
@@ -1496,7 +1514,6 @@ app.post("/admin_login", async function (req, res) {
       //Kiểm tra mật khẩu
       const result = req.body.password === admin.password;
       if (result) {
-        console.log("Đăng nhập thành công với", req.session.id);
         const customer = await User.find().count();
         const employee = await Admin.find().count();
         var sess = req.session;
@@ -1507,10 +1524,12 @@ app.post("/admin_login", async function (req, res) {
         sess.numberal = employee;
         res.redirect("/admin_home");
       } else {
-        res.status(400).json({ error: "Sai mật khẩu" });
+        req.flash("error", "Sai mật khẩu");
+        res.redirect("/admin_login");
       }
     } else {
-      res.status(400).json({ error: "Tài khoản không tồn tại" });
+      req.flash("error", "Tài khoản không tồn tại");
+      res.redirect("/admin_login");
     }
   } catch (error) {
     res.status(400).json({ error });
@@ -1545,6 +1564,8 @@ app.get("/admin_categories", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       danhsach: data,
+      success: req.flash("success"),
+      error: req.flash("error"),
     });
   } else {
     res.redirect("/admin_login");
@@ -1562,14 +1583,21 @@ app.get("/add_categories", (req, res) => {
   }
 });
 
-app.post("/categories_save", function (req, res) {
+app.post("/categories_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    var category = Category({
-      categoryName: req.body.categoryName,
-    });
-    category.save().then(function () {
+    var check = await Category.findOne({ categoryName: req.body.categoryName });
+    if (check) {
+      req.flash("error", "Thể loại đã tồn tại");
       res.redirect("/admin_categories");
-    });
+    } else {
+      var category = Category({
+        categoryName: req.body.categoryName,
+      });
+      category.save().then(function () {
+        req.flash("success", "Thêm thành công");
+        res.redirect("/admin_categories");
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1590,14 +1618,21 @@ app.get("/edit_categories/:id", async (req, res) => {
 
 app.post("/edit_categories_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    Category.updateOne(
-      { _id: req.body.categoryId },
-      {
-        categoryName: req.body.categoryName,
-      }
-    ).then(function () {
+    var check = await Category.findOne({ categoryName: req.body.categoryName });
+    if (check) {
+      req.flash("error", "Sửa không thành công");
       res.redirect("/admin_categories");
-    });
+    } else {
+      Category.updateOne(
+        { _id: req.body.categoryId },
+        {
+          categoryName: req.body.categoryName,
+        }
+      ).then(function () {
+        req.flash("success", "Sửa thành công");
+        res.redirect("/admin_categories");
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1606,6 +1641,7 @@ app.post("/edit_categories_save", async function (req, res) {
 app.get("/delete_categories/:id", function (req, res) {
   if (req.session.daDangNhap) {
     Category.deleteOne({ _id: req.params.id }).then(function () {
+      req.flash("success", "Xoá thành công");
       res.redirect("/admin_categories");
     });
   } else {
@@ -1621,6 +1657,8 @@ app.get("/admin_producers", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       danhsach: data,
+      success: req.flash("success"),
+      error: req.flash("error"),
     });
   } else {
     res.redirect("/admin_login");
@@ -1638,14 +1676,21 @@ app.get("/add_producers", (req, res) => {
   }
 });
 
-app.post("/producers_save", function (req, res) {
+app.post("/producers_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    var producer = Producer({
-      producerName: req.body.producerName,
-    });
-    producer.save().then(function () {
+    var check = await Producer.findOne({ producerName: req.body.producerName });
+    if (check) {
+      req.flash("error", "NSX đã tồn tại");
       res.redirect("/admin_producers");
-    });
+    } else {
+      var producer = Producer({
+        producerName: req.body.producerName,
+      });
+      producer.save().then(function () {
+        req.flash("success", "Thêm thành công");
+        res.redirect("/admin_producers");
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1666,14 +1711,21 @@ app.get("/edit_producers/:id", async (req, res) => {
 
 app.post("/edit_producers_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    Producer.updateOne(
-      { _id: req.body.producerId },
-      {
-        producerName: req.body.producerName,
-      }
-    ).then(function () {
+    var check = await Producer.findOne({ producerName: req.body.producerName });
+    if (check) {
+      req.flash("error", "Sửa không thành công");
       res.redirect("/admin_producers");
-    });
+    } else {
+      Producer.updateOne(
+        { _id: req.body.producerId },
+        {
+          producerName: req.body.producerName,
+        }
+      ).then(function () {
+        req.flash("success", "Sửa thành công");
+        res.redirect("/admin_producers");
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1682,6 +1734,7 @@ app.post("/edit_producers_save", async function (req, res) {
 app.get("/delete_producers/:id", function (req, res) {
   if (req.session.daDangNhap) {
     Producer.deleteOne({ _id: req.params.id }).then(function () {
+      req.flash("success", "Xoá thành công");
       res.redirect("/admin_producers");
     });
   } else {
@@ -1701,6 +1754,8 @@ app.get("/admin_product", async (req, res) => {
           admin_id: req.session.admin_id,
           danhsach: data,
           VND,
+          success: req.flash("success"),
+          error: req.flash("error"),
         });
       })
       .catch((err) => {
@@ -1723,31 +1778,43 @@ app.get("/add_product", (req, res) => {
   }
 });
 
-app.post("/save_product", (req, res) => {
+app.post("/save_product", async (req, res) => {
   if (req.session.daDangNhap) {
-    upload(req, res, function (err) {
+    upload(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
-        console.log("Lỗi Multer khi upload ảnh");
+        req.flash("error", "Lỗi Multer khi upload ảnh");
       } else if (err) {
-        console.log("Lỗi bất ngờ xảy ra: " + err);
+        req.flash("error", "Lỗi bất ngờ xảy ra");
       } else {
-        var product = Product({
-          productName: req.body.productName,
-          productDescription: req.body.productDescription,
-          productImage: req.file.filename,
-          categoryID: req.body.categoryID,
-          producerID: req.body.producerID,
-          priceIn: req.body.priceIn,
-          priceOut: req.body.priceOut,
-          productStatus: req.body.productStatus,
-          created_date: dateVietNam,
-          updated_date: dateVietNam,
-          created_by: req.session.fullname,
-          updated_by: req.session.fullname,
+        let check = await Product.findOne({
+          $or: [
+            { productName: req.body.productName },
+            { productImage: req.file.filename },
+          ],
         });
-        product.save().then(function () {
+        if (check) {
+          req.flash("error", "Sản phẩm đã tồn tại");
           res.redirect("/admin_product");
-        });
+        } else {
+          var product = Product({
+            productName: req.body.productName,
+            productDescription: req.body.productDescription,
+            productImage: req.file.filename,
+            categoryID: req.body.categoryID,
+            producerID: req.body.producerID,
+            priceIn: req.body.priceIn,
+            priceOut: req.body.priceOut,
+            productStatus: req.body.productStatus,
+            created_date: dateVietNam,
+            updated_date: dateVietNam,
+            created_by: req.session.fullname,
+            updated_by: req.session.fullname,
+          });
+          product.save().then(function () {
+            req.flash("success", "Thêm thành công");
+            res.redirect("/admin_product");
+          });
+        }
       }
     });
   } else {
@@ -1776,40 +1843,26 @@ app.get("/edit_product/:id", async (req, res) => {
   }
 });
 
-app.post("/edit_product_save", (req, res) => {
+app.post("/edit_product_save", async (req, res) => {
   if (req.session.daDangNhap) {
-    upload(req, res, function (err) {
-      //Không chọn file mới
-      if (!req.file) {
-        Product.updateOne(
-          { _id: req.body.productId },
-          {
-            productName: req.body.productName,
-            productDescription: req.body.productDescription,
-            categoryID: req.body.categoryID,
-            producerID: req.body.producerID,
-            priceIn: req.body.priceIn,
-            priceOut: req.body.priceOut,
-            productStatus: req.body.productStatus,
-            updated_by: req.session.fullname,
-            updated_date: dateVietNam,
-          }
-        ).then(function () {
-          res.redirect("/admin_product");
-        });
-        // Chọn file mới
-      } else {
-        if (err instanceof multer.MulterError) {
-          console.log("Lỗi Multer khi upload ảnh");
-        } else if (err) {
-          console.log("Lỗi bất ngờ xảy ra: " + err);
-        } else {
+    let check = await Product.findOne({
+      $or: [
+        { productName: req.body.productName },
+        { productImage: req.file.filename },
+      ],
+    });
+    if (check) {
+      req.flash("error", "Sản phẩm đã tồn tại");
+      res.redirect("/admin_product");
+    } else {
+      upload(req, res, function (err) {
+        //Không chọn file mới
+        if (!req.file) {
           Product.updateOne(
             { _id: req.body.productId },
             {
               productName: req.body.productName,
               productDescription: req.body.productDescription,
-              productImage: req.file.filename,
               categoryID: req.body.categoryID,
               producerID: req.body.producerID,
               priceIn: req.body.priceIn,
@@ -1819,11 +1872,38 @@ app.post("/edit_product_save", (req, res) => {
               updated_date: dateVietNam,
             }
           ).then(function () {
+            req.flash("success", "Sửa thành công");
             res.redirect("/admin_product");
           });
+          // Chọn file mới
+        } else {
+          if (err instanceof multer.MulterError) {
+            req.flash("error", "Lỗi Multer khi upload ảnh");
+          } else if (err) {
+            req.flash("error", "Lỗi bất ngờ xảy ra");
+          } else {
+            Product.updateOne(
+              { _id: req.body.productId },
+              {
+                productName: req.body.productName,
+                productDescription: req.body.productDescription,
+                productImage: req.file.filename,
+                categoryID: req.body.categoryID,
+                producerID: req.body.producerID,
+                priceIn: req.body.priceIn,
+                priceOut: req.body.priceOut,
+                productStatus: req.body.productStatus,
+                updated_by: req.session.fullname,
+                updated_date: dateVietNam,
+              }
+            ).then(function () {
+              req.flash("success", "Sửa thành công");
+              res.redirect("/admin_product");
+            });
+          }
         }
-      }
-    });
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1851,6 +1931,8 @@ app.get("/employees", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       nhanvat: data,
+      success: req.flash("success"),
+      error: req.flash("error"),
     });
   } else {
     res.redirect("/admin_login");
@@ -1883,19 +1965,28 @@ app.get("/admin_setting/:id", async (req, res) => {
   }
 });
 
-app.post("/admin_save", function (req, res) {
+app.post("/admin_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    var admin = Admin({
-      fullname: req.body.fullname,
-      email: req.body.email,
-      password: req.body.password,
-      username: req.body.username,
-      role: req.body.role,
-      status: req.body.status,
+    let check = await Admin.findOne({
+      $or: [{ email: req.body.email }, { username: req.body.username }],
     });
-    admin.save().then(function () {
+    if (check) {
+      req.flash("error", "Tài khoản đã tồn tại");
       res.redirect("/employees");
-    });
+    } else {
+      var admin = Admin({
+        fullname: req.body.fullname,
+        email: req.body.email,
+        password: req.body.password,
+        username: req.body.username,
+        role: req.body.role,
+        status: req.body.status,
+      });
+      admin.save().then(function () {
+        req.flash("success", "Thêm thành công");
+        res.redirect("/employees");
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1927,18 +2018,27 @@ app.get("/edit/:id", async function (req, res) {
 
 app.post("/edit_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    Admin.updateOne(
-      { _id: req.body.id },
-      {
-        fullname: req.body.fullname,
-        email: req.body.email,
-        username: req.body.username,
-        role: req.body.role,
-        status: req.body.status,
-      }
-    ).then(function () {
-      res.redirect("/employees");
+    let check = await Admin.findOne({
+      $or: [{ email: req.body.email }, { username: req.body.username }],
     });
+    if (check) {
+      req.flash("error", "Tài khoản đã tồn tại");
+      res.redirect("/employees");
+    } else {
+      Admin.updateOne(
+        { _id: req.body.id },
+        {
+          fullname: req.body.fullname,
+          email: req.body.email,
+          username: req.body.username,
+          role: req.body.role,
+          status: req.body.status,
+        }
+      ).then(function () {
+        req.flash("success", "Sửa thành công");
+        res.redirect("/employees");
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1947,6 +2047,7 @@ app.post("/edit_save", async function (req, res) {
 app.get("/delete/:id", function (req, res) {
   if (req.session.daDangNhap) {
     Admin.deleteOne({ _id: req.params.id }).then(function () {
+      req.flash("success", "Xoá thành công");
       res.redirect("/employees");
     });
   } else {
@@ -2080,6 +2181,7 @@ app.get("/warehouse", async (req, res) => {
           admin_id: req.session.admin_id,
           danhsach: data,
           VND,
+          success: req.flash("success"),
         });
       })
       .catch((err) => {
@@ -2137,6 +2239,7 @@ app.post("/save_warehouse", (req, res) => {
       created_date: dateVietNam,
     });
     warehouse.save().then(function () {
+      req.flash("success", "Thêm thành công");
       res.redirect("/warehouse");
     });
   } else {
@@ -2153,6 +2256,8 @@ app.get("/coupon", async (req, res) => {
       admin_id: req.session.admin_id,
       danhsach: data,
       VND,
+      success: req.flash("success"),
+      error: req.flash("error"),
     });
   } else {
     res.redirect("/admin_login");
@@ -2170,20 +2275,27 @@ app.get("/add_coupon", async (req, res) => {
   }
 });
 
-app.post("/coupon_save", function (req, res) {
+app.post("/coupon_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    var coupon = Coupon({
-      couponName: req.body.couponName,
-      couponCode: req.body.couponCode,
-      couponQuantity: req.body.couponQuantity,
-      couponType: req.body.couponType,
-      couponStatus: req.body.couponStatus,
-      start_date: req.body.start_date,
-      end_date: req.body.end_date,
-    });
-    coupon.save().then(function () {
+    let check = await Coupon.findOne({ couponCode: req.body.couponCode });
+    if (check) {
+      req.flash("error", "MGG đã tồn tại");
       res.redirect("/coupon");
-    });
+    } else {
+      var coupon = Coupon({
+        couponName: req.body.couponName,
+        couponCode: req.body.couponCode,
+        couponQuantity: req.body.couponQuantity,
+        couponType: req.body.couponType,
+        couponStatus: req.body.couponStatus,
+        start_date: req.body.start_date,
+        end_date: req.body.end_date,
+      });
+      coupon.save().then(function () {
+        req.flash("success", "Thêm thành công");
+        res.redirect("/coupon");
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2242,6 +2354,8 @@ app.get("/cities", async (req, res) => {
       admin_id: req.session.admin_id,
       danhsach: data,
       VND,
+      success: req.flash("success"),
+      error: req.flash("error"),
     });
   } else {
     res.redirect("/admin_login");
@@ -2259,15 +2373,22 @@ app.get("/add_cities", async (req, res) => {
   }
 });
 
-app.post("/cities_save", function (req, res) {
+app.post("/cities_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    var city = City({
-      cityName: req.body.cityName,
-      price: req.body.price,
-    });
-    city.save().then(function () {
+    let check = await City.findOne({ cityName: req.body.cityName });
+    if (check) {
+      req.flash("error", "Thành phố đã tồn tại");
       res.redirect("/cities");
-    });
+    } else {
+      var city = City({
+        cityName: req.body.cityName,
+        price: req.body.price,
+      });
+      city.save().then(function () {
+        req.flash("success", "Thêm thành công");
+        res.redirect("/cities");
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2288,15 +2409,22 @@ app.get("/edit_cities/:id", async (req, res) => {
 
 app.post("/edit_cities_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    City.updateOne(
-      { _id: req.body.cityId },
-      {
-        cityName: req.body.cityName,
-        price: req.body.price,
-      }
-    ).then(function () {
+    let check = await City.findOne({ cityName: req.body.cityName });
+    if (check) {
+      req.flash("error", "Thành phố đã tồn tại");
       res.redirect("/cities");
-    });
+    } else {
+      City.updateOne(
+        { _id: req.body.cityId },
+        {
+          cityName: req.body.cityName,
+          price: req.body.price,
+        }
+      ).then(function () {
+        req.flash("success", "Sửa thành công");
+        res.redirect("/cities");
+      });
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2305,6 +2433,7 @@ app.post("/edit_cities_save", async function (req, res) {
 app.get("/delete_cities/:id", function (req, res) {
   if (req.session.daDangNhap) {
     City.deleteOne({ _id: req.params.id }).then(function () {
+      req.flash("success", "Xoá thành công");
       res.redirect("/cities");
     });
   } else {
