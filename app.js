@@ -1520,6 +1520,7 @@ app.post("/admin_login", async function (req, res) {
         sess.daDangNhap = true;
         sess.fullname = admin.fullname;
         sess.admin_id = admin._id;
+        sess.admin_role = admin.role;
         sess.number = customer;
         sess.numberal = employee;
         res.redirect("/admin_home");
@@ -1550,6 +1551,7 @@ app.get("/admin_home", (req, res) => {
       number: req.session.number,
       numberal: req.session.numberal,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -1564,6 +1566,7 @@ app.get("/admin_categories", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       danhsach: data,
+      admin_role: req.session.admin_role,
       success: req.flash("success"),
       error: req.flash("error"),
     });
@@ -1577,6 +1580,7 @@ app.get("/add_categories", (req, res) => {
     res.render("layouts/servers/categories/add_categories", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -1610,6 +1614,7 @@ app.get("/edit_categories/:id", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       danhsach: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -1657,6 +1662,7 @@ app.get("/admin_producers", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       danhsach: data,
+      admin_role: req.session.admin_role,
       success: req.flash("success"),
       error: req.flash("error"),
     });
@@ -1670,6 +1676,7 @@ app.get("/add_producers", (req, res) => {
     res.render("layouts/servers/producers/add_producers", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -1703,6 +1710,7 @@ app.get("/edit_producers/:id", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       danhsach: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -1754,6 +1762,7 @@ app.get("/admin_product", async (req, res) => {
           admin_id: req.session.admin_id,
           danhsach: data,
           VND,
+          admin_role: req.session.admin_role,
           success: req.flash("success"),
           error: req.flash("error"),
         });
@@ -1772,6 +1781,7 @@ app.get("/add_product", (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       VND,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -1833,6 +1843,7 @@ app.get("/edit_product/:id", async (req, res) => {
           admin_id: req.session.admin_id,
           danhsach: data,
           VND,
+          admin_role: req.session.admin_role,
         });
       })
       .catch((err) => {
@@ -1917,6 +1928,7 @@ app.get("/customers", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       nhanvat: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -1930,7 +1942,7 @@ app.get("/employees", async (req, res) => {
     res.render("layouts/servers/employee/employee", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
-      nhanvat: data,
+      nhanvat: data,admin_role: req.session.admin_role,
       success: req.flash("success"),
       error: req.flash("error"),
     });
@@ -1946,6 +1958,7 @@ app.get("/admin_profile/:id", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       nhanvat: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -1959,6 +1972,7 @@ app.get("/admin_setting/:id", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       nhanvat: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -1997,6 +2011,7 @@ app.get("/add_employee", (req, res) => {
     res.render("layouts/servers/employee/add_employee", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2010,6 +2025,7 @@ app.get("/edit/:id", async function (req, res) {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       nhanvat: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2062,6 +2078,7 @@ app.get("/employees_store", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       nhanvat: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2075,6 +2092,7 @@ app.get("/employees_order", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       nhanvat: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2088,6 +2106,7 @@ app.get("/employees_customer_care", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       nhanvat: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2100,6 +2119,7 @@ app.get("/all_orders", (req, res) => {
     res.render("layouts/servers/orders/all_orders", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2111,6 +2131,7 @@ app.get("/new_orders", (req, res) => {
     res.render("layouts/servers/orders/new_orders", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2122,6 +2143,7 @@ app.get("/order_detail", (req, res) => {
     res.render("layouts/servers/orders/order_detail", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2133,6 +2155,7 @@ app.get("/accept_orders", (req, res) => {
     res.render("layouts/servers/orders/accept_orders", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2144,6 +2167,7 @@ app.get("/done_orders", (req, res) => {
     res.render("layouts/servers/orders/done_orders", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2155,6 +2179,7 @@ app.get("/cancel_orders", (req, res) => {
     res.render("layouts/servers/orders/cancel_orders", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2181,6 +2206,7 @@ app.get("/warehouse", async (req, res) => {
           admin_id: req.session.admin_id,
           danhsach: data,
           VND,
+          admin_role: req.session.admin_role,
           success: req.flash("success"),
         });
       })
@@ -2203,6 +2229,7 @@ app.get("/list_warehouse/:id", async (req, res) => {
           admin_id: req.session.admin_id,
           danhsach: data,
           VND,
+          admin_role: req.session.admin_role,
         });
       })
       .catch((err) => {
@@ -2223,6 +2250,7 @@ app.get("/add_warehouse", async (req, res) => {
           fullname: req.session.fullname,
           admin_id: req.session.admin_id,
           danhsach: data,
+          admin_role: req.session.admin_role,
         });
       });
   } else {
@@ -2256,6 +2284,7 @@ app.get("/coupon", async (req, res) => {
       admin_id: req.session.admin_id,
       danhsach: data,
       VND,
+      admin_role: req.session.admin_role,
       success: req.flash("success"),
       error: req.flash("error"),
     });
@@ -2269,6 +2298,7 @@ app.get("/add_coupon", async (req, res) => {
     res.render("layouts/servers/coupon/add_coupon", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2308,6 +2338,7 @@ app.get("/edit_coupon/:id", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       danhsach: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2354,6 +2385,7 @@ app.get("/cities", async (req, res) => {
       admin_id: req.session.admin_id,
       danhsach: data,
       VND,
+      admin_role: req.session.admin_role,
       success: req.flash("success"),
       error: req.flash("error"),
     });
@@ -2367,6 +2399,7 @@ app.get("/add_cities", async (req, res) => {
     res.render("layouts/servers/cities/add_cities", {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
@@ -2401,6 +2434,7 @@ app.get("/edit_cities/:id", async (req, res) => {
       fullname: req.session.fullname,
       admin_id: req.session.admin_id,
       danhsach: data,
+      admin_role: req.session.admin_role,
     });
   } else {
     res.redirect("/admin_login");
