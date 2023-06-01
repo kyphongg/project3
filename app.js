@@ -1561,15 +1561,20 @@ app.get("/admin_home", (req, res) => {
 //Trang thể loại
 app.get("/admin_categories", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Category.find();
-    res.render("layouts/servers/categories/categories", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      danhsach: data,
-      admin_role: req.session.admin_role,
-      success: req.flash("success"),
-      error: req.flash("error"),
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      let data = await Category.find();
+      res.render("layouts/servers/categories/categories", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        admin_role: req.session.admin_role,
+        success: req.flash("success"),
+        error: req.flash("error"),
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1577,11 +1582,16 @@ app.get("/admin_categories", async (req, res) => {
 
 app.get("/add_categories", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/categories/add_categories", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      res.render("layouts/servers/categories/add_categories", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1609,13 +1619,18 @@ app.post("/categories_save", async function (req, res) {
 
 app.get("/edit_categories/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Category.findById(req.params.id);
-    res.render("layouts/servers/categories/edit_categories", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      danhsach: data,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      let data = await Category.findById(req.params.id);
+      res.render("layouts/servers/categories/edit_categories", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1657,15 +1672,20 @@ app.get("/delete_categories/:id", function (req, res) {
 //Trang nhà sản xuất
 app.get("/admin_producers", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Producer.find();
-    res.render("layouts/servers/producers/producers", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      danhsach: data,
-      admin_role: req.session.admin_role,
-      success: req.flash("success"),
-      error: req.flash("error"),
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      let data = await Producer.find();
+      res.render("layouts/servers/producers/producers", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        admin_role: req.session.admin_role,
+        success: req.flash("success"),
+        error: req.flash("error"),
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1673,11 +1693,16 @@ app.get("/admin_producers", async (req, res) => {
 
 app.get("/add_producers", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/producers/add_producers", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      res.render("layouts/servers/producers/add_producers", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1705,13 +1730,18 @@ app.post("/producers_save", async function (req, res) {
 
 app.get("/edit_producers/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Producer.findById(req.params.id);
-    res.render("layouts/servers/producers/edit_producers", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      danhsach: data,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      let data = await Producer.findById(req.params.id);
+      res.render("layouts/servers/producers/edit_producers", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1753,23 +1783,28 @@ app.get("/delete_producers/:id", function (req, res) {
 //Trang sản phẩm
 app.get("/admin_product", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Product.find()
-      .populate("categoryID")
-      .populate("producerID")
-      .then((data) => {
-        res.render("layouts/servers/product/product", {
-          fullname: req.session.fullname,
-          admin_id: req.session.admin_id,
-          danhsach: data,
-          VND,
-          admin_role: req.session.admin_role,
-          success: req.flash("success"),
-          error: req.flash("error"),
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      await Product.find()
+        .populate("categoryID")
+        .populate("producerID")
+        .then((data) => {
+          res.render("layouts/servers/product/product", {
+            fullname: req.session.fullname,
+            admin_id: req.session.admin_id,
+            danhsach: data,
+            VND,
+            admin_role: req.session.admin_role,
+            success: req.flash("success"),
+            error: req.flash("error"),
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1777,12 +1812,17 @@ app.get("/admin_product", async (req, res) => {
 
 app.get("/add_product", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/product/add_product", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      VND,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      res.render("layouts/servers/product/add_product", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        VND,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1834,21 +1874,26 @@ app.post("/save_product", async (req, res) => {
 
 app.get("/edit_product/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Product.findById(req.params.id)
-      .populate("categoryID")
-      .populate("producerID")
-      .then((data) => {
-        res.render("layouts/servers/product/edit_product", {
-          fullname: req.session.fullname,
-          admin_id: req.session.admin_id,
-          danhsach: data,
-          VND,
-          admin_role: req.session.admin_role,
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      await Product.findById(req.params.id)
+        .populate("categoryID")
+        .populate("producerID")
+        .then((data) => {
+          res.render("layouts/servers/product/edit_product", {
+            fullname: req.session.fullname,
+            admin_id: req.session.admin_id,
+            danhsach: data,
+            VND,
+            admin_role: req.session.admin_role,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1923,13 +1968,18 @@ app.post("/edit_product_save", async (req, res) => {
 //Trang danh sách khách hàng
 app.get("/customers", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await User.find();
-    res.render("layouts/servers/customer/customer", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      nhanvat: data,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 3) {
+      let data = await User.find();
+      res.render("layouts/servers/customer/customer", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        nhanvat: data,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -1938,14 +1988,20 @@ app.get("/customers", async (req, res) => {
 //Nhân viên
 app.get("/employees", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Admin.find();
-    res.render("layouts/servers/employee/employee", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      nhanvat: data,admin_role: req.session.admin_role,
-      success: req.flash("success"),
-      error: req.flash("error"),
-    });
+    let role = req.session.admin_role;
+    if (role == 0) {
+      let data = await Admin.find();
+      res.render("layouts/servers/employee/employee", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        nhanvat: data,
+        admin_role: req.session.admin_role,
+        success: req.flash("success"),
+        error: req.flash("error"),
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2008,11 +2064,16 @@ app.post("/admin_save", async function (req, res) {
 
 app.get("/add_employee", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/employee/add_employee", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0) {
+      res.render("layouts/servers/employee/add_employee", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2020,13 +2081,18 @@ app.get("/add_employee", (req, res) => {
 
 app.get("/edit/:id", async function (req, res) {
   if (req.session.daDangNhap) {
-    let data = await Admin.findById(req.params.id);
-    res.render("layouts/servers/employee/edit_employee", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      nhanvat: data,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0) {
+      let data = await Admin.findById(req.params.id);
+      res.render("layouts/servers/employee/edit_employee", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        nhanvat: data,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2073,13 +2139,18 @@ app.get("/delete/:id", function (req, res) {
 
 app.get("/employees_store", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Admin.find({ role: 1 });
-    res.render("layouts/servers/employee/store_employee", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      nhanvat: data,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0) {
+      let data = await Admin.find({ role: 1 });
+      res.render("layouts/servers/employee/store_employee", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        nhanvat: data,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2087,13 +2158,18 @@ app.get("/employees_store", async (req, res) => {
 
 app.get("/employees_order", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Admin.find({ role: 2 });
-    res.render("layouts/servers/employee/order_employee", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      nhanvat: data,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0) {
+      let data = await Admin.find({ role: 2 });
+      res.render("layouts/servers/employee/order_employee", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        nhanvat: data,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2101,13 +2177,18 @@ app.get("/employees_order", async (req, res) => {
 
 app.get("/employees_customer_care", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Admin.find({ role: 3 });
-    res.render("layouts/servers/employee/customer_care_employee", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      nhanvat: data,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0) {
+      let data = await Admin.find({ role: 3 });
+      res.render("layouts/servers/employee/customer_care_employee", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        nhanvat: data,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2116,11 +2197,16 @@ app.get("/employees_customer_care", async (req, res) => {
 //Trang quản lý đơn hàng
 app.get("/all_orders", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/orders/all_orders", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/orders/all_orders", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2128,11 +2214,16 @@ app.get("/all_orders", (req, res) => {
 
 app.get("/new_orders", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/orders/new_orders", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/orders/new_orders", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2140,11 +2231,16 @@ app.get("/new_orders", (req, res) => {
 
 app.get("/order_detail", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/orders/order_detail", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/orders/order_detail", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2152,11 +2248,16 @@ app.get("/order_detail", (req, res) => {
 
 app.get("/accept_orders", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/orders/accept_orders", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/orders/accept_orders", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2164,11 +2265,16 @@ app.get("/accept_orders", (req, res) => {
 
 app.get("/done_orders", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/orders/done_orders", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/orders/done_orders", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2176,11 +2282,16 @@ app.get("/done_orders", (req, res) => {
 
 app.get("/cancel_orders", (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/orders/cancel_orders", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/orders/cancel_orders", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2189,30 +2300,35 @@ app.get("/cancel_orders", (req, res) => {
 //Trang kho
 app.get("/warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      Warehouse.aggregate([
+        { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
         },
-      },
-    ])
-      .then(async (data) => {
-        res.render("layouts/servers/warehouse/warehouse", {
-          fullname: req.session.fullname,
-          admin_id: req.session.admin_id,
-          danhsach: data,
-          VND,
-          admin_role: req.session.admin_role,
-          success: req.flash("success"),
+      ])
+        .then(async (data) => {
+          res.render("layouts/servers/warehouse/warehouse", {
+            fullname: req.session.fullname,
+            admin_id: req.session.admin_id,
+            danhsach: data,
+            VND,
+            admin_role: req.session.admin_role,
+            success: req.flash("success"),
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2220,21 +2336,26 @@ app.get("/warehouse", async (req, res) => {
 
 app.get("/list_warehouse/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Warehouse.find({ productID: req.params.id })
-      .populate("productID")
-      .populate("created_by")
-      .then((data) => {
-        res.render("layouts/servers/warehouse/list_warehouse", {
-          fullname: req.session.fullname,
-          admin_id: req.session.admin_id,
-          danhsach: data,
-          VND,
-          admin_role: req.session.admin_role,
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      await Warehouse.find({ productID: req.params.id })
+        .populate("productID")
+        .populate("created_by")
+        .then((data) => {
+          res.render("layouts/servers/warehouse/list_warehouse", {
+            fullname: req.session.fullname,
+            admin_id: req.session.admin_id,
+            danhsach: data,
+            VND,
+            admin_role: req.session.admin_role,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2242,17 +2363,22 @@ app.get("/list_warehouse/:id", async (req, res) => {
 
 app.get("/add_warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Product.find()
-      .populate("categoryID")
-      .populate("producerID")
-      .then((data) => {
-        res.render("layouts/servers/warehouse/add_warehouse", {
-          fullname: req.session.fullname,
-          admin_id: req.session.admin_id,
-          danhsach: data,
-          admin_role: req.session.admin_role,
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      await Product.find()
+        .populate("categoryID")
+        .populate("producerID")
+        .then((data) => {
+          res.render("layouts/servers/warehouse/add_warehouse", {
+            fullname: req.session.fullname,
+            admin_id: req.session.admin_id,
+            danhsach: data,
+            admin_role: req.session.admin_role,
+          });
         });
-      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2278,16 +2404,21 @@ app.post("/save_warehouse", (req, res) => {
 //Trang mã giảm giá
 app.get("/coupon", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Coupon.find();
-    res.render("layouts/servers/coupon/coupon", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      danhsach: data,
-      VND,
-      admin_role: req.session.admin_role,
-      success: req.flash("success"),
-      error: req.flash("error"),
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      let data = await Coupon.find();
+      res.render("layouts/servers/coupon/coupon", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        admin_role: req.session.admin_role,
+        success: req.flash("success"),
+        error: req.flash("error"),
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2295,11 +2426,16 @@ app.get("/coupon", async (req, res) => {
 
 app.get("/add_coupon", async (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/coupon/add_coupon", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      res.render("layouts/servers/coupon/add_coupon", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2333,13 +2469,18 @@ app.post("/coupon_save", async function (req, res) {
 
 app.get("/edit_coupon/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await Coupon.findById(req.params.id);
-    res.render("layouts/servers/coupon/edit_coupon", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      danhsach: data,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      let data = await Coupon.findById(req.params.id);
+      res.render("layouts/servers/coupon/edit_coupon", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2379,16 +2520,21 @@ app.get("/delete_coupon/:id", function (req, res) {
 //Trang bảng giá từng thành phố
 app.get("/cities", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await City.find();
-    res.render("layouts/servers/cities/cities", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      danhsach: data,
-      VND,
-      admin_role: req.session.admin_role,
-      success: req.flash("success"),
-      error: req.flash("error"),
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      let data = await City.find();
+      res.render("layouts/servers/cities/cities", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        admin_role: req.session.admin_role,
+        success: req.flash("success"),
+        error: req.flash("error"),
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2396,11 +2542,16 @@ app.get("/cities", async (req, res) => {
 
 app.get("/add_cities", async (req, res) => {
   if (req.session.daDangNhap) {
-    res.render("layouts/servers/cities/add_cities", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      res.render("layouts/servers/cities/add_cities", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -2429,13 +2580,18 @@ app.post("/cities_save", async function (req, res) {
 
 app.get("/edit_cities/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    let data = await City.findById(req.params.id);
-    res.render("layouts/servers/cities/edit_cities", {
-      fullname: req.session.fullname,
-      admin_id: req.session.admin_id,
-      danhsach: data,
-      admin_role: req.session.admin_role,
-    });
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      let data = await City.findById(req.params.id);
+      res.render("layouts/servers/cities/edit_cities", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
