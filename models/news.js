@@ -8,6 +8,28 @@ var News = new Schema({
     newsContent:{
         type: String
     },
+    newsStatus:{
+        type: Number
+    },
+    productImage:{
+        type: String
+    },
+    newsProduct:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product'
+    },
+    created_date:{
+        type: String
+    },
+    updated_date:{
+        type: String
+    },
+    created_by:{
+        type: String
+    },
+    updated_by:{
+        type: String
+    },
     username:{
         type: Number
     },

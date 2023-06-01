@@ -63,6 +63,7 @@ const Coupon = require("./models/coupon.js");
 const City = require("./models/city.js");
 const Cart = require("./models/cart.js");
 const Order = require("./models/order.js");
+const News = require("./models/news.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -187,6 +188,9 @@ app.get("/logout", function (req, res) {
 //Trang chủ
 app.get("/", async (req, res) => {
   if (req.session.guest) {
+    const news = await News.find({
+      $or: [{ newsStatus: 0 }, { newsStatus: 1 }],
+    });
     const cart = await Cart.aggregate([
       { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
       {
@@ -218,16 +222,20 @@ app.get("/", async (req, res) => {
           danhsach: data,
           VND,
           cart: req.session.cart,
+          tintuc: news,
         });
       })
       .catch((err) => {
         console.log(err);
       });
   } else {
+    const news = await News.find({
+      $or: [{ newsStatus: 0 }, { newsStatus: 1 }],
+    });
     await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
       .populate("categoryID")
       .populate("producerID")
-      .then(async (data) => {
+      .then((data) => {
         res.render("layouts/clients/home", {
           fullname: 1,
           userid: 1,
@@ -235,6 +243,7 @@ app.get("/", async (req, res) => {
           danhsach: data,
           VND,
           cart: 0,
+          tintuc: news,
         });
       })
       .catch((err) => {
@@ -2625,6 +2634,170 @@ app.get("/delete_cities/:id", function (req, res) {
     City.deleteOne({ _id: req.params.id }).then(function () {
       req.flash("success", "Xoá thành công");
       res.redirect("/cities");
+    });
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Trang quản lý tin tức
+app.get("/admin_news", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 3) {
+      let data = await News.find().populate("newsProduct");
+      res.render("layouts/servers/news/news", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        admin_role: req.session.admin_role,
+        success: req.flash("success"),
+        error: req.flash("error"),
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/add_news", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 3) {
+      await Product.find()
+        .populate("categoryID")
+        .populate("producerID")
+        .then((data) => {
+          res.render("layouts/servers/news/add_news", {
+            fullname: req.session.fullname,
+            admin_id: req.session.admin_id,
+            danhsach: data,
+            admin_role: req.session.admin_role,
+          });
+        });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/news_save", async function (req, res) {
+  if (req.session.daDangNhap) {
+    upload(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        req.flash("error", "Lỗi Multer khi upload ảnh");
+      } else if (err) {
+        req.flash("error", "Lỗi bất ngờ xảy ra");
+      } else {
+        let check = await News.findOne({
+          newsTitle: req.body.newsTitle,
+        });
+        if (check) {
+          req.flash("error", "Tin đã tồn tại");
+          res.redirect("/admin_news");
+        } else {
+          var news = News({
+            newsTitle: req.body.newsTitle,
+            newsContent: req.body.newsContent,
+            newsProduct: req.body.newsProduct,
+            productImage: req.file.filename,
+            newsStatus: req.body.newsStatus,
+            created_date: dateVietNam,
+            updated_date: dateVietNam,
+            created_by: req.session.fullname,
+          });
+          news.save().then(function () {
+            req.flash("success", "Thêm thành công");
+            res.redirect("/admin_news");
+          });
+        }
+      }
+    });
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/edit_news/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 3) {
+      let data = await News.findById(req.params.id).populate("newsProduct");
+      let pro = await Product.find();
+      res.render("layouts/servers/news/edit_news", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        sanpham: pro,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/edit_news_save", async function (req, res) {
+  if (req.session.daDangNhap) {
+    upload(req, res, function (err) {
+      //Không chọn file mới
+      if (!req.file) {
+        News.updateOne(
+          { _id: req.body.newsId },
+          {
+            newsTitle: req.body.newsTitle,
+            newsContent: req.body.newsContent,
+            newsProduct: req.body.newsProduct,
+            newsStatus: req.body.newsStatus,
+            updated_by: req.session.fullname,
+            updated_date: dateVietNam,
+          }
+        ).then(function () {
+          req.flash("success", "Sửa thành công");
+          res.redirect("/admin_news");
+        });
+        // Chọn file mới
+      } else {
+        if (err instanceof multer.MulterError) {
+          req.flash("error", "Lỗi Multer khi upload ảnh");
+        } else if (err) {
+          req.flash("error", "Lỗi bất ngờ xảy ra");
+        } else {
+          Product.updateOne(
+            { _id: req.body.newsId },
+            {
+              newsTitle: req.body.newsTitle,
+              newsContent: req.body.newsContent,
+              newsProduct: req.body.newsProduct,
+              productImage: req.file.filename,
+              newsStatus: req.body.newsStatus,
+              updated_by: req.session.fullname,
+              updated_date: dateVietNam,
+            }
+          ).then(function () {
+            req.flash("success", "Sửa thành công");
+            res.redirect("/admin_news");
+          });
+        }
+      }
+    });
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/delete_news/:id", function (req, res) {
+  if (req.session.daDangNhap) {
+    News.deleteOne({ _id: req.params.id }).then(function () {
+      req.flash("success", "Xoá thành công");
+      res.redirect("/admin_news");
     });
   } else {
     res.redirect("/admin_login");
