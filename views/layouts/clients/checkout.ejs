@@ -53,7 +53,7 @@
                                     danhsach[i].items.forEach(function(pid) { %>
                                 <tr>
                                     <input name="product_id_hidden" type="hidden" value="<%= pid._id %>"/>
-                                    <input name="quantity_hidden" type="text" value="<%= pid.quantity %>" />
+                                    <input name="quantity_hidden" type="hidden" value="<%= pid.quantity %>" />
                                     <td style="width: 220px;"><%= pid.productID.productName %></td>
                                     <td><img style="width:60px; height:80px" src="/images/<%= pid.productID.productImage %>"></td>
                                     <td><%= VND.format(pid.productID.priceOut) %></td>
@@ -117,8 +117,7 @@
                         <div class="payment-infomation">
                             <div class="payment-form">
                                 <p>Tỉnh thành</p>
-                                <select id="selectBox" onchange="changeFunc();" required>
-                                    <option value="0">Chọn thành phố</option>
+                                <select id="select-state" class="progControlSelect2" onchange="changeFunc();" required="true">
                                     <% for(let i=0; i < city.length; i++) { %>
                                     <option value="<%= city[i].price %>"><%= city[i].cityName %></option>
                                     <%}%>

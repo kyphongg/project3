@@ -2608,22 +2608,15 @@ app.get("/edit_cities/:id", async (req, res) => {
 
 app.post("/edit_cities_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    let check = await City.findOne({ cityName: req.body.cityName });
-    if (check) {
-      req.flash("error", "Thành phố đã tồn tại");
+    City.updateOne(
+      { _id: req.body.cityId },
+      {
+        price: req.body.price,
+      }
+    ).then(function () {
+      req.flash("success", "Sửa thành công");
       res.redirect("/cities");
-    } else {
-      City.updateOne(
-        { _id: req.body.cityId },
-        {
-          cityName: req.body.cityName,
-          price: req.body.price,
-        }
-      ).then(function () {
-        req.flash("success", "Sửa thành công");
-        res.redirect("/cities");
-      });
-    }
+    });
   } else {
     res.redirect("/admin_login");
   }
