@@ -307,13 +307,15 @@ app.get("/terms_of_service", (req, res) => {
   }
 });
 
-app.get("/news", (req, res) => {
+app.get("/news", async (req, res) => {
+  let data = await News.find().populate("newsProduct");
   if (req.session.guest) {
     res.render("layouts/clients/news", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      danhsach: data,
     });
   } else {
     res.render("layouts/clients/news", {
@@ -321,6 +323,7 @@ app.get("/news", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      danhsach: data,
     });
   }
 });
