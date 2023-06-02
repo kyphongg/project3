@@ -62,17 +62,20 @@
                                                     <% } %>            
                     </div>
                 </div>
-                <% if(userid==1){ %>
-                    <a class="cart" href="/login">
-                        <img src="/images/shopping-cart.png" alt="UserImage">
-                        Giỏ hàng ( )
-                        </a>
-                    <% }else { %>
-                <a class="cart" href="/cart/<%= userid %>" id="count">
-                <img src="/images/shopping-cart.png" alt="UserImage">
-                Giỏ hàng ( <%cart.forEach(function(id){%><%= id.item_count %><%});%> )
-                </a>
-                <% } %>
+                <div class="cart-icon">
+                    <% if(userid==1){ %>
+                        <a class="cart" href="/login">
+                            <img src="/images/shopping-cart.png" alt="UserImage">
+                            Giỏ hàng 
+                            </a>
+                        <% }else { %>
+                    <a class="cart" href="/cart/<%= userid %>" id="count">
+                    <img src="/images/shopping-cart.png" alt="UserImage">
+                    Giỏ hàng
+                    <div class="quantity-cart"><%cart.forEach(function(id){%><%= id.item_count %><%});%></div>
+                    </a>
+                    <% } %>
+                </div>
         </div>
     </div>
 
