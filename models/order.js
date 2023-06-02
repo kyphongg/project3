@@ -37,6 +37,9 @@ var Order = new Schema({
       },
     },
   ],
+  phone:{
+    type: Number
+  },
   total: {
     type: Number,
   },

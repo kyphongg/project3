@@ -690,6 +690,7 @@ app.post("/creat_new_order", async (req, res) => {
     paymentMethod: req.body.paymentMethod,
     shippingAddress: req.body.shippingAddress,
     shippingFee: req.body.shippingFee,
+    phone: req.body.phone,
     total: req.body.total,
     timeIn: dateVietNam,
     orderStatus: 0,
