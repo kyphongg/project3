@@ -415,14 +415,17 @@ app.get("/profile/:id", (req, res) => {
   }
 });
 
-app.get("/orders/:id", (req, res) => {
+app.get("/orders/:id", async (req, res) => {
   if (req.session.guest) {
+    let data = await Order.find({userID: req.session.userid});
     res.render("layouts/clients/orders", {
       fullname: req.session.fullname,
       email: req.session.email,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      danhsach: data,
+      VND,
     });
   } else {
     res.redirect("/login");
@@ -1528,6 +1531,7 @@ app.post("/admin_login", async function (req, res) {
       if (result) {
         const customer = await User.find().count();
         const employee = await Admin.find().count();
+        const order = await Order.find({orderStatus:0}).count();
         var sess = req.session;
         sess.daDangNhap = true;
         sess.fullname = admin.fullname;
@@ -1535,6 +1539,7 @@ app.post("/admin_login", async function (req, res) {
         sess.admin_role = admin.role;
         sess.number = customer;
         sess.numberal = employee;
+        sess.order = order;
         res.redirect("/admin_home");
       } else {
         req.flash("error", "Sai mật khẩu");
@@ -1562,6 +1567,7 @@ app.get("/admin_home", (req, res) => {
       fullname: req.session.fullname,
       number: req.session.number,
       numberal: req.session.numberal,
+      order: req.session.order,
       admin_id: req.session.admin_id,
       admin_role: req.session.admin_role,
     });
@@ -2207,14 +2213,17 @@ app.get("/employees_customer_care", async (req, res) => {
 });
 
 //Trang quản lý đơn hàng
-app.get("/all_orders", (req, res) => {
+app.get("/all_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      let data = await Order.find().populate("userID");
       res.render("layouts/servers/orders/all_orders", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
       });
     } else {
       res.redirect("/admin_home");
@@ -2224,14 +2233,17 @@ app.get("/all_orders", (req, res) => {
   }
 });
 
-app.get("/new_orders", (req, res) => {
+app.get("/new_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      let data = await Order.find({orderStatus:0}).populate("userID");
       res.render("layouts/servers/orders/new_orders", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
       });
     } else {
       res.redirect("/admin_home");

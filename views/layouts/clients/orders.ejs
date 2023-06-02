@@ -51,66 +51,22 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
-                                    <td style="text-align: center;">1</td>
-                                    <td style="width: 120px;">abcd</td>
-                                    <td>10:31 07/05/2023</td>
-                                    <td>55.000 VNĐ</td>
-                                    <td>Đang chờ xử lý</td>
+                                    <td style="text-align: center;"><%= i+1 %></td>
+                                    <td style="width: 120px;"><%= danhsach[i]._id %></td>
+                                    <td><%= danhsach[i].timeIn %></td>
+                                    <td><%= VND.format(danhsach[i].total) %></td>
+                                    <td><% if(danhsach[i].orderStatus == 0){ %> Đang chờ xác nhận <% }else
+                                        if(danhsach[i].orderStatus == 1){ %> Đã được xác nhận <% }else if(danhsach[i].orderStatus ==
+                                        2){ %> Đang đóng gói <% }else if(danhsach[i].orderStatus == 3){ %> Đang vận chuyển <% }else if(danhsach[i].orderStatus == 4){ %>Đã nhận hàng<%}else{%>Đã huỷ<%}%></td>
                                     <td>
                                         <a href="/orders_detail">
                                             <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
                                         </a>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td style="text-align: center;">2</td>
-                                    <td style="width: 120px;">abcd</td>
-                                    <td>10:31 07/05/2023</td>
-                                    <td>55.000 VNĐ</td>
-                                    <td>Đã xác nhận</td>
-                                    <td>
-                                        <a href="/orders_detail">
-                                            <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;">3</td>
-                                    <td style="width: 120px;">abcd</td>
-                                    <td>10:31 07/05/2023</td>
-                                    <td>55.000 VNĐ</td>
-                                    <td>Đang vận chuyển</td>
-                                    <td>
-                                        <a href="/orders_detail">
-                                            <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;">4</td>
-                                    <td style="width: 120px;">abcd</td>
-                                    <td>10:31 07/05/2023</td>
-                                    <td>55.000 VNĐ</td>
-                                    <td>Hoàn thành</td>
-                                    <td>
-                                        <a href="/orders_detail">
-                                            <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;">5</td>
-                                    <td style="width: 120px;">abcd</td>
-                                    <td>10:31 07/05/2023</td>
-                                    <td>55.000 VNĐ</td>
-                                    <td>Đã hủy</td>
-                                    <td>
-                                        <a href="/orders_detail">
-                                            <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                <%}%>
                                 </tbody>
                             </table>
                         </div>

@@ -50,15 +50,18 @@
                             </tr>
                             </thead>
                             <tbody>
+                                <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
-                                    <td style="text-align: center;">1</td>
-                                    <td style="text-align: center;">abcd</td>
-                                    <td style="text-align: center;">Kỳ Phong</td>
+                                    <td style="text-align: center;"><%= i+1 %></td>
+                                    <td style="text-align: center;"><%= danhsach[i]._id %></td>
+                                    <td style="text-align: center;"><%= danhsach[i].userID.fullname %></td>
                                     <td style="text-align: center;">0966331402</td>
-                                    <td style="text-align: center;">Nhà A17 Tạ Quang Bửu</td>
-                                    <td style="text-align: center;">55.000 VNĐ</td>
-                                    <td style="text-align: center;">08:27 08/05/2023</td>
-                                    <td>Đang chờ xác nhận</td>
+                                    <td style="text-align: center;"><%= danhsach[i].shippingAddress %></td>
+                                    <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
+                                    <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
+                                    <td><% if(danhsach[i].orderStatus == 0){ %> Đang chờ xác nhận <% }else
+                                        if(danhsach[i].orderStatus == 1){ %> Đã được xác nhận <% }else if(danhsach[i].orderStatus ==
+                                        2){ %> Đang đóng gói <% }else if(danhsach[i].orderStatus == 3){ %> Đang vận chuyển <% }else if(danhsach[i].orderStatus == 4){ %>Đã nhận hàng<%}else{%>Đã huỷ<%}%></td>
                                         <td style="text-align: center;">
                                             <a style="text-align: center;" href="">
                                                 <button class="btn btn-success" style="width: 80px;"><b>Xác nhận</b></button>
@@ -70,6 +73,7 @@
                                         </a>
                                     </td>
                                 </tr>
+                                <%}%>
                             </tbody>
                         </table>
                     </div>

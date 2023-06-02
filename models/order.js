@@ -37,7 +37,6 @@ var Order = new Schema({
       },
     },
   ],
-
   total: {
     type: Number,
   },
