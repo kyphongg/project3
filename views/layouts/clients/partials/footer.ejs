@@ -1,196 +1,215 @@
 <footer id="footer">
-    <div class="container">
-        <div class="my-footer">
-            <div class="row">
-                <div class="col">
-                    <h5>Giới Thiệu</h5>
-                    <a href="/about"><p>Thông tin về Gaming store</p></a>
-                    <a href="/terms_of_service"><p>Điều khoản dịch vụ</p></a>
-                    <a href="/privacy_policy"><p>Chính sách bảo mật</p></a>
-                </div>
-
-                <div class="col">
-                    <h5>Tài Khoản</h5>
-                    <a href="/login"><p>Đăng Nhập</p></a>
-                    <a href="/signup"><p>Đăng Ký</p></a>
-                </div>
-
-                <div class="col">
-                    <h5>Liên hệ</h5>
-                    <a href="/hotline"><p>Hotline</p></a>
-                    <a href="/support"><p>Hỗ trợ</p></a>
-                    <a href="/customer_care"><p>CSKH</p></a>
-                </div>
-
-                <div class="col">
-                    <img src="/images/copyright.png" alt="UserImage">
-                </div>
-            </div>
+  <div class="container">
+    <div class="my-footer">
+      <div class="row">
+        <div class="col">
+          <h5>Giới Thiệu</h5>
+          <a href="/about"><p>Thông tin về Gaming store</p></a>
+          <a href="/terms_of_service"><p>Điều khoản dịch vụ</p></a>
+          <a href="/privacy_policy"><p>Chính sách bảo mật</p></a>
         </div>
+
+        <div class="col">
+          <h5>Tài Khoản</h5>
+          <a href="/login"><p>Đăng Nhập</p></a>
+          <a href="/signup"><p>Đăng Ký</p></a>
+        </div>
+
+        <div class="col">
+          <h5>Liên hệ</h5>
+          <a href="/hotline"><p>Hotline</p></a>
+          <a href="/support"><p>Hỗ trợ</p></a>
+          <a href="/customer_care"><p>CSKH</p></a>
+        </div>
+
+        <div class="col">
+          <img src="/images/copyright.png" alt="UserImage" />
+        </div>
+      </div>
     </div>
+  </div>
 </footer>
 
-<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightslider/1.1.6/js/lightslider.min.js" integrity="sha512-Gfrxsz93rxFuB7KSYlln3wFqBaXUc1jtt3dGCp+2jTb563qYvnUBM/GP2ZUtRC27STN/zUamFtVFAIsRFoT6/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script
+  src="https://code.jquery.com/jquery-3.6.1.js"
+  integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/lightslider/1.1.6/js/lightslider.min.js"
+  integrity="sha512-Gfrxsz93rxFuB7KSYlln3wFqBaXUc1jtt3dGCp+2jTb563qYvnUBM/GP2ZUtRC27STN/zUamFtVFAIsRFoT6/w=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
 <script src="js/alert.js"></script>
 <script src="js/multi-select-tag.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js" integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
+  integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
-    $(document).ready(function(){
-        var $progControl = $(".progControlSelect2").select2({
-            
-            placeholder: "Chọn thành phố"
+  $(document).ready(function () {
+    var $progControl = $(".progControlSelect2").select2({
+      placeholder: "Chọn thành phố",
+    });
   });
-})
-  </script>
+</script>
 
 <script type="text/javascript">
-    const VND = new Intl.NumberFormat("vi-VN", {
+  const VND = new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
-    });
+  });
 
-    function changeFunc() {
-     var selectBox = document.getElementById("select-state");
-     var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-     document.getElementById("shippingcost").innerHTML = VND.format(selectedValue);
-     var cost = document.getElementById("cost").innerHTML;
-     var coupon = document.getElementById("coupon").innerHTML;
-     document.getElementById("total").innerHTML = VND.format(parseInt(selectedValue) + parseInt(cost) - parseInt(coupon));
-     document.getElementById("subTotal").value = parseInt(selectedValue) + parseInt(cost) - parseInt(coupon);
-     document.getElementById("fee").value = selectedValue;
-    }
+  function changeFunc() {
+    var selectBox = document.getElementById("select-state");
+    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+    document.getElementById("shippingcost").innerHTML =
+      VND.format(selectedValue);
+    var cost = document.getElementById("cost").innerHTML;
+    var coupon = document.getElementById("coupon").innerHTML;
+    document.getElementById("total").innerHTML = VND.format(
+      parseInt(selectedValue) + parseInt(cost) - parseInt(coupon)
+    );
+    document.getElementById("subTotal").value =
+      parseInt(selectedValue) + parseInt(cost) - parseInt(coupon);
+    document.getElementById("fee").value = selectedValue;
+  }
 </script>
 
 <script>
-    new MultiSelectTag('categories',{ // id
-        rounded: true,
-        shadow: true
-    })  
+  new MultiSelectTag("categories", {
+    // id
+    rounded: true,
+    shadow: true,
+  });
 </script>
 
 <script>
-    const buyBtns = document.querySelectorAll('.js-buy-tickets')
-    const modal= document.querySelector('.js-modal')
-    const modalContainer= document.querySelector('.js-modal-container')
-    const modalClose= document.querySelector('.js-modal-close')
-    const modalClosee= document.querySelector('.js-cancel')
-    
-    // Hàm hiển thị modal xóa sp (thêm class open vào modal)
-    function showBuyTickets() {
-        modal.classList.add('open')
-    }
+  const buyBtns = document.querySelectorAll(".js-buy-tickets");
+  const modal = document.querySelector(".js-modal");
+  const modalContainer = document.querySelector(".js-modal-container");
+  const modalClose = document.querySelector(".js-modal-close");
+  const modalClosee = document.querySelector(".js-cancel");
 
-    // Hàm ẩn modal xóa sp (fỡ bỏ class open vào modal)
-    function hideBuyTickets() {
-        modal.classList.remove('open')
-    }
+  // Hàm hiển thị modal xóa sp (thêm class open vào modal)
+  function showBuyTickets() {
+    modal.classList.add("open");
+  }
 
-    //Lặp qua từng thẻ button và nghe hành vi click 
-    for (const buyBtn of buyBtns) {
-        buyBtn.addEventListener('click',showBuyTickets)
-    }
+  // Hàm ẩn modal xóa sp (fỡ bỏ class open vào modal)
+  function hideBuyTickets() {
+    modal.classList.remove("open");
+  }
 
-    // Nghe hành vi click vào button close
-    modalClose.addEventListener('click',hideBuyTickets)
+  //Lặp qua từng thẻ button và nghe hành vi click
+  for (const buyBtn of buyBtns) {
+    buyBtn.addEventListener("click", showBuyTickets);
+  }
 
-    modalClosee.addEventListener('click',hideBuyTickets)
-    
-    modal.addEventListener('click', hideBuyTickets)
+  // Nghe hành vi click vào button close
+  modalClose.addEventListener("click", hideBuyTickets);
 
-    modalContainer.addEventListener('click', function (event) {
-        event.stopPropagation()
-    })
+  modalClosee.addEventListener("click", hideBuyTickets);
+
+  modal.addEventListener("click", hideBuyTickets);
+
+  modalContainer.addEventListener("click", function (event) {
+    event.stopPropagation();
+  });
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function(){
-        $("#news-slider").owlCarousel({
-            items:3,
-            navigation:true,
-            navigationText:["",""],
-            autoPlay:true
-        });
+  $(document).ready(function () {
+    $("#news-slider").owlCarousel({
+      items: 3,
+      navigation: true,
+      navigationText: ["", ""],
+      autoPlay: true,
     });
+  });
 </script>
 
 <script>
-    $(document).ready(function () {
-        $('.autoWidth').lightSlider({
-            autoWidth: true,
-            loop: true,
-            onSliderLoad: function () {
-                $('.autoWidth').removeClass('cS-hidden');
-            }
-        });
+  $(document).ready(function () {
+    $(".autoWidth").lightSlider({
+      autoWidth: true,
+      loop: true,
+      onSliderLoad: function () {
+        $(".autoWidth").removeClass("cS-hidden");
+      },
     });
+  });
 
-    let subMenu = document.getElementById("subMenu");
+  let subMenu = document.getElementById("subMenu");
 
-    function toggleMenu() {
+  function toggleMenu() {
+    subMenu.classList.toggle("open-menu");
+  }
 
-        subMenu.classList.toggle("open-menu");
-    }
+  let popup = document.getElementById("popup");
 
-    let popup = document.getElementById("popup");
-
-    function openPopup(){
-        popup.classList.add("open-popup");
-    }
-    function closePopup(){
-        popup.classList.remove("open-popup");
-    }
-
+  function openPopup() {
+    popup.classList.add("open-popup");
+  }
+  function closePopup() {
+    popup.classList.remove("open-popup");
+  }
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        load_comment();
+  $(document).ready(function () {
+    load_comment();
 
-        function load_comment() {
-            var game_id = $('.game_id').val();
-            var _token = $('input[name="_token"]').val();
-            $.ajax({
-                url: "{{url('/load-comment')}}",
-                method: "POST",
-                data: {game_id: game_id, _token: _token},
-                success: function (data) {
-                    $('#comment_show').html(data);
-                }
-            });
-        }
+    function load_comment() {
+      var game_id = $(".game_id").val();
+      var _token = $('input[name="_token"]').val();
+      $.ajax({
+        url: "{{url('/load-comment')}}",
+        method: "POST",
+        data: { game_id: game_id, _token: _token },
+        success: function (data) {
+          $("#comment_show").html(data);
+        },
+      });
+    }
 
-        $('.send-comment').click(function () {
-            var game_id = $('.game_id').val();
-            var comment_info = $('.comment_info').val();
-            var _token = $('input[name="_token"]').val();
-            $.ajax({
-                url: "{{url('/send-comment')}}",
-                method: "POST",
-                data: {game_id: game_id, comment_info: comment_info, _token: _token},
-                success: function (data) {
-                    $('#notify_comment').html('<p class="text text-success">Thêm bình luận thành công, Bình luận đang chờ duyệt</p>');
-                    load_comment();
-                    $('notify_comment').fadeOut(9000);
-                    $('.comment_info').val('');
-                }
-            });
-        });
-
-        $('.cart-btn').click(function (){
-            $('.alert').removeClass('hide');
-            $('.alert').addClass('show');
-            $('.alert').addClass('showAlert');
-            setTimeout(function (){
-                $('.alert').addClass('hide');
-                $('.alert').removeClass('show');
-            },5000);
-        });
-        $('.close-btnn').click(function (){
-            $('.alert').addClass('hide');
-            $('.alert').removeClass('show');
-        });
+    $(".send-comment").click(function () {
+      var game_id = $(".game_id").val();
+      var comment_info = $(".comment_info").val();
+      var _token = $('input[name="_token"]').val();
+      $.ajax({
+        url: "{{url('/send-comment')}}",
+        method: "POST",
+        data: { game_id: game_id, comment_info: comment_info, _token: _token },
+        success: function (data) {
+          $("#notify_comment").html(
+            '<p class="text text-success">Thêm bình luận thành công, Bình luận đang chờ duyệt</p>'
+          );
+          load_comment();
+          $("notify_comment").fadeOut(9000);
+          $(".comment_info").val("");
+        },
+      });
     });
+
+    $(".cart-btn").click(function () {
+      $(".alert").removeClass("hide");
+      $(".alert").addClass("show");
+      $(".alert").addClass("showAlert");
+      setTimeout(function () {
+        $(".alert").addClass("hide");
+        $(".alert").removeClass("show");
+      }, 5000);
+    });
+    $(".close-btnn").click(function () {
+      $(".alert").addClass("hide");
+      $(".alert").removeClass("show");
+    });
+  });
 </script>

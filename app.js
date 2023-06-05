@@ -417,7 +417,7 @@ app.get("/profile/:id", (req, res) => {
 
 app.get("/orders/:id", async (req, res) => {
   if (req.session.guest) {
-    let data = await Order.find({userID: req.session.userid});
+    let data = await Order.find({ userID: req.session.userid });
     res.render("layouts/clients/orders", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -476,9 +476,6 @@ app.get("/cart/:id", async (req, res) => {
     ]);
     var sess = req.session;
     sess.cart = cart;
-    const number = await Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-    ]).then();
     const carti = await Cart.find({
       userID: new mongoose.Types.ObjectId(req.session.userid),
     });
@@ -487,7 +484,7 @@ app.get("/cart/:id", async (req, res) => {
       .then((data) => {
         let money = 0;
         for (let i = 0; i < data.length; i++) {
-          data[i].items.forEach(function (pid) {
+          data[i].items.forEach(async function (pid) {
             money += pid.productID.priceOut * parseInt(pid.quantity);
           });
         }
@@ -497,7 +494,6 @@ app.get("/cart/:id", async (req, res) => {
           sID: req.session.sessionID,
           danhsach: data,
           VND,
-          number,
           cart: req.session.cart,
           carti,
           money,
@@ -511,6 +507,7 @@ app.get("/cart/:id", async (req, res) => {
 app.post("/add_to_cart", async (req, res) => {
   const productId = req.body.product_id_hidden;
   const quantity = parseInt(req.body.quantity);
+  const convert = req.body.quantity;
   const uid = req.body.user_id_hidden;
   let cart = await Cart.find({ userID: req.body.user_id_hidden });
   if (cart[0]) {
@@ -518,26 +515,6 @@ app.post("/add_to_cart", async (req, res) => {
       cart[0].items.forEach(async function (element) {
         if (element._id == productId && element.productID == productId) {
           if (quantity > 0) {
-            let a = 0;
-            a += quantity;
-            let newQuantity = String(a);
-            // const data = await Cart.findOneAndUpdate(
-            //   {
-            //     userID: uid,
-            //     items: { $elemMatch: { _id: productId } },
-            //   },
-            //   { "items.$": 1 },
-            //   { $inc: { "items.$.quantity": convert } },
-            //   { safe: true, upsert: true }
-            // );
-
-            // const data = await Cart.find(
-            //   { "items._id": productId, userID: uid },
-            //   { "items.$": 1 },
-            //   { upsert: true }
-            // );
-            // console.log("Item" + data);
-
             // await Cart.updateOne(
             //   { "items._id": productId, userID: uid },
             //   { $addToSet: { "items.$.quantity": quantity } },
@@ -550,9 +527,7 @@ app.post("/add_to_cart", async (req, res) => {
                 userID: uid,
                 items: { $elemMatch: { _id: productId } },
               },
-              { "items.$": 1 },
-              { $set: { "items.quantity": newQuantity } },
-              { upsert: true }
+              { $inc: { "items.$.quantity": convert } }
             );
           }
         } else if (
@@ -570,28 +545,46 @@ app.post("/add_to_cart", async (req, res) => {
                   quantity: quantity,
                 },
               },
-            },
-            { safe: true, upsert: true }
+            }
           );
         }
       });
     }
     res.redirect("/cart/:id");
   } else {
-    var cartData = Cart({
-      items: [
-        {
-          quantity: quantity,
-          productID: productId,
-          _id: productId,
-        },
-      ],
-      userID: uid,
-    });
+    var cartData = Cart(
+      {
+        _id: uid,
+        items: [
+          {
+            quantity: quantity,
+            productID: productId,
+            _id: productId,
+          },
+        ],
+        userID: uid,
+      },
+      { unique: true }
+    );
     cartData.save().then(function () {
       res.redirect("/cart/:id");
     });
   }
+});
+
+app.post("/update_quantity_cart", async (req, res) => {
+  const quantity = req.body.quantity;
+  const productId = req.body.product_id_hidden;
+  const uid = req.body.user_id_hidden;
+  await Cart.updateOne(
+    {
+      userID: uid,
+      items: { $elemMatch: { _id: productId } },
+    },
+
+    { $set: { "items.$.quantity": quantity } }
+  );
+  res.redirect("/cart/:id");
 });
 
 app.get("/delete_cart_items/:id", async function (req, res) {
@@ -1532,7 +1525,7 @@ app.post("/admin_login", async function (req, res) {
       if (result) {
         const customer = await User.find().count();
         const employee = await Admin.find().count();
-        const order = await Order.find({orderStatus:0}).count();
+        const order = await Order.find({ orderStatus: 0 }).count();
         var sess = req.session;
         sess.daDangNhap = true;
         sess.fullname = admin.fullname;
@@ -2238,7 +2231,7 @@ app.get("/new_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let data = await Order.find({orderStatus:0}).populate("userID");
+      let data = await Order.find({ orderStatus: 0 }).populate("userID");
       res.render("layouts/servers/orders/new_orders", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
