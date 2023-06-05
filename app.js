@@ -328,13 +328,15 @@ app.get("/news", async (req, res) => {
   }
 });
 
-app.get("/news/detail", (req, res) => {
+app.get("/news/:id",async (req, res) => {
+  let data = await News.find({_id: req.params.id}).populate("newsProduct");
   if (req.session.guest) {
     res.render("layouts/clients/news_detail", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      danhsach: data,
     });
   } else {
     res.render("layouts/clients/news_detail", {
@@ -342,6 +344,7 @@ app.get("/news/detail", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      danhsach: data,
     });
   }
 });

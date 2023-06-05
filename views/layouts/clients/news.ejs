@@ -19,11 +19,11 @@
                 <% for(let i=0; i < danhsach.length; i++) { %>
                 <div class="news-box">
                     <div class="news-img">
-                        <img src="/images/<%= danhsach[i].productImage %>" alt="News">
+                        <a href="/news/<%= danhsach[i].id %>" class="news-title"><img src="/images/<%= danhsach[i].productImage %>" alt="News"></a>
                     </div>
                     <div class="news-text">
                         <span><%= danhsach[i].updated_date %></span>
-                        <a href="#" class="news-title"><%= danhsach[i].newsTitle %></a>
+                        <a href="/news/<%= danhsach[i].id %>" class="news-title"><%= danhsach[i].newsTitle %></a>
                     </div>
                 </div>
                 <%}%>
