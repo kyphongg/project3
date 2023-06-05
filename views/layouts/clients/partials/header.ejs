@@ -72,7 +72,7 @@
                     <a class="cart" href="/cart/<%= userid %>" id="count">
                     <img src="/images/shopping-cart.png" alt="UserImage">
                     Giỏ hàng
-                    <div class="quantity-cart"><%cart.forEach(function(id){%><%= id.item_count %><%});%></div>
+                    <div class="quantity-cart"><%if(cart[0]){%> <%cart.forEach(function(id){%> <%= id.item_count %> <%});%> <%}else{%> 0 <%}%></div>
                     </a>
                     <% } %>
                 </div>
