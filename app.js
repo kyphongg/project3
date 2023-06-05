@@ -328,6 +328,24 @@ app.get("/news", async (req, res) => {
   }
 });
 
+app.get("/news/detail", (req, res) => {
+  if (req.session.guest) {
+    res.render("layouts/clients/news_detail", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      cart: req.session.cart,
+    });
+  } else {
+    res.render("layouts/clients/news_detail", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      cart: 0,
+    });
+  }
+});
+
 app.get("/hiring", (req, res) => {
   if (req.session.guest) {
     res.render("layouts/clients/hiring", {

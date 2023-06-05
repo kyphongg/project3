@@ -148,9 +148,7 @@
                             </div>
                             <div class="news-text">
                                 <span><%= tintuc[i].updated_date %></span>
-                                <a href="#" class="news-title"><%= tintuc[i].newsTitle %></a>
-                                <p><%- tintuc[i].newsContent %></p>
-                                <a href="#" style="font-weight: 600;">Đọc thêm</a>
+                                <a href="/news/<%= tintuc[i].id %>" class="news-title"><%= tintuc[i].newsTitle %></a>
                             </div>
                         </div> 
                     </li>
