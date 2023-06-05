@@ -511,54 +511,44 @@ app.post("/add_to_cart", async (req, res) => {
   const uid = req.body.user_id_hidden;
   let cart = await Cart.find({ userID: req.body.user_id_hidden });
   if (cart[0]) {
-    for (let i = 0; i < cart.length; i++) {
-      cart[0].items.forEach(async function (element) {
-        if (element._id == productId && element.productID == productId) {
-          if (quantity > 0) {
-            await Cart.updateOne(
-              {
-                userID: uid,
-                items: { $elemMatch: { _id: productId } },
-              },
-              { $inc: { "items.$.quantity": convert } }
-            );
-          }
-        } else if (
-          element._id != productId &&
-          element.productID != productId &&
-          quantity > 0
-        ) {
-          await Cart.updateOne(
-            { userID: uid },
-            {
-              $addToSet: {
-                items: {
-                  _id: productId,
-                  productID: productId,
-                  quantity: quantity,
-                },
-              },
-            }
-          );
+    const isE = cart[0].items.findIndex((item) => {
+      return new String(item.productID).trim() == new String(productId).trim();
+    });
+    if (isE == -1) {
+      await Cart.updateOne(
+        { userID: uid },
+        {
+          $addToSet: {
+            items: {
+              _id: productId,
+              productID: productId,
+              quantity: quantity,
+            },
+          },
         }
-      });
+      );
+    } else {
+      await Cart.updateOne(
+        {
+          userID: uid,
+          items: { $elemMatch: { _id: productId } },
+        },
+        { $inc: { "items.$.quantity": convert } }
+      );
     }
     res.redirect("/cart/:id");
   } else {
-    var cartData = Cart(
-      {
-        _id: uid,
-        items: [
-          {
-            quantity: quantity,
-            productID: productId,
-            _id: productId,
-          },
-        ],
-        userID: uid,
-      },
-      { unique: true }
-    );
+    var cartData = Cart({
+      _id: uid,
+      items: [
+        {
+          quantity: quantity,
+          productID: productId,
+          _id: productId,
+        },
+      ],
+      userID: uid,
+    });
     cartData.save().then(function () {
       res.redirect("/cart/:id");
     });
