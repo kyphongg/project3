@@ -328,8 +328,8 @@ app.get("/news", async (req, res) => {
   }
 });
 
-app.get("/news/:id",async (req, res) => {
-  let data = await News.find({_id: req.params.id}).populate("newsProduct");
+app.get("/news/:id", async (req, res) => {
+  let data = await News.find({ _id: req.params.id }).populate("newsProduct");
   if (req.session.guest) {
     res.render("layouts/clients/news_detail", {
       fullname: req.session.fullname,
@@ -2443,7 +2443,7 @@ app.get("/add_warehouse", async (req, res) => {
   }
 });
 
-app.post("/save_warehouse", (req, res) => {
+app.post("/save_warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
     var warehouse = Warehouse({
       productID: req.body.productID,
@@ -2451,6 +2451,10 @@ app.post("/save_warehouse", (req, res) => {
       created_by: req.session.admin_id,
       created_date: dateVietNam,
     });
+    await Product.updateOne(
+      { _id: req.body.productID },
+      { $inc: { productQuantity: req.body.quantityIn } }
+    );
     warehouse.save().then(function () {
       req.flash("success", "Thêm thành công");
       res.redirect("/warehouse");

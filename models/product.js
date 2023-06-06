@@ -29,6 +29,11 @@ var Product = new Schema({
     productStatus:{
         type: Number
     },
+    productQuantity:{
+        type: Number,
+        default: 0,
+    }
+    ,
     created_date:{
         type: String
     },
