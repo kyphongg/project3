@@ -530,6 +530,7 @@ app.post("/add_to_cart", async (req, res) => {
   const quantity = parseInt(req.body.quantity);
   const convert = req.body.quantity;
   const uid = req.body.user_id_hidden;
+  const qty = await Product.findOne({ _id: productId });
   let cart = await Cart.find({ userID: req.body.user_id_hidden });
   if (cart[0]) {
     const isE = cart[0].items.findIndex((item) => {
@@ -549,13 +550,25 @@ app.post("/add_to_cart", async (req, res) => {
         }
       );
     } else {
-      await Cart.updateOne(
-        {
-          userID: uid,
-          items: { $elemMatch: { _id: productId } },
-        },
-        { $inc: { "items.$.quantity": convert } }
-      );
+      if (cart[0].items[isE].quantity == qty.productQuantity) {
+        req.flash("error", "Số lượng của sản phẩm đã đầy");
+      } else if (quantity + cart[0].items[isE].quantity > qty.productQuantity) {
+        await Cart.updateOne(
+          {
+            userID: uid,
+            items: { $elemMatch: { _id: productId } },
+          },
+          { $set: { "items.$.quantity": qty.productQuantity } }
+        );
+      } else {
+        await Cart.updateOne(
+          {
+            userID: uid,
+            items: { $elemMatch: { _id: productId } },
+          },
+          { $inc: { "items.$.quantity": convert } }
+        );
+      }
     }
     res.redirect("/cart/:id");
   } else {
