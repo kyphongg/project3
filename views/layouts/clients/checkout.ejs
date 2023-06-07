@@ -116,23 +116,27 @@
                     <div class="info-detail">
                         <div class="payment-infomation">
                             <div class="payment-form">
+                                <p>Họ và tên người nhận</p>
+                                <input type="text" name="shippingName">
+                                <p>Số điện thoại người nhận</p>
+                                <input type="text" name="shippingPhone">
+                            </div>
+                            <div class="payment-form">
+                                <label >Địa chỉ giao hàng</label>
                                 <p>Tỉnh thành</p>
-                                <select id="select-state" class="progControlSelect2" onchange="changeFunc();" required="true">
+                                <select id="select-state" class="progControlSelect2" onchange="changeFunc();">
                                     <% for(let i=0; i < city.length; i++) { %>
                                     <option value="<%= city[i].price %>"><%= city[i].cityName %></option>
                                     <%}%>
                                 </select>
-                            </div>
-                            <div class="payment-form">
                                 <p>Địa chỉ</p>
-                                <input type="text" name="shippingAddress" required>
-                                <p>Số điện thoại người nhận</p>
-                                <input type="text" name="phone" required>
+                                <input type="text" name="shippingAddress">
                             </div>
+                            
                         </div>
                     </div>
                 </div>   
-            </form> 
+            
 
             <div class="payment-method">
                 <h4>Phương thức thanh toán</h4>
@@ -165,13 +169,13 @@
                         </span>
                     </div>
                     <a href="/cart/<%= userid %>" style="margin-left: 15px;">
-                        <button class="btn btn-secondary btn-backk" style="font-size: 20px">< Quay lại giỏ hàng</button>
+                        <button type="button" class="btn btn-secondary btn-backk" style="font-size: 20px">< Quay lại giỏ hàng</button>
                     </a>
             </div>
             <button type="submit" class="btn btn-secondary btn-payment">Đặt hàng</button>
         
             <% } %>
-        
+        </form> 
     
         </div>
         </div>

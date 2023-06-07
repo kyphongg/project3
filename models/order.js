@@ -1,6 +1,19 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require("passport-local-mongoose");
+let Item = new Schema({
+  _id:{
+    type: mongoose.Schema.Types.ObjectId,
+  },
+  productID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+  },
+  quantity: {
+    type: Number,
+    default: 1,
+  },
+});
 var Order = new Schema({
   userID: {
     type: mongoose.Schema.Types.ObjectId,
@@ -22,23 +35,12 @@ var Order = new Schema({
   orderStatus: {
     type: Number,
   },
-  items: [
-    {
-      _id: {
-        type: mongoose.Schema.Types.ObjectId,
-      },
-      productID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-      },
-      quantity: {
-        type: Number,
-        default: 1,
-      },
-    },
-  ],
-  phone:{
-    type: Number
+  items: [Item],
+  shippingName: {
+    type: String,
+  },
+  shippingPhone: {
+    type: Number,
   },
   total: {
     type: Number,

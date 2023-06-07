@@ -103,12 +103,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //Client
 //Đăng nhập đăng ký tài khoản
 app.get("/login", (req, res) => {
-  res.render("layouts/clients/login", {
-    userid: 1,
-    fullname: 1,
-    cart: 0,
-    error: req.flash("error"),
-  });
+  if (req.session.guest) {
+    res.redirect("/");
+  } else {
+    res.render("layouts/clients/login", {
+      userid: 1,
+      fullname: 1,
+      cart: 0,
+      error: req.flash("error"),
+    });
+  }
 });
 
 app.get("/signup", (req, res) => {
@@ -468,10 +472,29 @@ app.get("/password/:id", (req, res) => {
 });
 
 //Trang chi tiết lịch sử đơn hàng
-app.get("/orders_detail", (req, res) => {
-  res.render("layouts/clients/orders_detail", {
-    nhanvat: 1,
-  });
+app.get("/orders_detail/:id", async (req, res) => {
+  if (req.session.guest) {
+    let data = await Order.findOne({ _id: req.params.id })
+    .populate("items.productID");
+    
+    let money = 0;
+    data.items.forEach(async function (pid) {
+      money += pid.productID.priceOut * pid.quantity;
+    });
+    
+    res.render("layouts/clients/orders_detail", {
+      fullname: req.session.fullname,
+      email: req.session.email,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      cart: req.session.cart,
+      danhsach: data,
+      VND,
+      money,
+    });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 //Trang giỏ hàng và thanh toán và trang thông báo đặt hàng thành công
@@ -726,25 +749,30 @@ app.get("/checkout/:id", async (req, res) => {
 
 app.post("/creat_new_order", async (req, res) => {
   const productId = req.body.product_id_hidden;
-  const quantity = parseInt(req.body.quantity_hidden);
+  const quantity = req.body.quantity_hidden;
   const uid = req.body.user_id_hidden;
-  await Order({
-    //items.0.productID
-    // dùng thử forEach giống trong cart xong save bằng order[0]
-    // nếu tìm thấy order[0] thì tạo order mới
-    items: [[{ productID: productId, quantity: quantity, _id: productId }]],
+  let obj = productId.map((id, index_value) => {
+    return {
+      _id: id,
+      productID: id,
+      quantity: quantity[index_value],
+    };
+  });
+  await Order.insertMany({
+    items: obj,
     userID: uid,
     paymentMethod: req.body.paymentMethod,
     shippingAddress: req.body.shippingAddress,
     shippingFee: req.body.shippingFee,
-    phone: req.body.phone,
+    shippingName: req.body.shippingName,
+    shippingPhone: req.body.shippingPhone,
     total: req.body.total,
     timeIn: dateVietNam,
     orderStatus: 0,
-  }).save();
-  await Cart.deleteOne({
-    userID: new mongoose.Types.ObjectId(req.session.userid),
   });
+  // await Cart.deleteOne({
+  //   userID: new mongoose.Types.ObjectId(req.session.userid),
+  // });
   res.redirect("/success");
 });
 
