@@ -10,6 +10,7 @@ const moment = require("moment-timezone");
 const morgan = require("morgan");
 const cors = require("cors");
 const flash = require("connect-flash");
+const collect = require("collect.js");
 
 app.use(cors());
 app.use(flash());
@@ -752,28 +753,50 @@ app.post("/creat_new_order", async (req, res) => {
   const productId = req.body.product_id_hidden;
   const quantity = req.body.quantity_hidden;
   const uid = req.body.user_id_hidden;
-  let obj = productId.map((id, index_value) => {
-    return {
-      _id: id,
-      productID: id,
-      quantity: quantity[index_value],
-    };
-  });
-  await Order.insertMany({
-    items: obj,
-    userID: uid,
-    paymentMethod: req.body.paymentMethod,
-    shippingAddress: req.body.shippingAddress,
-    shippingFee: req.body.shippingFee,
-    shippingName: req.body.shippingName,
-    shippingPhone: req.body.shippingPhone,
-    total: req.body.total,
-    timeIn: dateVietNam,
-    orderStatus: 0,
-  });
-  // await Cart.deleteOne({
-  //   userID: new mongoose.Types.ObjectId(req.session.userid),
-  // });
+
+  const data = collect(productId);
+  const total = data.count();
+  if (total == 1) {
+    await Order.insertMany({
+      items: [
+        {
+          quantity: quantity,
+          productID: productId,
+          _id: productId,
+        },
+      ],
+      userID: uid,
+      paymentMethod: req.body.paymentMethod,
+      shippingAddress: req.body.shippingAddress,
+      shippingFee: req.body.shippingFee,
+      shippingName: req.body.shippingName,
+      shippingCity: req.body.shippingCity,
+      shippingPhone: req.body.shippingPhone,
+      total: req.body.total,
+      timeIn: dateVietNam,
+      orderStatus: 0,
+    });
+    await Cart.deleteOne({
+      userID: new mongoose.Types.ObjectId(req.session.userid),
+    });
+  } else {
+    await Order.insertMany({
+      items: obj,
+      userID: uid,
+      paymentMethod: req.body.paymentMethod,
+      shippingAddress: req.body.shippingAddress,
+      shippingFee: req.body.shippingFee,
+      shippingName: req.body.shippingName,
+      shippingCity: req.body.shippingCity,
+      shippingPhone: req.body.shippingPhone,
+      total: req.body.total,
+      timeIn: dateVietNam,
+      orderStatus: 0,
+    });
+    await Cart.deleteOne({
+      userID: new mongoose.Types.ObjectId(req.session.userid),
+    });
+  }
   res.redirect("/success");
 });
 
@@ -2334,7 +2357,9 @@ app.get("/order_detail/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let data = await Order.findOne({_id: req.params.id}).populate("items.productID");
+      let data = await Order.findOne({ _id: req.params.id }).populate(
+        "items.productID"
+      );
       let money = 0;
       data.items.forEach(async function (pid) {
         money += pid.productID.priceOut * pid.quantity;

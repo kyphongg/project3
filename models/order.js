@@ -26,6 +26,9 @@ var Order = new Schema({
   paymentMethod: {
     type: String,
   },
+  shippingCity: {
+    type: String,
+  },
   shippingAddress: {
     type: String,
   },

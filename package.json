@@ -12,6 +12,7 @@
   "dependencies": {
     "@selectize/selectize": "^0.15.2",
     "body-parser": "^1.20.2",
+    "collect.js": "^4.36.1",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.5",
     "ejs": "^3.1.9",
