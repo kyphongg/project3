@@ -17,7 +17,7 @@ app.use(flash());
 
 const dateVietNam = moment
   .tz(Date.now(), "Asia/Ho_Chi_Minh")
-  .format("DD/MM/YYYY hh:mm");
+  .format("DD/MM/YYYY hh:mm a");
 console.log(dateVietNam);
 
 app.use(express.static("public"));
@@ -773,7 +773,9 @@ app.post("/creat_new_order", async (req, res) => {
       shippingCity: req.body.shippingCity,
       shippingPhone: req.body.shippingPhone,
       total: req.body.total,
-      timeIn: dateVietNam,
+      timeIn: moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .format("DD/MM/YYYY hh:mm a"),
       orderStatus: 0,
     });
     await Cart.deleteOne({
@@ -790,7 +792,9 @@ app.post("/creat_new_order", async (req, res) => {
       shippingCity: req.body.shippingCity,
       shippingPhone: req.body.shippingPhone,
       total: req.body.total,
-      timeIn: dateVietNam,
+      timeIn: moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .format("DD/MM/YYYY hh:mm a"),
       orderStatus: 0,
     });
     await Cart.deleteOne({
@@ -1973,10 +1977,10 @@ app.post("/save_product", async (req, res) => {
             priceIn: req.body.priceIn,
             priceOut: req.body.priceOut,
             productStatus: req.body.productStatus,
-            created_date: dateVietNam,
-            updated_date: dateVietNam,
+            created_date: moment
+            .tz(Date.now(), "Asia/Ho_Chi_Minh")
+            .format("DD/MM/YYYY hh:mm a"),
             created_by: req.session.fullname,
-            updated_by: req.session.fullname,
           });
           product.save().then(function () {
             req.flash("success", "Thêm thành công");
@@ -2043,7 +2047,9 @@ app.post("/edit_product_save", async (req, res) => {
               priceOut: req.body.priceOut,
               productStatus: req.body.productStatus,
               updated_by: req.session.fullname,
-              updated_date: dateVietNam,
+              updated_date: moment
+              .tz(Date.now(), "Asia/Ho_Chi_Minh")
+              .format("DD/MM/YYYY hh:mm a"),
             }
           ).then(function () {
             req.flash("success", "Sửa thành công");
@@ -2068,7 +2074,9 @@ app.post("/edit_product_save", async (req, res) => {
                 priceOut: req.body.priceOut,
                 productStatus: req.body.productStatus,
                 updated_by: req.session.fullname,
-                updated_date: dateVietNam,
+                updated_date: moment
+                .tz(Date.now(), "Asia/Ho_Chi_Minh")
+                .format("DD/MM/YYYY hh:mm a"),
               }
             ).then(function () {
               req.flash("success", "Sửa thành công");
@@ -2524,7 +2532,9 @@ app.post("/save_warehouse", async (req, res) => {
       productID: req.body.productID,
       quantityIn: req.body.quantityIn,
       created_by: req.session.admin_id,
-      created_date: dateVietNam,
+      created_date: moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .format("DD/MM/YYYY hh:mm a"),
     });
     await Product.updateOne(
       { _id: req.body.productID },
@@ -2829,8 +2839,9 @@ app.post("/news_save", async function (req, res) {
             newsProduct: req.body.newsProduct,
             productImage: req.file.filename,
             newsStatus: req.body.newsStatus,
-            created_date: dateVietNam,
-            updated_date: dateVietNam,
+            created_date: moment
+            .tz(Date.now(), "Asia/Ho_Chi_Minh")
+            .format("DD/MM/YYYY hh:mm a"),
             created_by: req.session.fullname,
           });
           news.save().then(function () {
@@ -2879,7 +2890,9 @@ app.post("/edit_news_save", async function (req, res) {
             newsProduct: req.body.newsProduct,
             newsStatus: req.body.newsStatus,
             updated_by: req.session.fullname,
-            updated_date: dateVietNam,
+            updated_date: moment
+            .tz(Date.now(), "Asia/Ho_Chi_Minh")
+            .format("DD/MM/YYYY hh:mm a"),
           }
         ).then(function () {
           req.flash("success", "Sửa thành công");
@@ -2901,7 +2914,9 @@ app.post("/edit_news_save", async function (req, res) {
               productImage: req.file.filename,
               newsStatus: req.body.newsStatus,
               updated_by: req.session.fullname,
-              updated_date: dateVietNam,
+              updated_date: moment
+              .tz(Date.now(), "Asia/Ho_Chi_Minh")
+              .format("DD/MM/YYYY hh:mm a"),
             }
           ).then(function () {
             req.flash("success", "Sửa thành công");
