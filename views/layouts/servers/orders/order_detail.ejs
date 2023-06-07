@@ -19,57 +19,78 @@
             <div class="table-agile-info">
                 <h3>Chi tiết đơn hàng</h3>
                 <div class="info-orders">
-                    <p><b>Khách hàng:</b> Kỳ Phong</p>
-                    <p><b>Số điện thoại:</b> 0966331402</p>
-                    <p><b>Địa chỉ giao hàng:</b> Nhà A17, Tạ Quang Bửu</p>
-                    <p><b>Hình thức thanh toán:</b> Tiền mặt</p>
+                    <p><b>Mã đơn hàng:</b> <%= danhsach._id %> </p>
+                    <p><b>Người nhận:</b> <%= danhsach.shippingName %> </p>
+                    <p><b>Địa chỉ nhận hàng:</b> <%= danhsach.shippingAddress %></p>
+                    <p><b>Hình thức thanh toán:</b> <%= danhsach.paymentMethod %> </p>
+                    <p><b>Ngày đặt:</b> <%= danhsach.timeIn %> </p>
+                    <p><b>Tình trạng:</b> <% if(danhsach.orderStatus == 0){ %> Đang chờ xác nhận <% }else
+                        if(danhsach.orderStatus == 1){ %> Đã được xác nhận <% }else if(danhsach.orderStatus ==
+                        2){ %> Đang đóng gói <% }else if(danhsach.orderStatus == 3){ %> Đang vận chuyển <% }else if(danhsach.orderStatus == 4){ %>Đã nhận hàng<%}else{%>Đã huỷ<%}%> </p>
                 </div>
                 <div class="table-responsive" style="margin-top: 15px;">
                     <table id="myTable" class="table table-striped table-bordered" style="text-align: center;">
                         <thead>
                         <tr>
-                            <th>Mã đơn hàng</th>
                             <th>Tên sản phẩm</th>
                             <th>Hình ảnh</th>
-                            <th>Số lượng</th>
                             <th>Giá tiền</th>
-                            <th>Ngày đặt</th>
+                            <th>Số lượng</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>abc</td>
-                            <td>God of War: Ragnarok</td>
-                            <td><img style="width: 100px; height: 100px;" src="/images/ps5(sp2).jpg" alt=""></td>
-                            <td>1</td>
-                            <td>55.000 VNĐ</td>
-                            <td>08:38 08/05/2023</td>
-                        </tr>
+                        <% danhsach.items.forEach(function(id) { %>
+                            <tr>
+                                <td><%= id.productID.productName %></td>
+                                <td><img src="/images/<%= id.productID.productImage %>" style="text-align: center" height="150px"
+                                    width="100px" alt=""></td>
+                                <td><%= VND.format(id.productID.priceOut) %></td>
+                                <td><%= id.quantity %></td>
+                            </tr>
+                        <% }); %>
                         </tbody>
                     </table>
                     <div class="cart-price">
                         <table>
                             <tr>
                                 <td style="font-weight: bold;">Tổng giá sản phẩm:</td>
-                                <td>55.000 VNĐ</td>
-                            </tr>
-        <!-- {{--                    <tr>--}}
-        {{--                        <td style="font-weight: bold;">Thuế:</td>--}}
-        {{--                        <td style="padding-left: 20px;">{{number_format($order->game_price*0.01*$order->game_quantity).' VNĐ'}}</td>--}}
-        {{--                    </tr>--}} -->
+                                <td>&nbsp;<%= VND.format(money) %></td>
+                            </tr>                
                             <tr>
                                 <td style="font-weight: bold;">Phí vận chuyển:</td>
-                                <td style="padding-left: 40px;">Miễn Phí</td>
+                                <td style="padding-left: 40px;"><%= VND.format(danhsach.shippingFee) %></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;">Tổng thành tiền:</td>
-                                <td>55.000 VNĐ</td>
+                                <td>&nbsp;<%= VND.format(danhsach.total) %></td>
                             </tr>
                         </table>
                     </div>
-                    <a href="/new_orders">
-                        <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
-                    </a>
+                    <% if(danhsach.orderStatus == 0){ %>
+                        <a href="/new_orders">
+                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
+                        </a>
+                    <% }else if(danhsach.orderStatus == 1){ %> 
+                        <a href="/accept_orders">
+                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
+                        </a> 
+                    <% }else if(danhsach.orderStatus == 2){ %> 
+                        <a href="/all_orders">
+                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
+                        </a>  
+                    <% }else if(danhsach.orderStatus == 3){ %> 
+                        <a href="/all_orders">
+                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
+                        </a>  
+                    <% }else if(danhsach.orderStatus == 4){ %>
+                        <a href="/done_orders">
+                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
+                        </a>  
+                    <%}else{%>
+                        <a href="/cancel_orders">
+                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
+                        </a> 
+                    <%}%>
                 </div>
             </div>
         </section>

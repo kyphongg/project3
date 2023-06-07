@@ -474,14 +474,15 @@ app.get("/password/:id", (req, res) => {
 //Trang chi tiết lịch sử đơn hàng
 app.get("/orders_detail/:id", async (req, res) => {
   if (req.session.guest) {
-    let data = await Order.findOne({ _id: req.params.id })
-    .populate("items.productID");
-    
+    let data = await Order.findOne({ _id: req.params.id }).populate(
+      "items.productID"
+    );
+
     let money = 0;
     data.items.forEach(async function (pid) {
       money += pid.productID.priceOut * pid.quantity;
     });
-    
+
     res.render("layouts/clients/orders_detail", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -2329,14 +2330,22 @@ app.get("/new_orders", async (req, res) => {
   }
 });
 
-app.get("/order_detail", (req, res) => {
+app.get("/order_detail/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      let data = await Order.findOne({_id: req.params.id}).populate("items.productID");
+      let money = 0;
+      data.items.forEach(async function (pid) {
+        money += pid.productID.priceOut * pid.quantity;
+      });
       res.render("layouts/servers/orders/order_detail", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        money,
       });
     } else {
       res.redirect("/admin_home");
