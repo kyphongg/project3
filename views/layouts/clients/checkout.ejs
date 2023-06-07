@@ -124,11 +124,12 @@
                             <div class="payment-form">
                                 <label >Địa chỉ giao hàng</label>
                                 <p>Tỉnh thành</p>
-                                <select name="shippingCity" id="select-state" class="progControlSelect2" onchange="changeFunc();">
+                                <select id="select-state" class="progControlSelect2" onchange="changeFunc();">
                                     <% for(let i=0; i < city.length; i++) { %>
                                     <option value="<%= city[i].price %>"><%= city[i].cityName %></option>
                                     <%}%>
                                 </select>
+                                <input type="hidden" name="shippingCity" id="shippingCity">
                                 <p>Địa chỉ</p>
                                 <input type="text" name="shippingAddress">
                             </div>

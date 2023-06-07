@@ -69,6 +69,7 @@
   function changeFunc() {
     var selectBox = document.getElementById("select-state");
     var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+    var name = selectBox.options[selectBox.selectedIndex].innerHTML;
     document.getElementById("shippingcost").innerHTML =
       VND.format(selectedValue);
     var cost = document.getElementById("cost").innerHTML;
@@ -79,6 +80,7 @@
     document.getElementById("subTotal").value =
       parseInt(selectedValue) + parseInt(cost) - parseInt(coupon);
     document.getElementById("fee").value = selectedValue;
+    document.getElementById("shippingCity").value = name;
   }
 </script>
 

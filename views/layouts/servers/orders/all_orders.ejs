@@ -40,7 +40,6 @@
                                 <th style="width: 70px;">Mã đơn</th>
                                 <th style="width: 145px; text-align: center;">Người nhận</th>
                                 <th style="text-align: center;width: 90px;">SĐT</th>
-                                <th style="text-align: center;">Địa chỉ giao hàng</th>
                                 <th style="text-align: center;">Tổng tiền</th>
                                 <th style="text-align: center;">Ngày đặt</th>
                                 <th style="text-align: center;">Trạng thái</th>
@@ -55,7 +54,6 @@
                                         <td style="text-align: center;"><%= danhsach[i]._id %></td>
                                         <td style="text-align: center;"><%= danhsach[i].shippingName %></td>
                                         <td style="text-align: center;"><%= danhsach[i].shippingPhone %></td>
-                                        <td style="text-align: center;"><%= danhsach[i].shippingAddress %></td>
                                         <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
                                         <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
                                         <td><% if(danhsach[i].orderStatus == 0){ %> Đang chờ xác nhận <% }else

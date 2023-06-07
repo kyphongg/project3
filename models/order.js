@@ -28,6 +28,7 @@ var Order = new Schema({
   },
   shippingCity: {
     type: String,
+    default: "Hà Nội",
   },
   shippingAddress: {
     type: String,
