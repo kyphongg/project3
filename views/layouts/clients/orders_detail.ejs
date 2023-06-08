@@ -47,7 +47,7 @@
                                 2){ %> Đang vận chuyển <% }else if(danhsach.orderStatus == 3){ %> Đã nhận hàng <% }else if(danhsach.orderStatus == 4){ %>Đã huỷ<%}%> </p>
                         </div>
                         <div class=orders-table>
-                            <table class="table table-bordered table-hover table-striped">
+                            <table class="table table-bordered table-hover table-striped" style="text-align: center; vertical-align: middle;">
                                 <thead>
                                 <tr>
                                     <th>Tên sản phẩm</th>
@@ -60,8 +60,7 @@
                                     <% danhsach.items.forEach(function(id) { %>
                                     <tr>
                                         <td><%= id.productID.productName %></td>
-                                        <td><img src="/images/<%= id.productID.productImage %>" style="text-align: center" height="150px"
-                                            width="100px" alt=""></td>
+                                        <td><img src="/images/<%= id.productID.productImage %>" style="width:50px; height: 80px;" alt=""></td>
                                         <td><%= VND.format(id.productID.priceOut) %></td>
                                         <td><%= id.quantity %></td>
                                     </tr>
@@ -69,48 +68,60 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="cart-price">
+                        <div class="total-price">
                             <table>
     
                                 <tr>
-                                    <td style="font-weight: bold;">Tổng giá sản phẩm: </td>
-                                    <td>&nbsp;<%= VND.format(money) %></td>
+                                    <td style="font-weight: bold; padding-right: 50px; padding-bottom: 10px;">Tổng giá sản phẩm: </td>
+                                    <td style="padding-right: 50px;padding-bottom: 10px;"><%= VND.format(money) %></td>
                                 </tr>
                                 <tr>
-                                    <td style="font-weight: bold;">Phí vận chuyển:</td>
-                                    <td style="padding-left: 20px;"><%= VND.format(danhsach.shippingFee) %></td>
+                                    <td style="font-weight: bold;padding-bottom: 10px;">Phí vận chuyển:</td>
+                                    <td style="padding-left: 20px;padding-bottom: 10px;"><%= VND.format(danhsach.shippingFee) %></td>
                                 </tr>
                                 <tr>
-                                    <td style="font-weight: bold;">Tổng thành tiền:</td>
-                                    <td>&nbsp;<%= VND.format(danhsach.total) %></td>
+                                    <td style="font-weight: bold;padding-bottom: 10px;">Tổng thành tiền:</td>
+                                    <td style="padding-bottom: 10px;"><%= VND.format(danhsach.total) %></td>
                                 </tr>
     
                             </table>
                         </div>
-                        <div class="two-btn" style="padding-bottom: 30px;">
-                            <div class="row">
-                                <div class="col">
+                        <div class="orderDetails-btn">
                                     <a href="/orders/<%= userid %>">
-                                        <button class="btn btn-secondary btn-back">Quay lại</button>
+                                        <button class="btn btn-secondary btn-back" style="width: 120px; font-size: 25px; font-weight: 500; margin-right: 15px;">Quay lại</button>
                                     </a>
-                                </div>
+                           
                                 <%if(danhsach.orderStatus == 2){%>
-                                    <div class="col">
                                         <form action="/get_order/<%= danhsach._id %>" method="post">
-                                            <button class="btn btn-success" style="width: 80px;"><b>Nhận đơn hàng</b></button>
+                                            <button class="btn btn-success" style="width: 220px; font-size: 25px; font-weight: 500; margin-right: 15px;"><b>Nhận đơn hàng</b></button>
                                         </form>
-                                    </div>
                                 <%}%>
                                 <%if(danhsach.orderStatus == 0){%>
-                                    <div class="col">
                                         <a href="#">
-                                            <button class="btn btn-secondary btn-next">Huỷ đơn hàng</button>
+                                            <button class="btn btn-secondary btn-cancel js-buy-tickets" style="font-size: 25px; font-weight: 500;">Huỷ đơn hàng</button>
                                         </a>
-                                    </div>
                                 <%}%>
-                            </div>
+
+                                <div class="modal js-modal">
+                                    <div class="modal-container js-modal-container">
+                                        
+                                        <header class="modal-header">
+                                            Bạn muốn hủy đơn hàng?
+                                        </header>
+                              
+                                        <div class="modal-body">
+                                            <label for="tickets-quantity" class="modal-label">
+                                                Lý do hủy đơn hàng: 
+                                            </label>
+                                            <input type="text" class="text-cancel" ></input>
+                                            <div class="btn-js">
+                                                <a href="#" id="buy-tickets" style="margin-right:15px; background-color: #DC3545;"> Hủy đơn </a>
+                                                <a id="buy-tickets" class="modal-close js-modal-close" style="background-color: #6C757D;"> Thoát </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
