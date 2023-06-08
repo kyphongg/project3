@@ -479,21 +479,50 @@ app.get("/orders_detail/:id", async (req, res) => {
       "items.productID"
     );
 
-    let money = 0;
-    data.items.forEach(async function (pid) {
-      money += pid.productID.priceOut * pid.quantity;
-    });
+    let code = data.couponCode;
+    if ((code = "Không")) {
+      let money = 0;
+      let couponValue = 0;
+      let couponType = 0;
+      data.items.forEach(async function (pid) {
+        money += pid.productID.priceOut * pid.quantity;
+      });
 
-    res.render("layouts/clients/orders_detail", {
-      fullname: req.session.fullname,
-      email: req.session.email,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
-      cart: req.session.cart,
-      danhsach: data,
-      VND,
-      money,
-    });
+      res.render("layouts/clients/orders_detail", {
+        fullname: req.session.fullname,
+        email: req.session.email,
+        userid: req.session.userid,
+        sID: req.session.sessionID,
+        cart: req.session.cart,
+        danhsach: data,
+        VND,
+        money,
+        couponValue,
+        couponType,
+      });
+    } else {
+      let coupon = await Coupon.findOne({ couponCode: code });
+      let couponValue = coupon.couponValue;
+      let couponType = coupon.couponType;
+
+      let money = 0;
+      data.items.forEach(async function (pid) {
+        money += pid.productID.priceOut * pid.quantity;
+      });
+
+      res.render("layouts/clients/orders_detail", {
+        fullname: req.session.fullname,
+        email: req.session.email,
+        userid: req.session.userid,
+        sID: req.session.sessionID,
+        cart: req.session.cart,
+        danhsach: data,
+        VND,
+        money,
+        couponValue,
+        couponType,
+      });
+    }
   } else {
     res.redirect("/login");
   }
@@ -742,8 +771,53 @@ app.get("/checkout/:id", async (req, res) => {
           VND,
           city: address,
           convert,
+          success: req.flash("success"),
+          error: req.flash("error"),
+          cash: req.flash("cash"),
+          blunt: req.flash("blunt"),
+          percent: req.flash("percent"),
+          code: req.flash("code"),
+          type: req.flash("type"),
         });
       });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.post("/add_coupon_checkout", async (req, res) => {
+  if (req.session.guest) {
+    let check = await Coupon.findOne({ couponCode: req.body.couponCode });
+    if (check) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let timeStart = check.start_date;
+      let timeEnd = check.end_date;
+      if (time < timeStart) {
+        req.flash("error", "Thêm mã giảm giá không thành công");
+      } else if (time > timeEnd) {
+        req.flash("error", "Thêm mã giảm giá không thành công");
+      } else {
+        if (check.couponQuantity == 0) {
+          req.flash("error", "Thêm mã giảm giá không thành công");
+        } else {
+          if (check.couponType == 0) {
+            req.flash("cash", "- " + VND.format(check.couponValue * 1000));
+            req.flash("blunt", check.couponValue * 1000);
+            req.flash("percent", 0);
+            req.flash("code", check.couponCode);
+          } else if (check.couponType == 1) {
+            req.flash("cash", "- " + check.couponValue + "%");
+            req.flash("blunt", 0);
+            req.flash("percent", check.couponValue * 0.01);
+            req.flash("code", check.couponCode);
+          }
+          req.flash("success", "Thêm mã giảm giá thành công");
+        }
+      }
+    } else {
+      req.flash("error", "Thêm mã giảm giá không thành công");
+    }
+    res.redirect("/checkout/:id");
   } else {
     res.redirect("/login");
   }
@@ -753,6 +827,7 @@ app.post("/creat_new_order", async (req, res) => {
   const productId = req.body.product_id_hidden;
   const quantity = req.body.quantity_hidden;
   const uid = req.body.user_id_hidden;
+  const code = req.body.couponCode;
 
   const data = collect(productId);
   const total = data.count();
@@ -775,15 +850,31 @@ app.post("/creat_new_order", async (req, res) => {
       shippingNote: req.body.shippingNote,
       shippingPhone: req.body.shippingPhone,
       total: req.body.total,
+      couponCode: code,
       timeIn: moment
         .tz(Date.now(), "Asia/Ho_Chi_Minh")
         .format("DD/MM/YYYY hh:mm a"),
       orderStatus: 0,
     });
+    await Coupon.updateOne(
+      { couponCode: code },
+      { $inc: { couponQuantity: -1 } }
+    );
+    await Product.updateOne(
+      { _id: productId },
+      { $inc: { productQuantity: -quantity } }
+    );
     await Cart.deleteOne({
       userID: new mongoose.Types.ObjectId(req.session.userid),
     });
   } else {
+    let obj = productId.map(async (id, index_value) => {
+      return {
+        _id: id,
+        productID: id,
+        quantity: quantity[index_value],
+      };
+    });
     await Order.insertMany({
       items: obj,
       userID: uid,
@@ -796,14 +887,32 @@ app.post("/creat_new_order", async (req, res) => {
       shippingNote: req.body.shippingNote,
       shippingPhone: req.body.shippingPhone,
       total: req.body.total,
+      couponCode: code,
       timeIn: moment
         .tz(Date.now(), "Asia/Ho_Chi_Minh")
         .format("DD/MM/YYYY hh:mm a"),
       orderStatus: 0,
     });
-    await Cart.deleteOne({
-      userID: new mongoose.Types.ObjectId(req.session.userid),
+    let a = productId.map(async (id, index_value) => {
+      return {
+        _id: id,
+        productID: id,
+        quantity: quantity[index_value],
+      };
     });
+    for (let i = 0; i < productId.length; i++) {
+      await Product.updateMany(
+        { _id: productId[i] },
+        { $inc:{productQuantity: -quantity[i]} }
+      );
+    }
+    await Coupon.updateOne(
+      { couponCode: code },
+      { $inc: { couponQuantity: -1 } }
+    );
+    // await Cart.deleteOne({
+    //   userID: new mongoose.Types.ObjectId(req.session.userid),
+    // });
   }
   res.redirect("/success");
 });
@@ -2386,18 +2495,43 @@ app.get("/order_detail/:id", async (req, res) => {
       let data = await Order.findOne({ _id: req.params.id }).populate(
         "items.productID"
       );
-      let money = 0;
-      data.items.forEach(async function (pid) {
-        money += pid.productID.priceOut * pid.quantity;
-      });
-      res.render("layouts/servers/orders/order_detail", {
-        fullname: req.session.fullname,
-        admin_id: req.session.admin_id,
-        admin_role: req.session.admin_role,
-        danhsach: data,
-        VND,
-        money,
-      });
+      let code = data.couponCode;
+      if (code == "Không") {
+        let money = 0;
+        let couponValue = 0;
+        let couponType = 0;
+        data.items.forEach(async function (pid) {
+          money += pid.productID.priceOut * pid.quantity;
+        });
+        res.render("layouts/servers/orders/order_detail", {
+          fullname: req.session.fullname,
+          admin_id: req.session.admin_id,
+          admin_role: req.session.admin_role,
+          danhsach: data,
+          VND,
+          money,
+          couponValue,
+          couponType,
+        });
+      } else {
+        let coupon = await Coupon.findOne({ couponCode: code });
+        let couponValue = coupon.couponValue;
+        let couponType = coupon.couponType;
+        let money = 0;
+        data.items.forEach(async function (pid) {
+          money += pid.productID.priceOut * pid.quantity;
+        });
+        res.render("layouts/servers/orders/order_detail", {
+          fullname: req.session.fullname,
+          admin_id: req.session.admin_id,
+          admin_role: req.session.admin_role,
+          danhsach: data,
+          VND,
+          money,
+          couponValue,
+          couponType,
+        });
+      }
     } else {
       res.redirect("/admin_home");
     }
@@ -2649,7 +2783,7 @@ app.post("/coupon_save", async function (req, res) {
       res.redirect("/coupon");
     } else {
       var coupon = Coupon({
-        couponName: req.body.couponName,
+        couponValue: req.body.couponValue,
         couponCode: req.body.couponCode,
         couponQuantity: req.body.couponQuantity,
         couponType: req.body.couponType,
@@ -2691,7 +2825,7 @@ app.post("/edit_coupon_save", async function (req, res) {
     Coupon.updateOne(
       { _id: req.body.couponId },
       {
-        couponName: req.body.couponName,
+        couponValue: req.body.couponValue,
         couponCode: req.body.couponCode,
         couponQuantity: req.body.couponQuantity,
         couponType: req.body.couponType,

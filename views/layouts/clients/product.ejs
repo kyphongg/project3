@@ -35,7 +35,7 @@
             </div>
             <div class="pstatus">
                 <p style="font-weight: bold">Tình trạng: &nbsp</p>
-                    <% if(danhsach[i].total <= 0 ){ %>
+                    <% if(id.productQuantity <= 0 ){ %>
                     <p>Hết Hàng</p>
                     <% }else{ %>
                     <p>Còn Hàng</p>
@@ -43,7 +43,7 @@
             </div>
             <div class="pid">
                 <p style="font-weight: bold">Số lượng: &nbsp</p>
-                <p><%= danhsach[i].total %></p>
+                <p><%= id.productQuantity %></p>
             </div>
             <div class="pcategory">
                 <p style="font-weight: bold">Thể loại: &nbsp</p>

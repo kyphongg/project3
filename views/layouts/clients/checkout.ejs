@@ -28,7 +28,7 @@
                 </div>
                 </div>
               <%}else{%>
-            <form action="/creat_new_order" method="post">
+            <form action="/creat_new_order" method="post" id="main-form">
             <div class="row">
                 <div class="col-6" style="border-right: 1px solid rgba(0,0,0,0.10);">
                     <div class="payment-heading">
@@ -52,13 +52,13 @@
                                 <% for(let i=0; i < danhsach.length; i++) { %> <%
                                     danhsach[i].items.forEach(function(pid) { %>
                                 <tr>
-                                    <input name="product_id_hidden" type="hidden" value="<%= pid._id %>"/>
-                                    <input name="quantity_hidden" type="hidden" value="<%= pid.quantity %>" />
-                                    <td style="width: 220px;"><%= pid.productID.productName %></td>
-                                    <td><img style="width:60px; height:80px" src="/images/<%= pid.productID.productImage %>"></td>
-                                    <td><%= VND.format(pid.productID.priceOut) %></td>
-                                    <td><%= pid.quantity %></td>
-                                    <td><%= VND.format(pid.productID.priceOut * pid.quantity) %></td>
+                                    <input form="main-form" name="product_id_hidden" type="hidden" value="<%= pid._id %>"/>
+                                    <input form="main-form" name="quantity_hidden" type="hidden" value="<%= pid.quantity %>" />
+                                    <td form="main-form" style="width: 220px;"><%= pid.productID.productName %></td>
+                                    <td form="main-form"><img style="width:60px; height:80px" src="/images/<%= pid.productID.productImage %>"></td>
+                                    <td form="main-form"><%= VND.format(pid.productID.priceOut) %></td>
+                                    <td form="main-form"><%= pid.quantity %></td>
+                                    <td form="main-form"><%= VND.format(pid.productID.priceOut * pid.quantity) %></td>
                                 </tr>
                                 <% }); %>
                                 <% } %>
@@ -68,11 +68,30 @@
 
                         <div class="payment-coupon">
                             <h4 style="font-weight: 700; line-height: 20px;">NHẬP MÃ COUPON ƯU ĐÃI</h4>
-                            <p style="font-size: 14px;">Chỉ sử dụng 1 mã cho 1 đơn hàng</p>
-                            <div style="display:flex; margin-bottom: 15px;">
-                                <input type="text" class="form-control" placeholder="Nhập mã giảm giá" style="width:300px; border-radius: 10px; margin-right: 10px;" name="couponCode">
-                                <input type="submit" class="btn btn-primary" name="check_coupon" value="Áp dụng" style="font-weight: 600;">
-                            </div>
+                            <%if(success.length > 0){%>
+                                <p style="font-size: 14px;color: green;"><%= success %></p>
+                                <%} else if(error.length > 0){%>
+                                    <p style="font-size: 14px;color: red;"><%= error %></p>
+                                    <%}else{%>
+                                        <p style="font-size: 14px;">Chỉ sử dụng 1 mã cho 1 đơn hàng</p>
+                                        <%}%> 
+                            
+                            <%if(success.length > 0){%>
+                                <div style="display:flex; margin-bottom: 15px;">
+                                    <input id="code" form="sub-form" type="hidden" class="form-control" placeholder="Nhập mã giảm giá" style="width:300px; border-radius: 10px; margin-right: 10px;" name="couponCode">
+                                    <input id="coupon3" form="sub-form" type="hidden" class="btn btn-primary" name="check_coupon" value="Áp dụng" style="font-weight: 600;" >
+                                </div>
+                                <%} else if(error.length > 0){%>
+                                    <div style="display:flex; margin-bottom: 15px;">
+                                        <input id="code" form="sub-form" type="text" class="form-control" placeholder="Nhập mã giảm giá" style="width:300px; border-radius: 10px; margin-right: 10px;" name="couponCode">
+                                        <input id="coupon3" form="sub-form" type="submit" class="btn btn-primary" name="check_coupon" value="Áp dụng" style="font-weight: 600;" >
+                                    </div>
+                                    <%}else{%>
+                                        <div style="display:flex; margin-bottom: 15px;">
+                                            <input id="code" form="sub-form" type="text" class="form-control" placeholder="Nhập mã giảm giá" style="width:300px; border-radius: 10px; margin-right: 10px;" name="couponCode">
+                                            <input id="coupon3" form="sub-form" type="submit" class="btn btn-primary" name="check_coupon" value="Áp dụng" style="font-weight: 600;" >
+                                        </div>
+                                        <%}%>
                         </div>
 
                         <div class="payment-price">
@@ -86,22 +105,25 @@
                                     <tr style="border: white;">
                                         <td>Tạm tính:</td>
                                         <td style="text-align: right;"><%= VND.format(convert) %></td>
-                                        <td style="visibility: hidden; text-align: right;" id="cost"><%= convert %></td>
+                                        <td form="main-form" style="visibility: hidden; text-align: right;" id="cost"><%= convert %></td>
                                     </tr>
                                     <tr style="border: white;">
                                         <td>Phí vận chuyển:</td>
                                         <td style="text-align: right;" id="shippingcost"><%= VND.format(0) %></td>
                                         <td style=" text-align: right;" id="shippingcost"></td>
-                                        <input type="hidden" name="shippingFee" value="0" id="fee">
+                                        <input form="main-form" type="hidden" name="shippingFee" value="0" id="fee">
                                     </tr>
                                     <tr>
                                         <td>Mã giảm giá:</td>
-                                        <td style="text-align: right;" id="coupon">0 đ</td>
+                                        <td style="text-align: right;"><%if(cash.length > 0){%><%= cash %><%}else{%>0 đ<%}%></td>
+                                        <input type="hidden" id="blunt" value="<%if(blunt.length > 0){%><%= blunt %><%}else{%>0<%}%>"/>
+                                        <input type="hidden" id="percent" value="<%if(percent.length > 0){%><%= percent %><%}else{%>0<%}%>"/>
+                                        <input type="hidden" form="main-form" value="<%if(code.length > 0){%><%= code %><%}else{%>Không<%}%>" name="couponCode">
                                     </tr>
                                     <tr style="border: white;">
                                         <td style="font-weight: 500;">Tổng tiền:</td>
                                         <td style="text-align: right; color:#DC4E45; font-weight:500;" id="total"><%= VND.format(convert) %></td>
-                                        <input type="hidden" name="total" value="<%= convert %>" id="subTotal">
+                                        <input form="main-form" type="hidden" name="total" value="<%= convert %>" id="subTotal">
                                     </tr>
                                 </tbody>
                             </table>
@@ -117,26 +139,26 @@
                         <div class="payment-infomation">
                             <div class="payment-form">
                                 <p>Họ và tên người nhận</p>
-                                <input type="text" name="shippingName">
+                                <input form="main-form" type="text" name="shippingName">
                                 <p>Số điện thoại người nhận</p>
-                                <input type="text" name="shippingPhone">
+                                <input form="main-form" type="text" name="shippingPhone">
                             </div>
                             <div class="payment-form">
                                 <label >Địa chỉ giao hàng</label>
                                 <p>Tỉnh thành</p>
                                 <select id="select-state" class="progControlSelect2" onchange="changeFunc();">
-                                    <option value="0">Chọn thành phố</option>
+                                    <option form="main-form" value="0">Chọn thành phố</option>
                                     <% for(let i=0; i < city.length; i++) { %>
-                                    <option value="<%= city[i].price %>"><%= city[i].cityName %></option>
+                                    <option form="main-form" value="<%= city[i].price %>"><%= city[i].cityName %></option>
                                     <%}%>
                                 </select>
-                                <input type="hidden" name="shippingCity" id="shippingCity" value="Hà Nội">
+                                <input form="main-form" type="hidden" name="shippingCity" id="shippingCity" value="Hà Nội">
                                 <p>Quận</p>
-                                <input type="text" name="shippingDistrict">
+                                <input form="main-form" type="text" name="shippingDistrict">
                                 <p>Địa chỉ</p>
-                                <input type="text" name="shippingAddress">
+                                <input form="main-form" type="text" name="shippingAddress">
                                 <p>Ghi chú (Nếu có)</p>
-                                <input type="text" name="shippingNote">
+                                <input form="main-form" type="text" name="shippingNote">
                             </div>
                             
                         </div>
@@ -149,7 +171,7 @@
                     <div class="payCash">
                         <span>
                             <label>
-                                <input name="paymentMethod" value="COD" type="radio">
+                                <input form="main-form" name="paymentMethod" value="COD" type="radio">
                                 <img src="/images/GDTT.png" alt="">
                                     Thanh toán tiền mặt khi nhận hàng (COD)
                                 <p>Bạn chỉ phải thanh toán khi nhận được hàng. Nhân viên sẽ liên hệ bạn để xác nhận đơn hàng trong vòng 24h
@@ -160,7 +182,7 @@
                     <div class="payOnline">
                         <span>
                             <label>
-                                <input name="paymentMethod" value="BANKING" type="radio">
+                                <input form="main-form" name="paymentMethod" value="BANKING" type="radio">
                                 <img src="/images/bank.png" alt="">
                                     Thanh toán chuyển khoản ngân hàng
                                 <p>Bạn chỉ phải thanh toán khi nhận được hàng. Nhân viên sẽ liên hệ bạn để xác nhận đơn hàng trong vòng 24h
@@ -178,11 +200,11 @@
                         <button type="button" class="btn btn-secondary btn-backk" style="font-size: 20px">< Quay lại giỏ hàng</button>
                     </a>
             </div>
-            <button type="submit" class="btn btn-secondary btn-payment">Đặt hàng</button>
+            <button form="main-form" type="submit" class="btn btn-secondary btn-payment">Đặt hàng</button>
         
             <% } %>
         </form> 
-    
+        <form action="/add_coupon_checkout" method="post" id="sub-form"></form>
         </div>
         </div>
      <%- include('partials/footer') %>

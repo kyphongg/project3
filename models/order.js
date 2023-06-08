@@ -52,6 +52,9 @@ var Order = new Schema({
   shippingPhone: {
     type: Number,
   },
+  couponCode:{
+    type: String,
+  },
   total: {
     type: Number,
   },

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const passportLocalMongoose = require('passport-local-mongoose');
 var Coupon = new Schema({
-    couponName:{
+    couponValue:{
         type: String
     },
     couponCode:{

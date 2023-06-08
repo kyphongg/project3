@@ -36,10 +36,10 @@
                             <thead >
                             <tr>
                                 <th style="width: 50px; text-align: center;">STT</th>
-                                <th  style="text-align: center;">Tên mã giảm giá</th>
                                 <th  style="text-align: center;">Mã giảm giá</th>
                                 <th  style="text-align: center;">Số lượng</th>
                                 <th  style="text-align: center;">Loại</th>
+                                <th  style="text-align: center;">Giá trị</th>
                                 <th  style="text-align: center;">Trạng thái</th>
                                 <th  style="text-align: center;">Ngày bắt đầu</th>
                                 <th  style="text-align: center;">Ngày kết thúc</th>
@@ -50,11 +50,12 @@
                                 <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
                                     <td><%= i+1 %></td>
-                                    <td><%= danhsach[i].couponName %></td>
                                     <td><%= danhsach[i].couponCode %></td>
                                     <td><%= danhsach[i].couponQuantity %></td>
                                     <td><% if(danhsach[i].couponType == 0){ %> Giảm tiền <% }else
                                         if(danhsach[i].couponType == 1){ %> Giảm phần trăm <% } %></td>
+                                    <td><% if(danhsach[i].couponType == 0){ %> <%= VND.format(danhsach[i].couponValue*1000) %> <% }else
+                                        if(danhsach[i].couponType == 1){ %> <%= danhsach[i].couponValue %>% <% } %></td>
                                     <td><% if(danhsach[i].couponStatus == 0){ %> Hoạt động <% }else
                                         if(danhsach[i].couponStatus == 1){ %> Ngừng hoạt động <% } %></td>
                                     <td><%= danhsach[i].start_date %></td>

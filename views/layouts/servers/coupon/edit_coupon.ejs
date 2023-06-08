@@ -22,9 +22,9 @@
                 <div class="position-center">
                     <form action="/edit_coupon_save" method="post"> 
                         <div class="form-group">
-                            <label>Tên mã giảm giá</label>
+                            <label>Giá trị</label>
                             <input name="couponId" type="hidden" class="form-control" value="<%= danhsach.id %>">
-                            <input name="couponName" type="text" class="form-control" placeholder="Tên mã giảm giá" value="<%= danhsach.couponName %>">
+                            <input name="couponValue" type="text" class="form-control" placeholder="Giá trị" value="<%= danhsach.couponValue %>">
                             <input name="username" type="hidden" class="form-control" value="0">
                         </div>
 
@@ -44,7 +44,7 @@
                                 <% if(danhsach.couponType == 0){ %>
                                     <option selected value="0">Giảm tiền</option>
                                     <option value="1">Giảm phần trăm</option>
-                                <% }else{ %>
+                                <% }else if(danhsach.couponType == 1){ %>
                                     <option selected value="1">Giảm phần trăm</option>
                                     <option value="0">Giảm tiền</option>
                                 <% } %>
@@ -57,7 +57,7 @@
                                 <% if(danhsach.couponType == 0){ %>
                                     <option selected value="0">Hoạt động</option>
                                     <option value="1">Ngừng hoạt động</option>
-                                <% }else{ %>
+                                <% }else if(danhsach.couponType == 1){ %>
                                     <option selected value="1">Ngừng hoạt động</option>
                                     <option value="0">Hoạt động</option>
                                 <% } %>

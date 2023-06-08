@@ -41,6 +41,7 @@
                             <p><b>Mã đơn hàng:</b> <%= danhsach._id %> </p>
                             <p><b>Địa chỉ nhận hàng:</b> <%= danhsach.shippingAddress %>&#44;&nbsp;<%= danhsach.shippingDistrict %>&#44;&nbsp;<%= danhsach.shippingCity %></p>
                             <p><b>Hình thức thanh toán:</b> <%= danhsach.paymentMethod %> </p>
+                            <p><b>Mã giảm giá:</b> <%= danhsach.couponCode%> </p>
                             <p><b>Ngày đặt:</b> <%= danhsach.timeIn %> </p>
                             <p><b>Tình trạng:</b> <% if(danhsach.orderStatus == 0){ %> Đang chờ xác nhận <% }else
                                 if(danhsach.orderStatus == 1){ %> Đã xác nhận và đóng gói <% }else if(danhsach.orderStatus ==
@@ -78,6 +79,14 @@
                                 <tr>
                                     <td style="font-weight: bold;padding-bottom: 10px;">Phí vận chuyển:</td>
                                     <td style="padding-left: 20px;padding-bottom: 10px;"><%= VND.format(danhsach.shippingFee) %></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">Giảm giá:</td>
+                                    <td style="text-align: right;"><%if(couponType==0){%>
+                                        <%= VND.format(couponValue*1000) %>
+                                        <%}else if(couponType==1){%>
+                                            <%= couponValue %>%
+                                            <%}%></td>
                                 </tr>
                                 <tr>
                                     <td style="font-weight: bold;padding-bottom: 10px;">Tổng thành tiền:</td>

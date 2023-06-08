@@ -73,18 +73,22 @@
     document.getElementById("shippingcost").innerHTML =
       VND.format(selectedValue);
     var cost = document.getElementById("cost").innerHTML;
-    var coupon = document.getElementById("coupon").innerHTML;
+    var blunt = document.getElementById("blunt").value;
+    var percent = document.getElementById("percent").value;
     document.getElementById("total").innerHTML = VND.format(
-      parseInt(selectedValue) + parseInt(cost) - parseInt(coupon)
+      (parseInt(selectedValue) + parseInt(cost) - parseInt(blunt)) - percent*(parseInt(selectedValue) + parseInt(cost) - parseInt(blunt))
     );
     document.getElementById("subTotal").value =
-      parseInt(selectedValue) + parseInt(cost) - parseInt(coupon);
+    (parseInt(selectedValue) + parseInt(cost) - parseInt(blunt)) - percent*(parseInt(selectedValue) + parseInt(cost) - parseInt(blunt));
     document.getElementById("fee").value = selectedValue;
     if(name=="Chọn thành phố"){
       document.getElementById("shippingCity").value = "Hà Nội";
     }else{
       document.getElementById("shippingCity").value = name;
     }
+  }
+
+  function couponFunc(){
     
   }
 </script>
