@@ -484,7 +484,7 @@ app.get("/orders_detail/:id", async (req, res) => {
       let money = 0;
       let couponValue = 0;
       let couponType = 0;
-      data.items.forEach(async function (pid) {
+      data.items.forEach(function (pid) {
         money += pid.productID.priceOut * pid.quantity;
       });
       res.render("layouts/clients/orders_detail", {
@@ -504,7 +504,7 @@ app.get("/orders_detail/:id", async (req, res) => {
       let couponValue = coupon.couponValue;
       let couponType = coupon.couponType;
       let money = 0;
-      data.items.forEach(async function (pid) {
+      data.items.forEach(function (pid) {
         money += pid.productID.priceOut * pid.quantity;
       });
 
@@ -2491,7 +2491,7 @@ app.get("/order_detail/:id", async (req, res) => {
         let money = 0;
         let couponValue = 0;
         let couponType = 0;
-        data.items.forEach(async function (pid) {
+        data.items.forEach(function (pid) {
           money += pid.productID.priceOut * pid.quantity;
         });
         res.render("layouts/servers/orders/order_detail", {
@@ -2504,12 +2504,12 @@ app.get("/order_detail/:id", async (req, res) => {
           couponValue,
           couponType,
         });
-      } else {
+      } else if(code != "Không") {
         let coupon = await Coupon.findOne({ couponCode: code });
         let couponValue = coupon.couponValue;
         let couponType = coupon.couponType;
         let money = 0;
-        data.items.forEach(async function (pid) {
+        data.items.forEach(function (pid) {
           money += pid.productID.priceOut * pid.quantity;
         });
         res.render("layouts/servers/orders/order_detail", {
