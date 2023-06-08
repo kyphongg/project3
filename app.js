@@ -480,14 +480,13 @@ app.get("/orders_detail/:id", async (req, res) => {
     );
 
     let code = data.couponCode;
-    if ((code = "Không")) {
+    if (code == "Không") {
       let money = 0;
       let couponValue = 0;
       let couponType = 0;
       data.items.forEach(async function (pid) {
         money += pid.productID.priceOut * pid.quantity;
       });
-
       res.render("layouts/clients/orders_detail", {
         fullname: req.session.fullname,
         email: req.session.email,
@@ -500,11 +499,10 @@ app.get("/orders_detail/:id", async (req, res) => {
         couponValue,
         couponType,
       });
-    } else {
+    } else if (code != "Không") {
       let coupon = await Coupon.findOne({ couponCode: code });
       let couponValue = coupon.couponValue;
       let couponType = coupon.couponType;
-
       let money = 0;
       data.items.forEach(async function (pid) {
         money += pid.productID.priceOut * pid.quantity;
@@ -868,7 +866,7 @@ app.post("/creat_new_order", async (req, res) => {
       userID: new mongoose.Types.ObjectId(req.session.userid),
     });
   } else {
-    let obj = productId.map(async (id, index_value) => {
+    let obj = productId.map((id, index_value) => {
       return {
         _id: id,
         productID: id,
