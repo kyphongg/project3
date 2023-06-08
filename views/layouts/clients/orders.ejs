@@ -59,7 +59,7 @@
                                     <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
                                     <td style="text-align: center;"><% if(danhsach[i].orderStatus == 0){ %> Đang chờ xác nhận <% }else
                                         if(danhsach[i].orderStatus == 1){ %> Đã xác nhận và đóng gói <% }else if(danhsach[i].orderStatus ==
-                                        2){ %> Đang vận chuyển <% }else if(danhsach[i].orderStatus == 3){ %> Đang vận chuyển <% }else if(danhsach[i].orderStatus == 4){ %>Đã nhận hàng<%}else{%>Đã huỷ<%}%></td>
+                                        2){ %> Đang vận chuyển <% }else if(danhsach[i].orderStatus == 3){ %> Đã nhận hàng <% }else if(danhsach[i].orderStatus == 4){ %>Đã nhận hàng<%}else{%>Đã huỷ<%}%></td>
                                     <td style="text-align: center;">
                                         <a href="/orders_detail/<%= danhsach[i]._id %>">
                                             <i class="fas fa-eye" style="background-color: #337AB7; color: white; width: 25px; height: 25px; padding-top: 5px; border-radius: 2px;"></i>
