@@ -122,7 +122,8 @@
                                     </tr>
                                     <tr style="border: white;">
                                         <td style="font-weight: 500;">Tổng tiền:</td>
-                                        <td style="text-align: right; color:#DC4E45; font-weight:500;" id="total"><%= VND.format(convert) %></td>
+                                        <td style="text-align: right; color:#DC4E45; font-weight:500;" id="total">
+                                            <%if(blunt.length > 0){%><%= VND.format(convert-blunt) %><%}else if(percent.length > 0){%><%= VND.format(convert-convert*percent) %><%}else{%><%= VND.format(convert) %><%}%></td>
                                         <input form="main-form" type="hidden" name="total" value="<%= convert %>" id="subTotal">
                                     </tr>
                                 </tbody>
