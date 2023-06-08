@@ -24,10 +24,7 @@
                         </div>
                         <div class="col">
                             <div class="order-status" style="margin-left: 225px;">
-                                <a href="/accept_orders">Đã xác nhận |</a>
-                                <a href="done_orders">Đã hoàn thành |</a>
                                 <a href="all_orders">Tổng đơn hàng</a>
-        <!-- {{--                        <a href="{{url('/admin/cancel_orders')}}">Bị hủy</a>--}} -->
                             </div>
                         </div>
                     </div>
@@ -57,13 +54,11 @@
                                     <td style="text-align: center;"><%= danhsach[i].shippingPhone %></td>
                                     <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
                                     <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
-                                    <td><% if(danhsach[i].orderStatus == 0){ %> Đang chờ xác nhận <% }else
-                                        if(danhsach[i].orderStatus == 1){ %> Đã được xác nhận <% }else if(danhsach[i].orderStatus ==
-                                        2){ %> Đang đóng gói <% }else if(danhsach[i].orderStatus == 3){ %> Đang vận chuyển <% }else if(danhsach[i].orderStatus == 4){ %>Đã nhận hàng<%}else{%>Đã huỷ<%}%></td>
-                                        <td style="text-align: center;">
-                                            <a style="text-align: center;" href="">
-                                                <button class="btn btn-success" style="width: 80px;"><b>Xác nhận</b></button>
-                                            </a>
+                                    <td style="text-align: center;">Đang chờ xác nhận</td>
+                                    <td>
+                                        <form action="/update_status/<%= danhsach[i]._id %>" method="post">
+                                            <button class="btn btn-success" style="width: 80px;"><b>Xác nhận và đóng gói</b></button>
+                                        </form>
                                     </td>
                                     <td style="text-align: center;">
                                         <a class="btn btn-primary" style="text-align: center;" href="/order_detail/<%= danhsach[i]._id %>">

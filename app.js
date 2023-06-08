@@ -776,8 +776,8 @@ app.post("/creat_new_order", async (req, res) => {
       shippingPhone: req.body.shippingPhone,
       total: req.body.total,
       timeIn: moment
-      .tz(Date.now(), "Asia/Ho_Chi_Minh")
-      .format("DD/MM/YYYY hh:mm a"),
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .format("DD/MM/YYYY hh:mm a"),
       orderStatus: 0,
     });
     await Cart.deleteOne({
@@ -797,8 +797,8 @@ app.post("/creat_new_order", async (req, res) => {
       shippingPhone: req.body.shippingPhone,
       total: req.body.total,
       timeIn: moment
-      .tz(Date.now(), "Asia/Ho_Chi_Minh")
-      .format("DD/MM/YYYY hh:mm a"),
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .format("DD/MM/YYYY hh:mm a"),
       orderStatus: 0,
     });
     await Cart.deleteOne({
@@ -836,6 +836,15 @@ app.get("/success", async (req, res) => {
       sID: req.session.sessionID,
       cart: req.session.cart,
     });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.post("/get_order/:id", async (req, res) => {
+  if (req.session.guest) {
+    await Order.updateOne({ _id: req.params.id }, { orderStatus: 3 });
+    res.redirect("/orders/:id");
   } else {
     res.redirect("/login");
   }
@@ -1637,17 +1646,11 @@ app.post("/admin_login", async function (req, res) {
       //Kiểm tra mật khẩu
       const result = req.body.password === admin.password;
       if (result) {
-        const customer = await User.find().count();
-        const employee = await Admin.find().count();
-        const order = await Order.find({ orderStatus: 0 }).count();
         var sess = req.session;
         sess.daDangNhap = true;
         sess.fullname = admin.fullname;
         sess.admin_id = admin._id;
         sess.admin_role = admin.role;
-        sess.number = customer;
-        sess.numberal = employee;
-        sess.order = order;
         res.redirect("/admin_home");
       } else {
         req.flash("error", "Sai mật khẩu");
@@ -1669,13 +1672,16 @@ app.get("/admin_logout", function (req, res) {
 });
 
 //Trang home admin
-app.get("/admin_home", (req, res) => {
+app.get("/admin_home", async (req, res) => {
   if (req.session.daDangNhap) {
+    const order = await Order.find({ orderStatus: 0 }).count();
+    const customer = await User.find().count();
+    const employee = await Admin.find().count();
     res.render("layouts/servers/home", {
       fullname: req.session.fullname,
-      number: req.session.number,
-      numberal: req.session.numberal,
-      order: req.session.order,
+      number: customer,
+      numberal: employee,
+      order: order,
       admin_id: req.session.admin_id,
       admin_role: req.session.admin_role,
     });
@@ -1982,8 +1988,8 @@ app.post("/save_product", async (req, res) => {
             priceOut: req.body.priceOut,
             productStatus: req.body.productStatus,
             created_date: moment
-            .tz(Date.now(), "Asia/Ho_Chi_Minh")
-            .format("DD/MM/YYYY hh:mm a"),
+              .tz(Date.now(), "Asia/Ho_Chi_Minh")
+              .format("DD/MM/YYYY hh:mm a"),
             created_by: req.session.fullname,
           });
           product.save().then(function () {
@@ -2052,8 +2058,8 @@ app.post("/edit_product_save", async (req, res) => {
               productStatus: req.body.productStatus,
               updated_by: req.session.fullname,
               updated_date: moment
-              .tz(Date.now(), "Asia/Ho_Chi_Minh")
-              .format("DD/MM/YYYY hh:mm a"),
+                .tz(Date.now(), "Asia/Ho_Chi_Minh")
+                .format("DD/MM/YYYY hh:mm a"),
             }
           ).then(function () {
             req.flash("success", "Sửa thành công");
@@ -2079,8 +2085,8 @@ app.post("/edit_product_save", async (req, res) => {
                 productStatus: req.body.productStatus,
                 updated_by: req.session.fullname,
                 updated_date: moment
-                .tz(Date.now(), "Asia/Ho_Chi_Minh")
-                .format("DD/MM/YYYY hh:mm a"),
+                  .tz(Date.now(), "Asia/Ho_Chi_Minh")
+                  .format("DD/MM/YYYY hh:mm a"),
               }
             ).then(function () {
               req.flash("success", "Sửa thành công");
@@ -2330,12 +2336,20 @@ app.get("/all_orders", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
       let data = await Order.find().populate("userID");
+      const orderNew = await Order.find({ orderStatus: 0 }).count();
+      const orderAccept = await Order.find({ orderStatus: 1 }).count();
+      const orderDone = await Order.find({ orderStatus: 3 }).count();
+      const orderCancel = await Order.find({ orderStatus: 4 }).count();
       res.render("layouts/servers/orders/all_orders", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
         VND,
+        orderNew: orderNew,
+        orderAccept: orderAccept,
+        orderDone: orderDone,
+        orderCancel: orderCancel,
       });
     } else {
       res.redirect("/admin_home");
@@ -2392,14 +2406,17 @@ app.get("/order_detail/:id", async (req, res) => {
   }
 });
 
-app.get("/accept_orders", (req, res) => {
+app.get("/accept_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      let data = await Order.find({ orderStatus: 1 }).populate("userID");
       res.render("layouts/servers/orders/accept_orders", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
       });
     } else {
       res.redirect("/admin_home");
@@ -2409,14 +2426,17 @@ app.get("/accept_orders", (req, res) => {
   }
 });
 
-app.get("/done_orders", (req, res) => {
+app.get("/done_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      let data = await Order.find({ orderStatus: 3 }).populate("userID");
       res.render("layouts/servers/orders/done_orders", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
       });
     } else {
       res.redirect("/admin_home");
@@ -2435,6 +2455,34 @@ app.get("/cancel_orders", (req, res) => {
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
       });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/update_status/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      await Order.updateOne({ _id: req.params.id }, { orderStatus: 1 });
+      res.redirect("/all_orders");
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/update_status_1/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      await Order.updateOne({ _id: req.params.id }, { orderStatus: 2 });
+      res.redirect("/all_orders");
     } else {
       res.redirect("/admin_home");
     }
@@ -2537,8 +2585,8 @@ app.post("/save_warehouse", async (req, res) => {
       quantityIn: req.body.quantityIn,
       created_by: req.session.admin_id,
       created_date: moment
-      .tz(Date.now(), "Asia/Ho_Chi_Minh")
-      .format("DD/MM/YYYY hh:mm a"),
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .format("DD/MM/YYYY hh:mm a"),
     });
     await Product.updateOne(
       { _id: req.body.productID },
@@ -2844,8 +2892,8 @@ app.post("/news_save", async function (req, res) {
             productImage: req.file.filename,
             newsStatus: req.body.newsStatus,
             created_date: moment
-            .tz(Date.now(), "Asia/Ho_Chi_Minh")
-            .format("DD/MM/YYYY hh:mm a"),
+              .tz(Date.now(), "Asia/Ho_Chi_Minh")
+              .format("DD/MM/YYYY hh:mm a"),
             created_by: req.session.fullname,
           });
           news.save().then(function () {
@@ -2895,8 +2943,8 @@ app.post("/edit_news_save", async function (req, res) {
             newsStatus: req.body.newsStatus,
             updated_by: req.session.fullname,
             updated_date: moment
-            .tz(Date.now(), "Asia/Ho_Chi_Minh")
-            .format("DD/MM/YYYY hh:mm a"),
+              .tz(Date.now(), "Asia/Ho_Chi_Minh")
+              .format("DD/MM/YYYY hh:mm a"),
           }
         ).then(function () {
           req.flash("success", "Sửa thành công");
@@ -2919,8 +2967,8 @@ app.post("/edit_news_save", async function (req, res) {
               newsStatus: req.body.newsStatus,
               updated_by: req.session.fullname,
               updated_date: moment
-              .tz(Date.now(), "Asia/Ho_Chi_Minh")
-              .format("DD/MM/YYYY hh:mm a"),
+                .tz(Date.now(), "Asia/Ho_Chi_Minh")
+                .format("DD/MM/YYYY hh:mm a"),
             }
           ).then(function () {
             req.flash("success", "Sửa thành công");

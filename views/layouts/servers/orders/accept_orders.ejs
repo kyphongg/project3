@@ -24,8 +24,6 @@
                         </div>
                         <div class="col">
                             <div class="order-status" style="margin-left:260px;">
-                                <a href="/new_orders">Đơn mới |</a>
-                                <a href="/done_orders">Đã hoàn thành |</a>
                                 <a href="/all_orders">Tổng đơn hàng</a>
                             </div>
                         </div>
@@ -40,35 +38,35 @@
                                 <th style="width: 70px;">Mã đơn</th>
                                 <th style="width: 145px; text-align: center;">Người nhận</th>
                                 <th style="text-align: center;width: 90px;">SĐT</th>
-                                <th style="text-align: center;">Địa chỉ giao</th>
                                 <th style="text-align: center;">Tổng tiền</th>
                                 <th style="text-align: center;">Ngày đặt</th>
                                 <th style="text-align: center;">Trạng thái</th>
-                                <th style="text-align: center;">Tùy biến</th>
+                                <th style="text-align: center;">Tuỳ biến</th>
                                 <th style="text-align: center;">Chi tiết</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td style="text-align: center;">1</td>
-                                <td style="text-align: center;">abcd</td>
-                                <td style="text-align: center;">Kỳ Phong</td>
-                                <td style="text-align: center;">0966331402</td>
-                                <td style="text-align: center;">Nhà A17 Tạ Quang Bửu</td>
-                                <td style="text-align: center;">55.000 VNĐ</td>
-                                <td style="text-align: center;">08:27 08/05/2023</td>
-                                <td>Đã xác nhận</td>
-                                    <td style="text-align: center;">
-                                        <a style="text-align: center;" href="">
-                                            <button class="btn btn-success" style="width: 80px;"><b>Vận chuyển</b></button>
-                                        </a>
-                                </td>
-                                <td style="text-align: center;">
-                                    <a class="btn btn-primary" style="text-align: center;" href="/order_detail">
-                                        Xem chi tiết
-                                    </a>
-                                </td>
-                            </tr>
+                                <% for(let i=0; i < danhsach.length; i++) { %>
+                                    <tr>
+                                        <td style="text-align: center;"><%= i+1 %></td>
+                                        <td style="text-align: center;"><%= danhsach[i]._id %></td>
+                                        <td style="text-align: center;"><%= danhsach[i].shippingName %></td>
+                                        <td style="text-align: center;"><%= danhsach[i].shippingPhone %></td>
+                                        <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
+                                        <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
+                                        <td style="text-align: center;">Đã xác nhận và đóng gói</td>
+                                        <td>
+                                            <form action="/update_status_1/<%= danhsach[i]._id %>" method="post">
+                                                <button class="btn btn-success" style="width: 80px;"><b>Vận chuyển</b></button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a class="btn btn-primary" style="text-align: center;" href="/order_detail/<%= danhsach[i]._id %>">
+                                                Xem chi tiết
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <%}%>
                             </tbody>
                         </table>
                     </div>

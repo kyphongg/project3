@@ -43,8 +43,8 @@
                             <p><b>Hình thức thanh toán:</b> <%= danhsach.paymentMethod %> </p>
                             <p><b>Ngày đặt:</b> <%= danhsach.timeIn %> </p>
                             <p><b>Tình trạng:</b> <% if(danhsach.orderStatus == 0){ %> Đang chờ xác nhận <% }else
-                                if(danhsach.orderStatus == 1){ %> Đã được xác nhận <% }else if(danhsach.orderStatus ==
-                                2){ %> Đang đóng gói <% }else if(danhsach.orderStatus == 3){ %> Đang vận chuyển <% }else if(danhsach.orderStatus == 4){ %>Đã nhận hàng<%}else{%>Đã huỷ<%}%> </p>
+                                if(danhsach.orderStatus == 1){ %> Đã xác nhận và đóng gói <% }else if(danhsach.orderStatus ==
+                                2){ %> Đang vận chuyển <% }else if(danhsach.orderStatus == 3){ %> Đã nhận hàng <% }else if(danhsach.orderStatus == 4){ %>Đã huỷ<%}%> </p>
                         </div>
                         <div class=orders-table>
                             <table class="table table-bordered table-hover table-striped">
@@ -94,11 +94,11 @@
                                         <button class="btn btn-secondary btn-back">Quay lại</button>
                                     </a>
                                 </div>
-                                <%if(danhsach.orderStatus == 3){%>
+                                <%if(danhsach.orderStatus == 2){%>
                                     <div class="col">
-                                        <a href="#">
-                                            <button class="btn btn-secondary btn-next">Nhận đơn hàng</button>
-                                        </a>
+                                        <form action="/get_order/<%= danhsach._id %>" method="post">
+                                            <button class="btn btn-success" style="width: 80px;"><b>Nhận đơn hàng</b></button>
+                                        </form>
                                     </div>
                                 <%}%>
                                 <%if(danhsach.orderStatus == 0){%>
