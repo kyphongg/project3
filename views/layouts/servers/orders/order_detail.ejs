@@ -21,7 +21,7 @@
                 <div class="info-orders">
                     <p><b>Mã đơn hàng:</b> <%= danhsach._id %> </p>
                     <p><b>Người nhận:</b> <%= danhsach.shippingName %> </p>
-                    <p><b>Địa chỉ nhận hàng:</b> <%= danhsach.shippingAddress %>&nbsp;<%= danhsach.shippingCity %></p>
+                    <p><b>Địa chỉ nhận hàng:</b> <%= danhsach.shippingAddress %>&#44;&nbsp;<%= danhsach.shippingDistrict %>&#44;&nbsp;<%= danhsach.shippingCity %></p>
                     <p><b>Hình thức thanh toán:</b> <%= danhsach.paymentMethod %> </p>
                     <p><b>Ngày đặt:</b> <%= danhsach.timeIn %> </p>
                     <p><b>Tình trạng:</b> <% if(danhsach.orderStatus == 0){ %> Đang chờ xác nhận <% }else

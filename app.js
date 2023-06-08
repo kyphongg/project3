@@ -771,6 +771,8 @@ app.post("/creat_new_order", async (req, res) => {
       shippingFee: req.body.shippingFee,
       shippingName: req.body.shippingName,
       shippingCity: req.body.shippingCity,
+      shippingDistrict: req.body.shippingDistrict,
+      shippingNote: req.body.shippingNote,
       shippingPhone: req.body.shippingPhone,
       total: req.body.total,
       timeIn: moment
@@ -790,6 +792,8 @@ app.post("/creat_new_order", async (req, res) => {
       shippingFee: req.body.shippingFee,
       shippingName: req.body.shippingName,
       shippingCity: req.body.shippingCity,
+      shippingDistrict: req.body.shippingDistrict,
+      shippingNote: req.body.shippingNote,
       shippingPhone: req.body.shippingPhone,
       total: req.body.total,
       timeIn: moment

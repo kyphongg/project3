@@ -30,7 +30,13 @@ var Order = new Schema({
     type: String,
     default: "Hà Nội",
   },
+  shippingDistrict: {
+    type: String,
+  },
   shippingAddress: {
+    type: String,
+  },
+  shippingNote: {
     type: String,
   },
   shippingFee: {

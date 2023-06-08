@@ -125,13 +125,18 @@
                                 <label >Địa chỉ giao hàng</label>
                                 <p>Tỉnh thành</p>
                                 <select id="select-state" class="progControlSelect2" onchange="changeFunc();">
+                                    <option value="0">Chọn thành phố</option>
                                     <% for(let i=0; i < city.length; i++) { %>
                                     <option value="<%= city[i].price %>"><%= city[i].cityName %></option>
                                     <%}%>
                                 </select>
-                                <input type="hidden" name="shippingCity" id="shippingCity">
+                                <input type="hidden" name="shippingCity" id="shippingCity" value="Hà Nội">
+                                <p>Quận</p>
+                                <input type="text" name="shippingDistrict">
                                 <p>Địa chỉ</p>
                                 <input type="text" name="shippingAddress">
+                                <p>Ghi chú (Nếu có)</p>
+                                <input type="text" name="shippingNote">
                             </div>
                             
                         </div>

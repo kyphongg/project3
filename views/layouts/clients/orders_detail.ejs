@@ -39,7 +39,7 @@
                         <div class="order-heading">
                             <h3>Chi tiết đơn hàng</h3>
                             <p><b>Mã đơn hàng:</b> <%= danhsach._id %> </p>
-                            <p><b>Địa chỉ nhận hàng:</b> <%= danhsach.shippingAddress %>&nbsp;<%= danhsach.shippingCity %></p>
+                            <p><b>Địa chỉ nhận hàng:</b> <%= danhsach.shippingAddress %>&#44;&nbsp;<%= danhsach.shippingDistrict %>&#44;&nbsp;<%= danhsach.shippingCity %></p>
                             <p><b>Hình thức thanh toán:</b> <%= danhsach.paymentMethod %> </p>
                             <p><b>Ngày đặt:</b> <%= danhsach.timeIn %> </p>
                             <p><b>Tình trạng:</b> <% if(danhsach.orderStatus == 0){ %> Đang chờ xác nhận <% }else
@@ -94,12 +94,20 @@
                                         <button class="btn btn-secondary btn-back">Quay lại</button>
                                     </a>
                                 </div>
-
-                                <div class="col">
-                                    <a href="#">
-                                        <button class="btn btn-secondary btn-next">Nhận đơn hàng</button>
-                                    </a>
-                                </div>
+                                <%if(danhsach.orderStatus == 3){%>
+                                    <div class="col">
+                                        <a href="#">
+                                            <button class="btn btn-secondary btn-next">Nhận đơn hàng</button>
+                                        </a>
+                                    </div>
+                                <%}%>
+                                <%if(danhsach.orderStatus == 0){%>
+                                    <div class="col">
+                                        <a href="#">
+                                            <button class="btn btn-secondary btn-next">Huỷ đơn hàng</button>
+                                        </a>
+                                    </div>
+                                <%}%>
                             </div>
                         </div>
                         

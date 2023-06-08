@@ -23,7 +23,7 @@
             <div class="url">
                 <a href="/">Trang chủ</a> >
                 <% danhsach[i].categoryList.forEach(function(id) { %>
-                    <a href="/category/<%= id._id %>"><%= id.categoryName %>&nbsp/</a>
+                    <a href="/category/<%= id._id %>"><%= id.categoryName %>&nbsp;/</a>
                 <% }); %>
             </div>
             <div class="pname" name="name"> 
@@ -33,10 +33,6 @@
                     <i class="fa-regular fa-heart"></i>
                 </div>
             </div>
-            <!-- <div class="pid">
-                <p style="font-weight: bold">Mã sản phẩm: &nbsp</p>
-                <p>abc</p>
-            </div> -->
             <div class="pstatus">
                 <p style="font-weight: bold">Tình trạng: &nbsp</p>
                     <% if(danhsach[i].total <= 0 ){ %>
@@ -52,7 +48,7 @@
             <div class="pcategory">
                 <p style="font-weight: bold">Thể loại: &nbsp</p>
                 <% danhsach[i].categoryList.forEach(function(id) { %>
-                <p><%= id.categoryName %>&nbsp</p>
+                <a style="text-decoration: none; color: black;" href="/category/<%= id._id %>"><p><%= id.categoryName %>&nbsp;</p></a>
                 <% }); %>
             </div>
             <div class="pproducer">
