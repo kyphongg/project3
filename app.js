@@ -893,13 +893,6 @@ app.post("/creat_new_order", async (req, res) => {
         .format("DD/MM/YYYY hh:mm a"),
       orderStatus: 0,
     });
-    let a = productId.map(async (id, index_value) => {
-      return {
-        _id: id,
-        productID: id,
-        quantity: quantity[index_value],
-      };
-    });
     for (let i = 0; i < productId.length; i++) {
       await Product.updateMany(
         { _id: productId[i] },
@@ -910,9 +903,9 @@ app.post("/creat_new_order", async (req, res) => {
       { couponCode: code },
       { $inc: { couponQuantity: -1 } }
     );
-    // await Cart.deleteOne({
-    //   userID: new mongoose.Types.ObjectId(req.session.userid),
-    // });
+    await Cart.deleteOne({
+      userID: new mongoose.Types.ObjectId(req.session.userid),
+    });
   }
   res.redirect("/success");
 });
