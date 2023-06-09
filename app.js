@@ -894,7 +894,7 @@ app.post("/creat_new_order", async (req, res) => {
     for (let i = 0; i < productId.length; i++) {
       await Product.updateMany(
         { _id: productId[i] },
-        { $inc:{productQuantity: -quantity[i]} }
+        { $inc: { productQuantity: -quantity[i] } }
       );
     }
     await Coupon.updateOne(
@@ -2504,7 +2504,7 @@ app.get("/order_detail/:id", async (req, res) => {
           couponValue,
           couponType,
         });
-      } else if(code != "Không") {
+      } else if (code != "Không") {
         let coupon = await Coupon.findOne({ couponCode: code });
         let couponValue = coupon.couponValue;
         let couponType = coupon.couponType;
@@ -2678,6 +2678,10 @@ app.get("/list_warehouse/:id", async (req, res) => {
   } else {
     res.redirect("/admin_login");
   }
+});
+
+app.get("/sale_history/:id", (req, res) => {
+  
 });
 
 app.get("/add_warehouse", async (req, res) => {
