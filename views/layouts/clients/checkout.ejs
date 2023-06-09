@@ -56,9 +56,9 @@
                                     <input form="main-form" name="quantity_hidden" type="hidden" value="<%= pid.quantity %>" />
                                     <td form="main-form" style="width: 220px;"><%= pid.productID.productName %></td>
                                     <td form="main-form"><img style="width:60px; height:80px" src="/images/<%= pid.productID.productImage %>"></td>
-                                    <td form="main-form"><%= VND.format(pid.productID.priceOut) %></td>
+                                    <td form="main-form" style="color:#DC3545;"><%= VND.format(pid.productID.priceOut) %></td>
                                     <td form="main-form"><%= pid.quantity %></td>
-                                    <td form="main-form"><%= VND.format(pid.productID.priceOut * pid.quantity) %></td>
+                                    <td form="main-form" style="color:#DC3545;"><%= VND.format(pid.productID.priceOut * pid.quantity) %></td>
                                 </tr>
                                 <% }); %>
                                 <% } %>
@@ -66,7 +66,7 @@
                         </table>
                     </div>
 
-                        <div class="payment-coupon">
+                        <div class="payment-coupon" style="margin-left: 35px;">
                             <h4 style="font-weight: 700; line-height: 20px;">NHẬP MÃ COUPON ƯU ĐÃI</h4>
                             <%if(success.length > 0){%>
                                 <p style="font-size: 14px;color: green;"><%= success %></p>
@@ -95,34 +95,29 @@
                         </div>
 
                         <div class="payment-price">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        
-                                    </tr>
-                                </thead>
+                            <table class="table" style="margin-left: 15px;">
                                 <tbody>
                                     <tr style="border: white;">
-                                        <td>Tạm tính:</td>
-                                        <td style="text-align: right;"><%= VND.format(convert) %></td>
+                                        <td style="width: 100%;">Tạm tính:</td>
+                                        <td style="text-align: right; width: 100%;"><%= VND.format(convert) %></td>
                                         <td form="main-form" style="visibility: hidden; text-align: right;" id="cost"><%= convert %></td>
                                     </tr>
                                     <tr style="border: white;">
-                                        <td>Phí vận chuyển:</td>
-                                        <td style="text-align: right;" id="shippingcost"><%= VND.format(0) %></td>
+                                        <td style="width: 100%;">Phí vận chuyển:</td>
+                                        <td style="text-align: right; width: 100%;" id="shippingcost"><%= VND.format(0) %></td>
                                         <td style=" text-align: right;" id="shippingcost"></td>
                                         <input form="main-form" type="hidden" name="shippingFee" value="0" id="fee">
                                     </tr>
                                     <tr>
-                                        <td>Mã giảm giá:</td>
-                                        <td style="text-align: right;"><%if(cash.length > 0){%><%= cash %><%}else{%>0 đ<%}%></td>
+                                        <td style="width: 100%;">Mã giảm giá:</td>
+                                        <td style="text-align: right; width: 100%;"><%if(cash.length > 0){%><%= cash %><%}else{%>0 đ<%}%></td>
                                         <input type="hidden" id="blunt" value="<%if(blunt.length > 0){%><%= blunt %><%}else{%>0<%}%>"/>
                                         <input type="hidden" id="percent" value="<%if(percent.length > 0){%><%= percent %><%}else{%>0<%}%>"/>
                                         <input type="hidden" form="main-form" value="<%if(code.length > 0){%><%= code %><%}else{%>Không<%}%>" name="couponCode">
                                     </tr>
                                     <tr style="border: white;">
-                                        <td style="font-weight: 500;">Tổng tiền:</td>
-                                        <td style="text-align: right; color:#DC4E45; font-weight:500;" id="total">
+                                        <td style="font-weight: 500;width: 100%;">Tổng tiền:</td>
+                                        <td style="text-align: right; color:#DC4E45; font-weight:500;width: 100%;" id="total">
                                             <%if(blunt.length > 0){%><%= VND.format(convert-blunt) %><%}else if(percent.length > 0){%><%= VND.format(convert-convert*percent) %><%}else{%><%= VND.format(convert) %><%}%></td>
                                         <input form="main-form" type="hidden" name="total" value="<%= convert %>" id="subTotal">
                                     </tr>
@@ -197,12 +192,13 @@
                             </label>
                         </span>
                     </div>
-                    <a href="/cart/<%= userid %>" style="margin-left: 15px;">
-                        <button type="button" class="btn btn-secondary btn-backk" style="font-size: 20px">< Quay lại giỏ hàng</button>
-                    </a>
             </div>
-            <button form="main-form" type="submit" class="btn btn-secondary btn-payment">Đặt hàng</button>
-        
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <a href="/cart/<%= userid %>" style="margin-left: 85px;">
+                    <button type="button" class="btn btn-secondary btn-payment" style="font-size: 20px"><i class="fa-solid fa-arrow-left-long"></i> Quay lại giỏ hàng</button>
+                </a>
+                <button form="main-form" type="submit" class="btn btn-outline-dark btn-payment">Đặt hàng</button>    
+            </div>
             <% } %>
         </form> 
         <form action="/add_coupon_checkout" method="post" id="sub-form"></form>

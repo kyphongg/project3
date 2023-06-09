@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thống kê</title>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <!--sidebar start-->
+    <%- include('../partials/sidebar') %>
+    <!-- sidebar end -->
+
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="table-agile-info">
+                <h3>Số lượng bán ra theo ngày</h3>
+
+                <div class="panel panel-default">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered" style="text-align: center; margin-top: 15px;">
+                            <thead>
+                            <tr>
+                                <th style="width: 50px; text-align: center;">STT</th>
+                                <th style="text-align: center;">Sản phẩm</th>
+                                <th style="text-align: center;">Số lượng bán</th>
+                            </tr>
+                            </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>God Of War</td>
+                                    <td>20</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Fifa 23</td>
+                                    <td>15</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Stadew Valley</td>
+                                    <td>2</td>
+                                </tr>
+                                </tbody>
+                        </table>
+                    </div>
+
+                    <a href="/sales"><button type="button" class="btn btn-info" ><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button></a>
+
+                </div>
+            </div>
+        </section>
+    </section>
+    <!--main content end-->
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

@@ -2616,6 +2616,61 @@ app.post("/update_status_1/:id", async (req, res) => {
   }
 });
 
+//Trang tổng doanh thu theo ngày
+app.get("/sales", (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/sales/sales", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Trang số lượng bán ra theo ngày
+app.get("/sales_daily", (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/sales/sales_daily", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Trang chi tiết danh sách bán hàng
+app.get("/sales_detail", (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/sales/sales_detail", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+
 //Trang kho
 app.get("/warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
@@ -2680,8 +2735,21 @@ app.get("/list_warehouse/:id", async (req, res) => {
   }
 });
 
-app.get("/sale_history/:id", (req, res) => {
-  
+app.get("/sale_history", (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      res.render("layouts/servers/warehouse/sale_history", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
 });
 
 app.get("/add_warehouse", async (req, res) => {

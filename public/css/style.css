@@ -3585,3 +3585,11 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
         transform: translateY(0);
     }
 }
+
+.sales-price{
+    display: flex;
+    align-items: right;
+    justify-content: right;
+    margin-right: 15px;
+    font-size: 20px;
+}

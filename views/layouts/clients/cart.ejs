@@ -106,10 +106,12 @@
             <div class="col-8"></div>
             <div class="col-4">
                 <div class="cart-price">
-                  <tr style="border: white;">
-                    <td>Tạm tính:</td>
-                    <td style="text-align: right;"><%= VND.format(money) %></td>
-                </tr>
+                  <div style="border: white;">
+                    <div style="display: flex;font-weight: 500;">
+                      <p>Tạm tính:</p>
+                      <p style="color:#DC3545; margin-left: 8px;"><%= VND.format(money) %></p>
+                    </div>
+            
                     <div class="pay">
                     <a href="/checkout/<%= userid %>">
                         <button class="btn btn-secondary btn-pay">THANH TOÁN</button>
