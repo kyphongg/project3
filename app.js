@@ -1074,7 +1074,7 @@ app.get("/all_product", async (req, res) => {
 //Trang chi tiết sản phẩm
 app.get("/product/:id", async (req, res) => {
   if (req.session.guest) {
-    let name = await Product.findOne({_id:req.params.id});
+    let name = await Product.findOne({ _id: req.params.id });
     let pname = name.productName;
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
@@ -1112,14 +1112,14 @@ app.get("/product/:id", async (req, res) => {
           danhsach: data,
           cart: req.session.cart,
           VND,
-          pname
+          pname,
         });
       })
       .catch((err) => {
         console.log(err);
       });
   } else {
-    let name = await Product.findOne({_id:req.params.id});
+    let name = await Product.findOne({ _id: req.params.id });
     let pname = name.productName;
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
@@ -1168,7 +1168,7 @@ app.get("/product/:id", async (req, res) => {
 
 //Trang category
 //Hành động
-app.get("/category/6476b3651cde57b995f9a9ed",async (req, res) => {
+app.get("/category/6476b3651cde57b995f9a9ed", async (req, res) => {
   if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
@@ -2615,14 +2615,17 @@ app.get("/done_orders", async (req, res) => {
   }
 });
 
-app.get("/cancel_orders", (req, res) => {
+app.get("/cancel_orders",async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      let data = await Order.find({ orderStatus: 4 }).populate("userID");
       res.render("layouts/servers/orders/cancel_orders", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
       });
     } else {
       res.redirect("/admin_home");
@@ -2651,6 +2654,49 @@ app.post("/update_status_1/:id", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
       await Order.updateOne({ _id: req.params.id }, { orderStatus: 2 });
+      res.redirect("/all_orders");
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/admin_cancel_order/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      await Order.updateOne(
+        { _id: req.params.id },
+        { $set: { orderStatus: 4, cancelReason: req.body.cancelReason } }
+      );
+      let data = await Order.findOne({ _id: req.params.id });
+      if (data.items.length == 1) {
+        data.items.forEach(async function (id) {
+          let qty = id.quantity;
+          let pid = id._id;
+          await Product.updateOne(
+            { _id: pid },
+            { $inc: { productQuantity: qty } }
+          );
+        });
+      } else if (data.items.length > 1) {
+        let arrayQ = [];
+        let arrayP = [];
+        data.items.forEach(async function (id) {
+          let qty = id.quantity;
+          let pid = id._id;
+          arrayQ.push(qty);
+          arrayP.push(pid);
+        });
+        for (let i = 0; i < arrayP.length; i++) {
+          await Product.updateMany(
+            { _id: arrayP[i] },
+            { $inc: { productQuantity: arrayQ[i] } }
+          );
+        }
+      }
       res.redirect("/all_orders");
     } else {
       res.redirect("/admin_home");
