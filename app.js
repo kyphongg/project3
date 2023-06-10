@@ -2670,7 +2670,6 @@ app.get("/sales_detail", (req, res) => {
   }
 });
 
-
 //Trang kho
 app.get("/warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
@@ -2735,14 +2734,24 @@ app.get("/list_warehouse/:id", async (req, res) => {
   }
 });
 
-app.get("/sale_history", (req, res) => {
+app.get("/sale_history/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      const data = await Order.find(
+        { "items._id": req.params.id },
+        { "items.$": 1 }
+      );
+      const name = await Order.findOne(
+        { "items._id": req.params.id },
+        { "items.$": 1 }
+      ).populate("items.productID");
       res.render("layouts/servers/warehouse/sale_history", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        danhsach: data,
+        name,
       });
     } else {
       res.redirect("/admin_home");

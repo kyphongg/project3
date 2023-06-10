@@ -59,12 +59,18 @@
                                     </a>
                                 </td>
                                 <td style="text-align: center">
-                                    <a href="/sale_history/<%= danhsach[i]._id  %>" class="active" ui-toggle-class="">
-                                      <i
-                                        class="fa-solid fa-eye"
-                                        style="font-size: 25px; color: #5cb85c"
-                                      ></i>
-                                    </a>
+                                    <% danhsach[i].productList.forEach(function(id) { %>
+                                        <%if(danhsach[i].total == id.productQuantity){%>
+                                            Chưa có 
+                                            <%}else{%>
+                                                <a href="/sale_history/<%= danhsach[i]._id  %>" class="active" ui-toggle-class="">
+                                                    <i
+                                                      class="fa-solid fa-eye"
+                                                      style="font-size: 25px; color: #5cb85c"
+                                                    ></i>
+                                                  </a>
+                                                <%}%>
+                                        <% }); %>
                                 </td>
                             </tr>
                             <% } %>
