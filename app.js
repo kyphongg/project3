@@ -2840,11 +2840,6 @@ app.get("/sale_history/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      // const data = await Order.find(
-      //   { $and: [{ orderStatus: 3 }, { "items._id": req.params.id }] },
-
-      //   { "items.$": 1 }
-      // );
       const data = await Order.find(
         {
           $and: [{ orderStatus: { $lt: 4 } }, { "items._id": req.params.id }],
