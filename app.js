@@ -950,6 +950,44 @@ app.post("/get_order/:id", async (req, res) => {
   }
 });
 
+app.post("/cancel_order/:id", async (req, res) => {
+  if (req.session.guest) {
+    await Order.updateOne(
+      { _id: req.params.id },
+      { $set: { orderStatus: 4, cancelReason: req.body.cancelReason } }
+    );
+    let data = await Order.findOne({ _id: req.params.id });
+    if (data.items.length == 1) {
+      data.items.forEach(async function (id) {
+        let qty = id.quantity;
+        let pid = id._id;
+        await Product.updateOne(
+          { _id: pid },
+          { $inc: { productQuantity: qty } }
+        );
+      });
+    } else if (data.items.length > 1) {
+      let arrayQ = [];
+      let arrayP = [];
+      data.items.forEach(async function (id) {
+        let qty = id.quantity;
+        let pid = id._id;
+        arrayQ.push(qty);
+        arrayP.push(pid);
+      });
+      for (let i = 0; i < arrayP.length; i++) {
+        await Product.updateMany(
+          { _id: arrayP[i] },
+          { $inc: { productQuantity: arrayQ[i] } }
+        );
+      }
+    }
+    res.redirect("/orders/:id");
+  } else {
+    res.redirect("/login");
+  }
+});
+
 //Trang tìm kiếm
 app.get("/search", async (req, res) => {
   let kw = req.query.kw;
@@ -1036,6 +1074,8 @@ app.get("/all_product", async (req, res) => {
 //Trang chi tiết sản phẩm
 app.get("/product/:id", async (req, res) => {
   if (req.session.guest) {
+    let name = await Product.findOne({_id:req.params.id});
+    let pname = name.productName;
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
@@ -1072,12 +1112,15 @@ app.get("/product/:id", async (req, res) => {
           danhsach: data,
           cart: req.session.cart,
           VND,
+          pname
         });
       })
       .catch((err) => {
         console.log(err);
       });
   } else {
+    let name = await Product.findOne({_id:req.params.id});
+    let pname = name.productName;
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
@@ -1114,6 +1157,7 @@ app.get("/product/:id", async (req, res) => {
           danhsach: data,
           VND,
           cart: 0,
+          pname,
         });
       })
       .catch((err) => {
@@ -1124,7 +1168,7 @@ app.get("/product/:id", async (req, res) => {
 
 //Trang category
 //Hành động
-app.get("/category/6476b3651cde57b995f9a9ed", (req, res) => {
+app.get("/category/6476b3651cde57b995f9a9ed",async (req, res) => {
   if (req.session.guest) {
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
@@ -2738,6 +2782,11 @@ app.get("/sale_history/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      // const data = await Order.find(
+      //   { $and: [{ orderStatus: 3 }, { "items._id": req.params.id }] },
+
+      //   { "items.$": 1 }
+      // );
       const data = await Order.find(
         { "items._id": req.params.id },
         { "items.$": 1 }

@@ -60,7 +60,7 @@
                                 <tbody>
                                     <% danhsach.items.forEach(function(id) { %>
                                     <tr>
-                                        <td><%= id.productID.productName %></td>
+                                        <td><a href="/product/<%= id.productID._id %>"><%= id.productID.productName %></a></td>
                                         <td><img src="/images/<%= id.productID.productImage %>" style="width:50px; height: 80px;" alt=""></td>
                                         <td><%= VND.format(id.productID.priceOut) %></td>
                                         <td><%= id.quantity %></td>
@@ -106,9 +106,9 @@
                                         </form>
                                 <%}%>
                                 <%if(danhsach.orderStatus == 0){%>
-                                        <a href="#">
-                                            <button class="btn btn-secondary btn-cancel js-buy-tickets" style="font-size: 25px; font-weight: 500;">Huỷ đơn hàng</button>
-                                        </a>
+                                        
+                                    <button class="btn btn-secondary btn-cancel js-buy-tickets" style="font-size: 25px; font-weight: 500;">Huỷ đơn hàng</button>
+                                        
                                 <%}%>
 
                                 <div class="modal js-modal">
@@ -122,9 +122,11 @@
                                             <label for="tickets-quantity" class="modal-label">
                                                 Lý do hủy đơn hàng: 
                                             </label>
-                                            <input type="text" class="text-cancel" ></input>
+                                            <input form="cancelOrder" type="text" class="text-cancel" name="cancelReason"></input>
                                             <div class="btn-js">
-                                                <a href="#" id="buy-tickets" style="margin-right:15px; background-color: #DC3545;"> Hủy đơn </a>
+                                                <form action="/cancel_order/<%= danhsach._id %>" method="post" id="cancelOrder">
+                                                    <button form="cancelOrder" class="btn btn-error" style="width: 220px; font-size: 25px; font-weight: 500; margin-right: 15px;"><b>Hủy đơn</b></button>
+                                                </form>
                                                 <a id="buy-tickets" class="modal-close js-modal-close" style="background-color: #6C757D;"> Thoát </a>
                                             </div>
                                         </div>
