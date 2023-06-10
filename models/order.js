@@ -48,6 +48,9 @@ var Order = new Schema({
   cancelReason:{
     type: String,
   },
+  cancelFrom:{
+    type: String,
+  },
   items: [Item],
   shippingName: {
     type: String,

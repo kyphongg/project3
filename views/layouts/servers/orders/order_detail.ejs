@@ -31,6 +31,9 @@
                     <% if(danhsach.cancelReason){%>
                         <p><b>Lý do huỷ đơn: </b><%= danhsach.cancelReason %></p>
                     <% } %>
+                    <% if(danhsach.cancelFrom){ %>
+                        <p><b>Huỷ bởi: </b><%= danhsach.cancelFrom %></p>
+                    <% } %>
                 </div>
                 <div class="table-responsive" style="margin-top: 15px;">
                     <table class="table table-striped table-bordered" style="text-align: center;">

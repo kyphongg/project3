@@ -954,7 +954,13 @@ app.post("/cancel_order/:id", async (req, res) => {
   if (req.session.guest) {
     await Order.updateOne(
       { _id: req.params.id },
-      { $set: { orderStatus: 4, cancelReason: req.body.cancelReason } }
+      {
+        $set: {
+          orderStatus: 4,
+          cancelReason: req.body.cancelReason,
+          cancelFrom: "Khách",
+        },
+      }
     );
     let data = await Order.findOne({ _id: req.params.id });
     if (data.items.length == 1) {
@@ -2615,7 +2621,7 @@ app.get("/done_orders", async (req, res) => {
   }
 });
 
-app.get("/cancel_orders",async (req, res) => {
+app.get("/cancel_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
@@ -2669,7 +2675,13 @@ app.post("/admin_cancel_order/:id", async (req, res) => {
     if (role == 0 || role == 2) {
       await Order.updateOne(
         { _id: req.params.id },
-        { $set: { orderStatus: 4, cancelReason: req.body.cancelReason } }
+        {
+          $set: {
+            orderStatus: 4,
+            cancelReason: req.body.cancelReason,
+            cancelFrom: "Admin",
+          },
+        }
       );
       let data = await Order.findOne({ _id: req.params.id });
       if (data.items.length == 1) {
@@ -2834,7 +2846,9 @@ app.get("/sale_history/:id", async (req, res) => {
       //   { "items.$": 1 }
       // );
       const data = await Order.find(
-        { "items._id": req.params.id },
+        {
+          $and: [{ orderStatus: { $lt: 4 } }, { "items._id": req.params.id }],
+        },
         { "items.$": 1 }
       );
       const name = await Order.findOne(
