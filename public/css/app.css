@@ -249,6 +249,7 @@ input:focus{
 }
 
 .my-login{
+    display: flex;
     border-radius: 10px;
     background-color: white;
     margin-top: 30px;
@@ -322,6 +323,20 @@ input:focus{
 .my-login form p a{
     color: black;
     text-decoration: underline;
+}
+
+.noti{
+    position: absolute;
+    margin-top: 56px;
+    padding: 4px 128px;
+    background-color: #f2dede;
+    color: #a94442;
+    border-radius: 10px;
+    border: 1px solid #fff;
+}
+
+.form-login{
+    margin-top: 30px;
 }
 
 .my-signup{

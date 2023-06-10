@@ -12,13 +12,14 @@
     
     <div class="container">
         <div class="my-login">
-            <%if(error.length > 0){%>
-                <div class="alert alert-danger">
-                    <%= error %>
-                </div>
-                    <%}%>
             <form action="/login" method="post">
+                <%if(error.length > 0){%>
+                    <div class="noti">
+                        <%= error %>
+                    </div>
+                        <%}%>
                 <h3>Đăng nhập</h3>
+                <div class="form-login">
                 <span>Tên đăng nhập</span>
                 <input type="email" name="email" class="box" placeholder="Email" required="">
                 <span>Mật khẩu</span>
@@ -30,6 +31,7 @@
                 <input type="submit" value="Đăng nhập" class="btn">
                 <p>Quên mật khẩu ? <a href="#">Ấn tại đây</a></p>
                 <p>Bạn chưa có tài khoản ? <a href="/signup">Tạo tài khoản</a></p>
+                </div>
             </form>
         </div>
     </div>
