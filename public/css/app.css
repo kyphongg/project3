@@ -250,24 +250,29 @@ input:focus{
 
 .my-login{
     display: flex;
+    position: relative;
     border-radius: 10px;
     background-color: white;
     margin-top: 30px;
-    display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.my-login form{
-    width: 350px;
-    margin-bottom: 30px;
-}
-
-.my-login form h3{
+.login-heading{
+    position: absolute;
     text-transform: uppercase;
     color: black;
     text-align: center;
     margin-top: 20px;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.my-login form{
+    width: 350px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .my-login form span{
@@ -326,17 +331,22 @@ input:focus{
 }
 
 .noti{
-    position: absolute;
-    margin-top: 56px;
-    padding: 4px 128px;
     background-color: #f2dede;
     color: #a94442;
-    border-radius: 10px;
+    border-radius: 5px;
     border: 1px solid #fff;
+    text-align: left;
+    width: 350px;
+    position: absolute;
+    top: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 10px;
+    margin-top: 55px;
 }
 
 .form-login{
-    margin-top: 30px;
+    margin-top: 50px;
 }
 
 .my-signup{

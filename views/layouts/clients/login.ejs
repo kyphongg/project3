@@ -12,16 +12,20 @@
     
     <div class="container">
         <div class="my-login">
+            <div class="login-heading">
+                <h3 style="text-align: center;">Đăng nhập</h3>
+            </div>
+
+            <%if(error.length > 0){%>
+                <div class="noti">
+                    <%= error %>
+                </div>
+                    <%}%>
+                    
             <form action="/login" method="post">
-                <%if(error.length > 0){%>
-                    <div class="noti">
-                        <%= error %>
-                    </div>
-                        <%}%>
-                <h3>Đăng nhập</h3>
                 <div class="form-login">
                 <span>Tên đăng nhập</span>
-                <input type="email" name="email" class="box" placeholder="Email" required="">
+                <input type="text" name="email" class="box" placeholder="Email" required="">
                 <span>Mật khẩu</span>
                 <input type="password" name="password" class="box" placeholder="Mật khẩu" required="">
                 <div class="checkbox">
