@@ -8,6 +8,10 @@
 <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.13.1/datatables.min.js"></script>
 
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
 <script language="javascript" type="text/javascript" src="/js/flot-chart/excanvas.min.js"></script>
 <script src="js/jquery.scrollTo.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -195,52 +199,6 @@
 <!-- calendar -->
 <script type="text/javascript" src="js/monthly.js"></script>
 
-<script type="text/javascript">
-    $(function() {
-        const ctx = document.getElementById('myChart');
-        const earning = document.getElementById('earning');
-            new Chart(ctx, {
-                 type: 'doughnut',
-                 data: {
-                     labels: ['Mô Phỏng', 'Phiêu Lưu', 'Hành Động', 'Nhập Vai', 'Chiến Thuật', 'Thể thao'],
-                     datasets: [{
-                         label: 'Số lượng bán ra',
-                         data: [10, 25, 100, 45, 12, 3],
-                         borderWidth: 1
-                     }]
-                 },
-                 options: {
-                     responsive: true,
-                 }
-             });
-
-             new Chart(earning, {
-                type: 'bar',
-                data: {
-                    labels: ['Tổng doanh thu'],
-                    datasets: [{
-                        label: 'Tổng doanh thu theo ngày',
-                        data: [150000],
-                        backgroundColor: [
-                            'rgba(255,99,132,1)',
-                        ],
-                        borderWidth: 1
-                    },
-                        {
-                            label: 'Tổng doanh thu theo năm',
-                            data: [5550000],
-                            backgroundColor: [
-                                'rgba(54,162,235,1)',
-                            ],
-                            borderWidth: 1
-                        }]
-                },
-                options: {
-                    responsive: true,
-                }
-            });
-        });
-</script>
 
 
 

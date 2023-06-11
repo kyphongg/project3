@@ -3593,3 +3593,12 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     margin-right: 15px;
     font-size: 20px;
 }
+
+#reportrange {
+    background: #fff; 
+    cursor: pointer; 
+    padding: 5px 10px; 
+    border: 1px solid #ccc;
+    width: 270px;
+    margin-bottom: 15px;
+}
