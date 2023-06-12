@@ -18,16 +18,15 @@
               <%}%>
         <form action="admin_login" method="post">
           <div class="txt_field">
-            <input type="email" name="email" required>
+            <input type="email" name="email" value="<%= errorEmail %>">
             <span></span>
             <label>Email</label>
           </div>
           <div class="txt_field">
-            <input type="password" name="password" required>
+            <input type="password" name="password">
             <span></span>
             <label>Mật khẩu</label>
           </div>
-          <div class="pass">Quên mật khẩu?</div>
           <input type="submit" value="Đăng nhập">
         </form>
       </div>

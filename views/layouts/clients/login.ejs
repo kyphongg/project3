@@ -25,9 +25,9 @@
             <form action="/login" method="post">
                 <div class="form-login">
                 <span>Tên đăng nhập</span>
-                <input type="text" name="email" class="box" placeholder="Email" required="">
+                <input type="text" name="email" class="box" placeholder="Email" value="<%= errorEmail %>">
                 <span>Mật khẩu</span>
-                <input type="password" name="password" class="box" placeholder="Mật khẩu" required="">
+                <input type="password" name="password" class="box" placeholder="Mật khẩu" >
                 <div class="checkbox">
                     <input type="checkbox" name="" id="remember-me">
                     <label for="remember-me">Ghi nhớ tài khoản</label>

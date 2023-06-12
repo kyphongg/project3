@@ -22,34 +22,42 @@
     
     <div class="container">
         <div class="my-signup">
-            <%if(error.length > 0){%>
-                <div class="alert alert-danger">
-                    <%= error %>
-                </div>
-                    <%}%>
             <form action="./save" method="post">
                 <h3>Đăng ký tài khoản</h3>
                 <div class="row">
                     <div class="col">
                         <span>Họ và tên: </span>
-                        <input type="text" name="fullname" class="box" placeholder="Nhập họ tên đầy đủ của bạn" required="">
+                        <%if(nameError.length > 0){%><p style="font-size: 14px;color: red;"><%= nameError %></p><%}%>
+                        <input type="text" name="fullname" class="box" placeholder="Nhập họ tên đầy đủ của bạn" value="<%= nameED %>">
+                        
                         <span>Số điện thoại: </span>
-                        <input type="tel" name="phone" class="box" placeholder="Nhập số điện thoại của bạn" required="">
+                        <%if(mobileError.length > 0){%><p style="font-size: 14px;color: red;"><%= mobileError %></p><%}%>
+                        <%if(errorPhone.length > 0){%><p style="font-size: 14px;color: red;"><%= errorPhone %></p><%}%>
+                        <input type="text" name="phone" class="box" placeholder="Nhập số điện thoại của bạn" value="<%= mobileED %>">
+                        
                         <span>Tên đăng nhập: </span>
-                        <input type="text" name="username" class="box" placeholder="Nhập tên đăng nhập của bạn" required="">
+                        <%if(usernameError.length > 0){%><p style="font-size: 14px;color: red;"><%= usernameError %></p><%}%>
+                        <%if(errorUsername.length > 0){%><p style="font-size: 14px;color: red;"><%= errorUsername %></p><%}%>
+                        <input type="text" name="username" class="box" placeholder="Nhập tên đăng nhập của bạn" value="<%= usernameED %>">
                     </div>
     
                     <div class="col">
                         <span>Email của bạn:</span>
-                        <input type="email" name="email" class="box" placeholder="Nhập email của bạn" required="">
+                        <%if(emailError.length > 0){%><p style="font-size: 14px;color: red;"><%= emailError %></p><%}%>
+                        <%if(errorEmail.length > 0){%><p style="font-size: 14px;color: red;"><%= errorEmail %></p><%}%>
+                        <input type="text" name="email" class="box" placeholder="Nhập email của bạn" value="<%= emailED %>">
+                        
                         <span>Mật khẩu</span>
-                        <input type="password" name="password" class="box" placeholder="Nhập mật khẩu" required="">
+                        <%if(passwordError.length > 0){%><p style="font-size: 14px;color: red;"><%= passwordError %></p><%}%>
+                        <input type="password" name="password" class="box" placeholder="Nhập mật khẩu" value="<%= passwordED %>">
+
                         <span>Xác nhận mật khẩu</span>
-                        <input type="password" name="password2" class="box" placeholder="Nhập xác nhận mật khẩu" required="">
+                        <input type="password" name="password2" class="box" placeholder="Nhập xác nhận mật khẩu" value="<%= password2ED %>">
                     </div>
     
                     <div class="checkbox">
-                        <input type="checkbox" name="" id="remember-me">
+                        <input type="checkbox" name="checkbox" id="remember-me">
+                        <%if(boxError.length > 0){%><p style="font-size: 14px;color: red;"><%= boxError %></p><%}%>
                         <label for="remember-me">Đồng ý với Điều khoản dịch vụ của Gaming Shop</label>
                     </div>
                     <input type="submit" value="Đăng ký" class="btn">

@@ -112,6 +112,7 @@ app.get("/login", (req, res) => {
       fullname: 1,
       cart: 0,
       error: req.flash("error"),
+      errorEmail: req.flash("errorEmail"),
     });
   }
 });
@@ -122,20 +123,147 @@ app.get("/signup", (req, res) => {
     userid: 1,
     fullname: 1,
     cart: 0,
-    error: req.flash("error"),
+    nameError: req.flash("nameError"),
+    mobileError: req.flash("mobileError"),
+    usernameError: req.flash("usernameError"),
+    boxError: req.flash("boxError"),
+    emailError: req.flash("emailError"),
+    passwordError: req.flash("passwordError"),
+    mobileED: req.flash("mobileED"),
+    emailED: req.flash("emailED"),
+    nameED: req.flash("nameED"),
+    usernameED: req.flash("usernameED"),
+    passwordED: req.flash("passwordED"),
+    password2ED: req.flash("password2ED"),
+    errorUsername: req.flash("errorUsername"),
+    errorEmail: req.flash("errorEmail"),
+    errorPhone: req.flash("errorPhone"),
   });
 });
 
 app.post("/save", async function (req, res) {
-  const check = await User.findOne({
-    $or: [
-      { email: req.body.email },
-      { username: req.body.username },
-      { phone: req.body.phone },
-    ],
-  });
-  if (check) {
-    req.flash("error", "Tài khoản đã tồn tại");
+  var box = req.body.checkbox;
+  var name = req.body.fullname;
+  var email = req.body.email;
+  var username = req.body.username;
+  var mobile = req.body.phone;
+  var password = req.body.password;
+  var password2 = req.body.password2;
+  var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  var vnn_regex =
+    /^[a-zA-Z'-'\sáàảãạăâắằấầặẵẫậéèẻ ẽẹếềểễệóòỏõọôốồổỗộ ơớờởỡợíìỉĩịđùúủũụưứ� �ửữựÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠ ƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼ� ��ỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞ ỠỢỤỨỪỬỮỰỲỴÝỶỸửữựỵ ỷỹ]*$/g;
+  var vnf_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+  var vnp_regex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/gm;
+  let errorForm = 0;
+
+  if (name == "") {
+    req.flash("nameError", "Bạn chưa điền họ và tên!");
+    errorForm++;
+  }
+  if (mobile == "") {
+    req.flash("mobileError", "Bạn chưa điền số điện thoại!");
+    errorForm++;
+  }
+  if (email == "") {
+    req.flash("emailError", "Bạn chưa điền Email!");
+    errorForm++;
+  }
+  if (username == "") {
+    req.flash("usernameError", "Bạn chưa điền tên đăng nhập!");
+    errorForm++;
+  }
+  if (password == "") {
+    req.flash("passwordError", "Bạn chưa đặt mật khẩu!");
+    errorForm++;
+  }
+  if (password != "") {
+    if (vnp_regex.test(password) == false) {
+      req.flash(
+        "passwordError",
+        "Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt!"
+      );
+      errorForm++;
+    } else {
+      if (password2 == "") {
+        req.flash("passwordError", "Vui lòng xác thực lại mật khẩu!");
+        req.flash("passwordED", password);
+        errorForm++;
+      } else {
+        if (password != password2) {
+          req.flash("passwordError", "Mật khẩu không trùng khớp");
+          req.flash("passwordED", password);
+          errorForm++;
+        } else {
+          req.flash("passwordED", password);
+          req.flash("password2ED", password2);
+        }
+      }
+    }
+  }
+
+  if (username != "") {
+    const checkUsername = await User.findOne({ username: username });
+    if (checkUsername) {
+      req.flash("errorUsername", "Username đã tồn tại");
+      req.flash("usernameED", username);
+      errorForm++;
+    } else {
+      req.flash("usernameED", username);
+    }
+  }
+  if (email != "") {
+    const checkEmail = await User.findOne({ email: email });
+    if (checkEmail) {
+      req.flash("errorEmail", "Email đã tồn tại");
+      req.flash("emailED", email);
+      errorForm++;
+    } else {
+      if (email_regex.test(email) == false) {
+        req.flash("emailError", "Sai định dạng Email!");
+        req.flash("emailED", email);
+        errorForm++;
+      } else {
+        let emailED = email;
+        req.flash("emailED", emailED);
+      }
+    }
+  }
+  if (name != "") {
+    if (vnn_regex.test(name) == false) {
+      req.flash("nameError", "Sai định dạng Họ và tên!");
+      req.flash("nameED", name);
+      errorForm++;
+    } else {
+      let nameED = name;
+      req.flash("nameED", nameED);
+    }
+  }
+
+  if (mobile != "") {
+    const checkPhone = await User.findOne({ phone: mobile });
+    if (checkPhone) {
+      req.flash("errorPhone", "Số điện thoại đã tồn tại");
+      req.flash("mobileED", mobile);
+      errorForm++;
+    } else {
+      if (vnf_regex.test(mobile) == false) {
+        req.flash("mobileError", "Sai định dạng Số điện thoại!");
+        req.flash("mobileED", mobile);
+        errorForm++;
+      } else {
+        let mobileED = mobile;
+        req.flash("mobileED", mobileED);
+      }
+    }
+  }
+
+  if (box != "on") {
+    errorForm++;
+    req.flash("boxError", "Vui lòng đồng ý với điều khoản!");
+  }
+
+  if (errorForm != 0) {
     res.redirect("/signup");
   } else {
     var user = User({
@@ -145,14 +273,10 @@ app.post("/save", async function (req, res) {
       username: req.body.username,
       phone: req.body.phone,
     });
-    if (req.body.password != req.body.password2) {
-      req.flash("error", "Mật khẩu không trùng khớp");
-      res.redirect("/signup");
-    } else {
-      user.save().then(function () {
-        res.redirect("/");
-      });
-    }
+
+    user.save().then(function () {
+      res.redirect("/");
+    });
   }
 });
 
@@ -160,24 +284,41 @@ app.post("/save", async function (req, res) {
 app.post("/login", async function (req, res) {
   try {
     //Kiểm tra xem tài khoản có tồn tại hay không
-    const user = await User.findOne({ email: req.body.email });
-    if (user) {
-      //Kiểm tra mật khẩu
-      const result = req.body.password === user.password;
-      if (result) {
-        var sess = req.session;
-        sess.guest = true;
-        sess.fullname = user.fullname;
-        sess.email = user.email;
-        sess.userid = user._id;
-        res.redirect("/");
+    let errorEmail = req.body.email;
+    let email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (email_regex.test(errorEmail) == false) {
+      req.flash("error", "Sai định dạng Email");
+      req.flash("errorEmail", errorEmail);
+      res.redirect("/login");
+    } else {
+      const user = await User.findOne({ email: req.body.email });
+      if (user) {
+        //Kiểm tra mật khẩu
+        let errorPassword = req.body.password;
+        if (errorPassword == "") {
+          req.flash("error", "Vui lòng nhập mật khẩu");
+          req.flash("errorEmail", errorEmail);
+          res.redirect("/login");
+        } else {
+          const result = req.body.password === user.password;
+          if (result) {
+            var sess = req.session;
+            sess.guest = true;
+            sess.fullname = user.fullname;
+            sess.email = user.email;
+            sess.userid = user._id;
+            res.redirect("/");
+          } else {
+            req.flash("error", "Sai mật khẩu");
+            req.flash("errorEmail", errorEmail);
+            res.redirect("/login");
+          }
+        }
       } else {
-        req.flash("error", "Sai mật khẩu");
+        req.flash("error", "Tài khoản không tồn tại");
+        req.flash("errorEmail", errorEmail);
         res.redirect("/login");
       }
-    } else {
-      req.flash("error", "Tài khoản không tồn tại");
-      res.redirect("/login");
     }
   } catch (error) {
     res.status(400).json({ error });
@@ -824,7 +965,7 @@ app.post("/add_coupon_checkout", async (req, res) => {
       let noteED = note;
       req.flash("noteED", noteED);
     }
-    
+
     if (check) {
       let uid = req.session.userid;
       let userCheck = await Coupon.findOne({
@@ -1932,6 +2073,7 @@ app.get("/category/645c5a67cf52334165588928", (req, res) => {
 app.get("/admin_login", (req, res) => {
   res.render("layouts/servers/login", {
     error: req.flash("error"),
+    errorEmail: req.flash("errorEmail"),
   });
 });
 
@@ -1939,24 +2081,46 @@ app.get("/admin_login", (req, res) => {
 app.post("/admin_login", async function (req, res) {
   try {
     //Kiểm tra xem tài khoản có tồn tại hay không
-    const admin = await Admin.findOne({ email: req.body.email });
-    if (admin) {
-      //Kiểm tra mật khẩu
-      const result = req.body.password === admin.password;
-      if (result) {
-        var sess = req.session;
-        sess.daDangNhap = true;
-        sess.fullname = admin.fullname;
-        sess.admin_id = admin._id;
-        sess.admin_role = admin.role;
-        res.redirect("/admin_home");
-      } else {
-        req.flash("error", "Sai mật khẩu");
-        res.redirect("/admin_login");
-      }
-    } else {
-      req.flash("error", "Tài khoản không tồn tại");
+    let errorEmail = req.body.email;
+    let errorPassword = req.body.password;
+    let email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (errorEmail == "") {
+      req.flash("error", "Vui lòng nhập Email");
       res.redirect("/admin_login");
+    } else {
+      if (email_regex.test(errorEmail) == false) {
+        req.flash("error", "Sai định dạng Email");
+        req.flash("errorEmail", errorEmail);
+        res.redirect("/admin_login");
+      } else {
+        const admin = await Admin.findOne({ email: req.body.email });
+        if (admin) {
+          //Kiểm tra mật khẩu
+          if (errorPassword == "") {
+            req.flash("error", "Vui lòng nhập mật khẩu");
+            req.flash("errorEmail", errorEmail);
+            res.redirect("/admin_login");
+          } else {
+            const result = req.body.password === admin.password;
+            if (result) {
+              var sess = req.session;
+              sess.daDangNhap = true;
+              sess.fullname = admin.fullname;
+              sess.admin_id = admin._id;
+              sess.admin_role = admin.role;
+              res.redirect("/admin_home");
+            } else {
+              req.flash("error", "Sai mật khẩu");
+              req.flash("errorEmail", errorEmail);
+              res.redirect("/admin_login");
+            }
+          }
+        } else {
+          req.flash("error", "Tài khoản không tồn tại");
+          req.flash("errorEmail", errorEmail);
+          res.redirect("/admin_login");
+        }
+      }
     }
   } catch (error) {
     res.status(400).json({ error });
@@ -2471,12 +2635,81 @@ app.get("/admin_setting/:id", async (req, res) => {
 
 app.post("/admin_save", async function (req, res) {
   if (req.session.daDangNhap) {
-    let check = await Admin.findOne({
-      $or: [{ email: req.body.email }, { username: req.body.username }],
-    });
-    if (check) {
-      req.flash("error", "Tài khoản đã tồn tại");
-      res.redirect("/employees");
+    var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var vnn_regex =
+      /^[a-zA-Z'-'\sáàảãạăâắằấầặẵẫậéèẻ ẽẹếềểễệóòỏõọôốồổỗộ ơớờởỡợíìỉĩịđùúủũụưứ� �ửữựÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠ ƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼ� ��ỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞ ỠỢỤỨỪỬỮỰỲỴÝỶỸửữựỵ ỷỹ]*$/g;
+    var vnf_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+    var vnp_regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/gm;
+    let errorForm = 0;
+    var name = req.body.fullname;
+    var email = req.body.email;
+    var username = req.body.username;
+    var password = req.body.password;
+    if (name == "") {
+      req.flash("nameError", "Bạn chưa điền họ và tên!");
+      errorForm++;
+    }
+    if (email == "") {
+      req.flash("emailError", "Bạn chưa điền Email!");
+      errorForm++;
+    }
+    if (username == "") {
+      req.flash("usernameError", "Bạn chưa điền tên đăng nhập!");
+      errorForm++;
+    }
+    if (password == "") {
+      req.flash("passwordError", "Bạn chưa đặt mật khẩu!");
+      errorForm++;
+    }
+    if (name != "") {
+      if (vnn_regex.test(name) == false) {
+        req.flash("nameError", "Sai định dạng Họ và tên!");
+        req.flash("nameED", name);
+        errorForm++;
+      } else {
+        let nameED = name;
+        req.flash("nameED", nameED);
+      }
+    }
+    if (email != "") {
+      const checkEmail = await Admin.findOne({ email: email });
+      if (checkEmail) {
+        req.flash("errorEmail", "Email đã tồn tại");
+        req.flash("emailED", email);
+        errorForm++;
+      } else {
+        if (email_regex.test(email) == false) {
+          req.flash("emailError", "Sai định dạng Email!");
+          req.flash("emailED", email);
+          errorForm++;
+        } else {
+          let emailED = email;
+          req.flash("emailED", emailED);
+        }
+      }
+    }
+    if (username != "") {
+      const checkUsername = await Admin.findOne({ username: username });
+      if (checkUsername) {
+        req.flash("errorUsername", "Username đã tồn tại");
+        req.flash("usernameED", username);
+        errorForm++;
+      } else {
+        req.flash("usernameED", username);
+      }
+    }
+    if (password != "") {
+      if (vnp_regex.test(password) == false) {
+        req.flash(
+          "passwordError",
+          "Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt!"
+        );
+        errorForm++;
+      }
+    }
+    if (errorForm != 0) {
+      res.redirect("/add_employee");
     } else {
       var admin = Admin({
         fullname: req.body.fullname,
@@ -2504,6 +2737,16 @@ app.get("/add_employee", (req, res) => {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        nameError: req.flash("nameError"),
+        usernameError: req.flash("usernameError"),
+        emailError: req.flash("emailError"),
+        passwordError: req.flash("passwordError"),
+        emailED: req.flash("emailED"),
+        nameED: req.flash("nameED"),
+        usernameED: req.flash("usernameED"),
+        passwordED: req.flash("passwordED"),
+        errorUsername: req.flash("errorUsername"),
+        errorEmail: req.flash("errorEmail"),
       });
     } else {
       res.redirect("/admin_home");
