@@ -136,10 +136,15 @@
                             <div class="payment-form">
                                 <%if(nameError.length > 0){%><p style="font-size: 14px;color: red;"><%= nameError %></p><%}%>
                                 <p>Họ và tên người nhận</p>
-                                <input form="main-form" type="text" name="shippingName">
+                                <%if(nameED.length > 0){%><input form="main-form" id="myInputName" type="text" name="shippingName" value="<%= nameED %>" oninput="myNameFunction()"><%}else{%>
+                                <input form="main-form" type="text" id="myInputName" name="shippingName" value="<%= nameED %>" oninput="myNameFunction()"><%}%>
+                                <input form="sub-form" id="myInputNameHidden" type="hidden" name="shippingName" value="<%= nameED %>">
+
                                 <%if(mobileError.length > 0){%><p style="font-size: 14px;color: red;"><%= mobileError %></p><%}%>
                                 <p>Số điện thoại người nhận</p>
-                                <input form="main-form" type="text" name="shippingPhone" id="mobile">
+                                <%if(mobileED.length > 0){%><input form="main-form" type="text" name="shippingPhone" value="<%= mobileED %>" oninput="myMobileFunction()"><%}else{%>
+                                <input form="main-form" id="myInputMobile" type="text" name="shippingPhone" value="<%= mobileED %>" oninput="myMobileFunction()"><%}%>
+                                <input form="sub-form" id="myInputMobileHidden" type="hidden" name="shippingPhone" value="<%= mobileED %>">
                             </div>
                             <div class="payment-form">
                                 <label >Địa chỉ giao hàng</label>
@@ -152,14 +157,19 @@
                                     <%}%>
                                 </select>
                                 <input form="main-form" type="hidden" name="shippingCity" id="shippingCity" value="Chọn thành phố">
+
                                 <%if(districtError.length > 0){%><p style="font-size: 14px;color: red;"><%= districtError %></p><%}%>
                                 <p>Quận</p>
-                                <input form="main-form" type="text" name="shippingDistrict">
+                                <input form="main-form" id="myInputDistrict" type="text" name="shippingDistrict" value="<%= districtED %>" oninput="myDistrictFunction()">
+                                <input form="sub-form" id="myInputDistrictHidden" type="hidden" name="shippingDistrict" value="<%= districtED %>">
+                                
                                 <%if(addressError.length > 0){%><p style="font-size: 14px;color: red;"><%= addressError %></p><%}%>
                                 <p>Địa chỉ</p>
-                                <input form="main-form" type="text" name="shippingAddress">
+                                <input form="main-form" id="myInputAddress" type="text" name="shippingAddress" value="<%= addressED %>" oninput="myAddressFunction()">
+                                <input form="sub-form" id="myInputAddressHidden" type="hidden" name="shippingAddress" value="<%= addressED %>">
                                 <p>Ghi chú (Nếu có)</p>
-                                <input form="main-form" type="text" name="shippingNote">
+                                <input form="main-form" id="myInputNote" type="text" name="shippingNote" value="<%= noteED %>" oninput="myNoteFunction()">
+                                <input form="sub-form" id="myInputNoteHidden" type="hidden" name="shippingNote" value="<%= noteED %>">
                             </div>
                             
                         </div>
@@ -173,7 +183,7 @@
                     <div class="payCash">
                         <span>
                             <label>
-                                <input form="main-form" name="paymentMethod" value="COD" type="radio">
+                                <input form="main-form" name="paymentMethod" value="COD" type="radio" checked>
                                 <img src="/images/GDTT.png" alt="">
                                     Thanh toán tiền mặt khi nhận hàng (COD)
                                 <p>Bạn chỉ phải thanh toán khi nhận được hàng. Nhân viên sẽ liên hệ bạn để xác nhận đơn hàng trong vòng 24h

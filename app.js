@@ -782,6 +782,11 @@ app.get("/checkout/:id", async (req, res) => {
           addressError: req.flash("addressError"),
           mobileError: req.flash("mobileError"),
           methodError: req.flash("methodError"),
+          mobileED: req.flash("mobileED"),
+          nameED: req.flash("nameED"),
+          districtED: req.flash("districtED"),
+          addressED: req.flash("addressED"),
+          noteED: req.flash("noteED"),
         });
       });
   } else {
@@ -792,6 +797,34 @@ app.get("/checkout/:id", async (req, res) => {
 app.post("/add_coupon_checkout", async (req, res) => {
   if (req.session.guest) {
     let check = await Coupon.findOne({ couponCode: req.body.couponCode });
+
+    var name = req.body.shippingName;
+    var district = req.body.shippingDistrict;
+    var address = req.body.shippingAddress;
+    var mobile = req.body.shippingPhone;
+    var note = req.body.shippingNote;
+
+    if (name != "") {
+      let nameED = name;
+      req.flash("nameED", nameED);
+    }
+    if (mobile != "") {
+      let mobileED = mobile;
+      req.flash("mobileED", mobileED);
+    }
+    if (district != "") {
+      let districtED = district;
+      req.flash("districtED", districtED);
+    }
+    if (address != "") {
+      let addressED = address;
+      req.flash("addressED", addressED);
+    }
+    if (note != "") {
+      let noteED = note;
+      req.flash("noteED", noteED);
+    }
+    
     if (check) {
       let uid = req.session.userid;
       let userCheck = await Coupon.findOne({
@@ -854,123 +887,156 @@ app.post("/creat_new_order", async (req, res) => {
   const uid = req.body.user_id_hidden;
   const code = req.body.couponCode;
 
+  let errorForm = 0;
+
   var name = req.body.shippingName;
   var city = req.body.shippingCity;
   var district = req.body.shippingDistrict;
   var address = req.body.shippingAddress;
   var mobile = req.body.shippingPhone;
+  var note = req.body.shippingNote;
   var method = req.body.paymentMethod;
+
+  var vnn_regex =
+    /^[a-zA-Z'-'\sáàảãạăâắằấầặẵẫậéèẻ ẽẹếềểễệóòỏõọôốồổỗộ ơớờởỡợíìỉĩịđùúủũụưứ� �ửữựÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠ ƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼ� ��ỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞ ỠỢỤỨỪỬỮỰỲỴÝỶỸửữựỵ ỷỹ]*$/g;
   var vnf_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
 
   if (name == "") {
     req.flash("nameError", "Bạn chưa điền họ và tên người nhận!");
+    errorForm++;
   }
   if (city == "Chọn thành phố") {
     req.flash("cityError", "Bạn chưa chọn thành phố!");
+    errorForm++;
   }
   if (district == "") {
     req.flash("districtError", "Bạn chưa điền quận!");
+    errorForm++;
   }
   if (address == "") {
     req.flash("addressError", "Bạn chưa điền địa chỉ!");
+    errorForm++;
   }
   if (mobile == "") {
     req.flash("mobileError", "Bạn chưa điền số điện thoại!");
+    errorForm++;
   }
-  if (method != "COD" || method != "BANKING") {
-    req.flash("methodError", "Bạn chưa chọn phương thức thanh toán!");
-  }
-  res.redirect("/checkout/:id");
-  if (
-    name != "" &&
-    city != "Chọn thành phố" &&
-    district != "" &&
-    address != "" &&
-    mobile != "" &&
-    (method == "COD" || method == "BANKING")
-  ) {
+  if (mobile != "") {
     if (vnf_regex.test(mobile) == false) {
       req.flash("mobileError", "Số điện thoại của bạn không đúng định dạng!");
-      res.redirect("/checkout/:id");
+      let mobileED = mobile;
+      req.flash("mobileED", mobileED);
+      errorForm++;
     } else {
-      const data = collect(productId);
-      const total = data.count();
-      if (total == 1) {
-        await Order.insertMany({
-          items: [
-            {
-              quantity: quantity,
-              productID: productId,
-              _id: productId,
-            },
-          ],
-          userID: uid,
-          paymentMethod: method,
-          shippingAddress: address,
-          shippingFee: req.body.shippingFee,
-          shippingName: name,
-          shippingCity: city,
-          shippingDistrict: district,
-          shippingNote: req.body.shippingNote,
-          shippingPhone: mobile,
-          total: req.body.total,
-          couponCode: code,
-          timeIn: moment
-            .tz(Date.now(), "Asia/Ho_Chi_Minh")
-            .format("DD/MM/YYYY hh:mm a"),
-          orderStatus: 0,
-        });
-        await Coupon.updateOne(
-          { couponCode: code },
-          { $inc: { couponQuantity: -1 } }
+      let mobileED = mobile;
+      req.flash("mobileED", mobileED);
+    }
+  }
+  if (name != "") {
+    if (vnn_regex.test(name) == false) {
+      req.flash("nameError", "Họ và tên của bạn không đúng định dạng!");
+      let nameED = name;
+      req.flash("nameED", nameED);
+      errorForm++;
+    } else {
+      let nameED = name;
+      req.flash("nameED", nameED);
+    }
+  }
+
+  if (district != "") {
+    let districtED = district;
+    req.flash("districtED", districtED);
+  }
+  if (address != "") {
+    let addressED = address;
+    req.flash("addressED", addressED);
+  }
+  if (note != "") {
+    let noteED = note;
+    req.flash("noteED", noteED);
+  }
+
+  if (errorForm != 0) {
+    res.redirect("/checkout/:id");
+  } else {
+    const data = collect(productId);
+    const total = data.count();
+    if (total == 1) {
+      await Order.insertMany({
+        items: [
+          {
+            quantity: quantity,
+            productID: productId,
+            _id: productId,
+          },
+        ],
+        userID: uid,
+        paymentMethod: method,
+        shippingAddress: address,
+        shippingFee: req.body.shippingFee,
+        shippingName: name,
+        shippingCity: city,
+        shippingDistrict: district,
+        shippingNote: req.body.shippingNote,
+        shippingPhone: mobile,
+        total: req.body.total,
+        couponCode: code,
+        timeIn: moment
+          .tz(Date.now(), "Asia/Ho_Chi_Minh")
+          .format("DD/MM/YYYY hh:mm a"),
+        orderStatus: 0,
+      });
+      await Coupon.updateOne(
+        { couponCode: code },
+        { $inc: { couponQuantity: -1 } }
+      );
+      await Product.updateOne(
+        { _id: productId },
+        { $inc: { productQuantity: -quantity } }
+      );
+      await Cart.deleteOne({
+        userID: new mongoose.Types.ObjectId(req.session.userid),
+      });
+    } else {
+      let obj = productId.map((id, index_value) => {
+        return {
+          _id: id,
+          productID: id,
+          quantity: quantity[index_value],
+        };
+      });
+      await Order.insertMany({
+        items: obj,
+        userID: uid,
+        paymentMethod: method,
+        shippingAddress: address,
+        shippingFee: req.body.shippingFee,
+        shippingName: name,
+        shippingCity: city,
+        shippingDistrict: district,
+        shippingNote: req.body.shippingNote,
+        shippingPhone: mobile,
+        total: req.body.total,
+        couponCode: code,
+        timeIn: moment
+          .tz(Date.now(), "Asia/Ho_Chi_Minh")
+          .format("DD/MM/YYYY hh:mm a"),
+        orderStatus: 0,
+      });
+      for (let i = 0; i < productId.length; i++) {
+        await Product.updateMany(
+          { _id: productId[i] },
+          { $inc: { productQuantity: -quantity[i] } }
         );
-        await Product.updateOne(
-          { _id: productId },
-          { $inc: { productQuantity: -quantity } }
-        );
-        await Cart.deleteOne({
-          userID: new mongoose.Types.ObjectId(req.session.userid),
-        });
-      } else {
-        let obj = productId.map((id, index_value) => {
-          return {
-            _id: id,
-            productID: id,
-            quantity: quantity[index_value],
-          };
-        });
-        await Order.insertMany({
-          items: obj,
-          userID: uid,
-          paymentMethod: method,
-          shippingAddress: address,
-          shippingFee: req.body.shippingFee,
-          shippingName: name,
-          shippingCity: city,
-          shippingDistrict: district,
-          shippingNote: req.body.shippingNote,
-          shippingPhone: mobile,
-          total: req.body.total,
-          couponCode: code,
-          timeIn: moment
-            .tz(Date.now(), "Asia/Ho_Chi_Minh")
-            .format("DD/MM/YYYY hh:mm a"),
-          orderStatus: 0,
-        });
-        for (let i = 0; i < productId.length; i++) {
-          await Product.updateMany(
-            { _id: productId[i] },
-            { $inc: { productQuantity: -quantity[i] } }
-          );
-        }
-        await Coupon.updateOne(
-          { couponCode: code },
-          { $inc: { couponQuantity: -1 } }
-        );
-        await Cart.deleteOne({
-          userID: new mongoose.Types.ObjectId(req.session.userid),
-        });
       }
+      await Coupon.updateOne(
+        { couponCode: code },
+        { $inc: { couponQuantity: -1 } }
+      );
+      await Cart.deleteOne({
+        userID: new mongoose.Types.ObjectId(req.session.userid),
+      });
     }
     res.redirect("/success");
   }
