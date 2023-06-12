@@ -81,11 +81,7 @@
     document.getElementById("subTotal").value =
     (parseInt(selectedValue) + parseInt(cost) - parseInt(blunt)) - percent*(parseInt(selectedValue) + parseInt(cost) - parseInt(blunt));
     document.getElementById("fee").value = selectedValue;
-    if(name=="Chọn thành phố"){
-      document.getElementById("shippingCity").value = "Hà Nội";
-    }else{
-      document.getElementById("shippingCity").value = name;
-    }
+    document.getElementById("shippingCity").value = name;
   }
 
   function couponFunc(){

@@ -134,13 +134,16 @@
                     <div class="info-detail">
                         <div class="payment-infomation">
                             <div class="payment-form">
+                                <%if(nameError.length > 0){%><p style="font-size: 14px;color: red;"><%= nameError %></p><%}%>
                                 <p>Họ và tên người nhận</p>
                                 <input form="main-form" type="text" name="shippingName">
+                                <%if(mobileError.length > 0){%><p style="font-size: 14px;color: red;"><%= mobileError %></p><%}%>
                                 <p>Số điện thoại người nhận</p>
-                                <input form="main-form" type="text" name="shippingPhone">
+                                <input form="main-form" type="text" name="shippingPhone" id="mobile">
                             </div>
                             <div class="payment-form">
                                 <label >Địa chỉ giao hàng</label>
+                                <%if(cityError.length > 0){%><p style="font-size: 14px;color: red;"><%= cityError %></p><%}%>
                                 <p>Tỉnh thành</p>
                                 <select id="select-state" class="progControlSelect2" onchange="changeFunc();">
                                     <option form="main-form" value="0">Chọn thành phố</option>
@@ -148,9 +151,11 @@
                                     <option form="main-form" value="<%= city[i].price %>"><%= city[i].cityName %></option>
                                     <%}%>
                                 </select>
-                                <input form="main-form" type="hidden" name="shippingCity" id="shippingCity" value="Hà Nội">
+                                <input form="main-form" type="hidden" name="shippingCity" id="shippingCity" value="Chọn thành phố">
+                                <%if(districtError.length > 0){%><p style="font-size: 14px;color: red;"><%= districtError %></p><%}%>
                                 <p>Quận</p>
                                 <input form="main-form" type="text" name="shippingDistrict">
+                                <%if(addressError.length > 0){%><p style="font-size: 14px;color: red;"><%= addressError %></p><%}%>
                                 <p>Địa chỉ</p>
                                 <input form="main-form" type="text" name="shippingAddress">
                                 <p>Ghi chú (Nếu có)</p>
@@ -164,6 +169,7 @@
 
             <div class="payment-method">
                 <h4>Phương thức thanh toán</h4>
+                <%if(methodError.length > 0){%><p style="font-size: 14px;color: red;"><%= methodError %></p><%}%>
                     <div class="payCash">
                         <span>
                             <label>

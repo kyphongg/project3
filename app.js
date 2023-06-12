@@ -776,6 +776,12 @@ app.get("/checkout/:id", async (req, res) => {
           percent: req.flash("percent"),
           code: req.flash("code"),
           type: req.flash("type"),
+          nameError: req.flash("nameError"),
+          cityError: req.flash("cityError"),
+          districtError: req.flash("districtError"),
+          addressError: req.flash("addressError"),
+          mobileError: req.flash("mobileError"),
+          methodError: req.flash("methodError"),
         });
       });
   } else {
@@ -848,85 +854,126 @@ app.post("/creat_new_order", async (req, res) => {
   const uid = req.body.user_id_hidden;
   const code = req.body.couponCode;
 
-  const data = collect(productId);
-  const total = data.count();
-  if (total == 1) {
-    await Order.insertMany({
-      items: [
-        {
-          quantity: quantity,
-          productID: productId,
-          _id: productId,
-        },
-      ],
-      userID: uid,
-      paymentMethod: req.body.paymentMethod,
-      shippingAddress: req.body.shippingAddress,
-      shippingFee: req.body.shippingFee,
-      shippingName: req.body.shippingName,
-      shippingCity: req.body.shippingCity,
-      shippingDistrict: req.body.shippingDistrict,
-      shippingNote: req.body.shippingNote,
-      shippingPhone: req.body.shippingPhone,
-      total: req.body.total,
-      couponCode: code,
-      timeIn: moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .format("DD/MM/YYYY hh:mm a"),
-      orderStatus: 0,
-    });
-    await Coupon.updateOne(
-      { couponCode: code },
-      { $inc: { couponQuantity: -1 } }
-    );
-    await Product.updateOne(
-      { _id: productId },
-      { $inc: { productQuantity: -quantity } }
-    );
-    await Cart.deleteOne({
-      userID: new mongoose.Types.ObjectId(req.session.userid),
-    });
-  } else {
-    let obj = productId.map((id, index_value) => {
-      return {
-        _id: id,
-        productID: id,
-        quantity: quantity[index_value],
-      };
-    });
-    await Order.insertMany({
-      items: obj,
-      userID: uid,
-      paymentMethod: req.body.paymentMethod,
-      shippingAddress: req.body.shippingAddress,
-      shippingFee: req.body.shippingFee,
-      shippingName: req.body.shippingName,
-      shippingCity: req.body.shippingCity,
-      shippingDistrict: req.body.shippingDistrict,
-      shippingNote: req.body.shippingNote,
-      shippingPhone: req.body.shippingPhone,
-      total: req.body.total,
-      couponCode: code,
-      timeIn: moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .format("DD/MM/YYYY hh:mm a"),
-      orderStatus: 0,
-    });
-    for (let i = 0; i < productId.length; i++) {
-      await Product.updateMany(
-        { _id: productId[i] },
-        { $inc: { productQuantity: -quantity[i] } }
-      );
-    }
-    await Coupon.updateOne(
-      { couponCode: code },
-      { $inc: { couponQuantity: -1 } }
-    );
-    await Cart.deleteOne({
-      userID: new mongoose.Types.ObjectId(req.session.userid),
-    });
+  var name = req.body.shippingName;
+  var city = req.body.shippingCity;
+  var district = req.body.shippingDistrict;
+  var address = req.body.shippingAddress;
+  var mobile = req.body.shippingPhone;
+  var method = req.body.paymentMethod;
+  var vnf_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+
+  if (name == "") {
+    req.flash("nameError", "Bạn chưa điền họ và tên người nhận!");
   }
-  res.redirect("/success");
+  if (city == "Chọn thành phố") {
+    req.flash("cityError", "Bạn chưa chọn thành phố!");
+  }
+  if (district == "") {
+    req.flash("districtError", "Bạn chưa điền quận!");
+  }
+  if (address == "") {
+    req.flash("addressError", "Bạn chưa điền địa chỉ!");
+  }
+  if (mobile == "") {
+    req.flash("mobileError", "Bạn chưa điền số điện thoại!");
+  }
+  if (method != "COD" || method != "BANKING") {
+    req.flash("methodError", "Bạn chưa chọn phương thức thanh toán!");
+  }
+  res.redirect("/checkout/:id");
+  if (
+    name != "" &&
+    city != "Chọn thành phố" &&
+    district != "" &&
+    address != "" &&
+    mobile != "" &&
+    (method == "COD" || method == "BANKING")
+  ) {
+    if (vnf_regex.test(mobile) == false) {
+      req.flash("mobileError", "Số điện thoại của bạn không đúng định dạng!");
+      res.redirect("/checkout/:id");
+    } else {
+      const data = collect(productId);
+      const total = data.count();
+      if (total == 1) {
+        await Order.insertMany({
+          items: [
+            {
+              quantity: quantity,
+              productID: productId,
+              _id: productId,
+            },
+          ],
+          userID: uid,
+          paymentMethod: method,
+          shippingAddress: address,
+          shippingFee: req.body.shippingFee,
+          shippingName: name,
+          shippingCity: city,
+          shippingDistrict: district,
+          shippingNote: req.body.shippingNote,
+          shippingPhone: mobile,
+          total: req.body.total,
+          couponCode: code,
+          timeIn: moment
+            .tz(Date.now(), "Asia/Ho_Chi_Minh")
+            .format("DD/MM/YYYY hh:mm a"),
+          orderStatus: 0,
+        });
+        await Coupon.updateOne(
+          { couponCode: code },
+          { $inc: { couponQuantity: -1 } }
+        );
+        await Product.updateOne(
+          { _id: productId },
+          { $inc: { productQuantity: -quantity } }
+        );
+        await Cart.deleteOne({
+          userID: new mongoose.Types.ObjectId(req.session.userid),
+        });
+      } else {
+        let obj = productId.map((id, index_value) => {
+          return {
+            _id: id,
+            productID: id,
+            quantity: quantity[index_value],
+          };
+        });
+        await Order.insertMany({
+          items: obj,
+          userID: uid,
+          paymentMethod: method,
+          shippingAddress: address,
+          shippingFee: req.body.shippingFee,
+          shippingName: name,
+          shippingCity: city,
+          shippingDistrict: district,
+          shippingNote: req.body.shippingNote,
+          shippingPhone: mobile,
+          total: req.body.total,
+          couponCode: code,
+          timeIn: moment
+            .tz(Date.now(), "Asia/Ho_Chi_Minh")
+            .format("DD/MM/YYYY hh:mm a"),
+          orderStatus: 0,
+        });
+        for (let i = 0; i < productId.length; i++) {
+          await Product.updateMany(
+            { _id: productId[i] },
+            { $inc: { productQuantity: -quantity[i] } }
+          );
+        }
+        await Coupon.updateOne(
+          { couponCode: code },
+          { $inc: { couponQuantity: -1 } }
+        );
+        await Cart.deleteOne({
+          userID: new mongoose.Types.ObjectId(req.session.userid),
+        });
+      }
+    }
+    res.redirect("/success");
+  }
 });
 
 app.get("/success", async (req, res) => {
