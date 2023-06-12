@@ -25,6 +25,9 @@
                     <p><b>Hình thức thanh toán:</b> <%= danhsach.paymentMethod %> </p>
                     <p><b>Mã giảm giá:</b> <%= danhsach.couponCode%> </p>
                     <p><b>Ngày đặt:</b> <%= danhsach.timeIn %> </p>
+                    <% if(danhsach.timeOut){ %>
+                        <p><b>Ngày nhận: </b><%= danhsach.timeOut %></p>
+                    <% } %>
                     <p><b>Tình trạng:</b> <% if(danhsach.orderStatus == 0){ %> Đang chờ xác nhận <% }else
                         if(danhsach.orderStatus == 1){ %> Đã xác nhận và đóng gói <% }else if(danhsach.orderStatus ==
                         2){ %> Đang vận chuyển <% }else if(danhsach.orderStatus == 3){ %> Đã nhận hàng <% }else if(danhsach.orderStatus == 4){ %>Đã huỷ<%}%> </p>

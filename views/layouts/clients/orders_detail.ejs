@@ -43,6 +43,9 @@
                             <p><b>Hình thức thanh toán:</b> <%= danhsach.paymentMethod %> </p>
                             <p><b>Mã giảm giá:</b> <%= danhsach.couponCode%> </p>
                             <p><b>Ngày đặt:</b> <%= danhsach.timeIn %> </p>
+                            <% if(danhsach.timeOut){ %>
+                                <p><b>Ngày nhận: </b><%= danhsach.timeOut %></p>
+                            <% } %>
                             <p><b>Tình trạng:</b> <% if(danhsach.orderStatus == 0){ %> Đang chờ xác nhận <% }else
                                 if(danhsach.orderStatus == 1){ %> Đã xác nhận và đóng gói <% }else if(danhsach.orderStatus ==
                                 2){ %> Đang vận chuyển <% }else if(danhsach.orderStatus == 3){ %> Đã nhận hàng <% }else if(danhsach.orderStatus == 4){ %>Đã huỷ<%}%> </p>
@@ -66,8 +69,8 @@
                                 <tbody>
                                     <% danhsach.items.forEach(function(id) { %>
                                     <tr>
-                                        <td><a href="/product/<%= id.productID._id %>"><%= id.productID.productName %></a></td>
-                                        <td><img src="/images/<%= id.productID.productImage %>" style="width:50px; height: 80px;" alt=""></td>
+                                        <td><a href="/product/<%= id.productID._id %>" style="text-decoration: none; color: black;"><%= id.productID.productName %></a></td>
+                                        <td><a href="/product/<%= id.productID._id %>" style="text-decoration: none; color: black;"><img src="/images/<%= id.productID.productImage %>" style="width:50px; height: 80px;" alt=""></a></td>
                                         <td><%= VND.format(id.productID.priceOut) %></td>
                                         <td><%= id.quantity %></td>
                                     </tr>

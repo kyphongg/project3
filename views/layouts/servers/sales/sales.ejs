@@ -41,35 +41,26 @@
                             </tr>
                             </thead>
                                 <tbody>
+                                    <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
-                                    <td>1</td>
-                                    <td>ABCDXYZ</td>
-                                    <td>2023/06/09 09:30</td>
-                                    <td>1.500.000đ</td>
+                                    <td><%= i+1 %></td>
+                                    <td><%= danhsach[i]._id %></td>
+                                    <td><%= danhsach[i].timeOut %></td>
+                                    <td><%= VND.format(danhsach[i].total) %></td>
                                     <td>
-                                        <a href="/sales_detail" class="active" ui-toggle-class="">
+                                        <a href="/sales_detail/<%= danhsach[i]._id %>" class="active" ui-toggle-class="">
                                             <i class="fa-solid fa-eye" style="font-size: 25px; color: #5CB85C;"></i>
                                         </a>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>ABCDXYZ</td>
-                                    <td>2023/06/09 09:20</td>
-                                    <td>2.500.000đ</td>
-                                    <td>
-                                        <a href="/sales_detai" class="active" ui-toggle-class="">
-                                            <i class="fa-solid fa-eye" style="font-size: 25px; color: #5CB85C;"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                <%}%>
                                 </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="sales-price">
                     <b style="margin-right: 35px;">Tổng doanh thu:</b>
-                    <p style="color: #DC3545; font-weight: 500;">4.000.000đ</p>
+                    <p style="color: #DC3545; font-weight: 500;"><%= VND.format(money) %></p>
                 </div>
             </div>
         </section>
@@ -83,7 +74,7 @@
 <script type="text/javascript">
     $(function() {
     
-        var start = moment().subtract(29, 'days');
+        var start = moment();
         var end = moment();
     
         function cb(start, end) {

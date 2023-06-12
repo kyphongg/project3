@@ -964,7 +964,18 @@ app.get("/success", async (req, res) => {
 
 app.post("/get_order/:id", async (req, res) => {
   if (req.session.guest) {
-    await Order.updateOne({ _id: req.params.id }, { orderStatus: 3 });
+    await Order.updateOne(
+      { _id: req.params.id },
+      {
+        $set: {
+          orderStatus: 3,
+          timeOut: moment
+            .tz(Date.now(), "Asia/Ho_Chi_Minh")
+            .format("DD/MM/YYYY hh:mm a"),
+          time: moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY"),
+        },
+      }
+    );
     res.redirect("/orders/:id");
   } else {
     res.redirect("/login");
@@ -980,6 +991,9 @@ app.post("/cancel_order/:id", async (req, res) => {
           orderStatus: 4,
           cancelReason: req.body.cancelReason,
           cancelFrom: "Khách",
+          timeOut: moment
+            .tz(Date.now(), "Asia/Ho_Chi_Minh")
+            .format("DD/MM/YYYY hh:mm a"),
         },
       }
     );
@@ -2701,6 +2715,9 @@ app.post("/admin_cancel_order/:id", async (req, res) => {
             orderStatus: 4,
             cancelReason: req.body.cancelReason,
             cancelFrom: "Admin",
+            timeOut: moment
+              .tz(Date.now(), "Asia/Ho_Chi_Minh")
+              .format("DD/MM/YYYY hh:mm a"),
           },
         }
       );
@@ -2740,14 +2757,24 @@ app.post("/admin_cancel_order/:id", async (req, res) => {
 });
 
 //Trang tổng doanh thu theo ngày
-app.get("/sales", (req, res) => {
+app.get("/sales", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let data = await Order.find({ time: time });
+      let money = 0;
+      for (let i = 0; i < data.length; i++) {
+        money += data[i].total;
+      }
+
       res.render("layouts/servers/sales/sales", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        money,
       });
     } else {
       res.redirect("/admin_home");
@@ -2758,14 +2785,42 @@ app.get("/sales", (req, res) => {
 });
 
 //Trang số lượng bán ra theo ngày
-app.get("/sales_daily", (req, res) => {
+app.get("/sales_daily", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let data = await Order.aggregate([
+        { $match: { time: time } },
+        {
+          $unwind: "$items",
+        },
+        {
+          $unwind: "$items._id",
+        },
+        {
+          $group: {
+            _id: "$items._id",
+            totalCount: {
+              $sum: "$items.quantity",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+      ]);
       res.render("layouts/servers/sales/sales_daily", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
+        danhsach: data,
+        time,
       });
     } else {
       res.redirect("/admin_home");
@@ -2776,15 +2831,50 @@ app.get("/sales_daily", (req, res) => {
 });
 
 //Trang chi tiết danh sách bán hàng
-app.get("/sales_detail", (req, res) => {
+app.get("/sales_detail/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      res.render("layouts/servers/sales/sales_detail", {
-        fullname: req.session.fullname,
-        admin_id: req.session.admin_id,
-        admin_role: req.session.admin_role,
-      });
+      let data = await Order.findOne({ _id: req.params.id }).populate(
+        "items.productID"
+      );
+      let code = data.couponCode;
+      if (code == "Không") {
+        let money = 0;
+        let couponValue = 0;
+        let couponType = 0;
+        data.items.forEach(function (pid) {
+          money += pid.productID.priceOut * pid.quantity;
+        });
+        res.render("layouts/servers/sales/sales_detail", {
+          fullname: req.session.fullname,
+          admin_id: req.session.admin_id,
+          admin_role: req.session.admin_role,
+          danhsach: data,
+          VND,
+          money,
+          couponValue,
+          couponType,
+        });
+      } else if (code != "Không") {
+        let coupon = await Coupon.findOne({ couponCode: code });
+        let couponValue = coupon.couponValue;
+        let couponType = coupon.couponType;
+        let money = 0;
+        data.items.forEach(function (pid) {
+          money += pid.productID.priceOut * pid.quantity;
+        });
+        res.render("layouts/servers/sales/sales_detail", {
+          fullname: req.session.fullname,
+          admin_id: req.session.admin_id,
+          admin_role: req.session.admin_role,
+          danhsach: data,
+          VND,
+          money,
+          couponValue,
+          couponType,
+        });
+      }
     } else {
       res.redirect("/admin_home");
     }

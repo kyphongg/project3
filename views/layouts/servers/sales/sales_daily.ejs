@@ -17,7 +17,7 @@
     <section id="main-content">
         <section class="wrapper">
             <div class="table-agile-info">
-                <h3>Số lượng bán ra theo ngày</h3>
+                <h3>Số lượng bán ra theo ngày <%= time %></h3>
 
                 <div class="panel panel-default">
                     <div class="table-responsive">
@@ -30,21 +30,15 @@
                             </tr>
                             </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>God Of War</td>
-                                    <td>20</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Fifa 23</td>
-                                    <td>15</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Stadew Valley</td>
-                                    <td>2</td>
-                                </tr>
+                                    <% for(let i = 0; i < danhsach.length; i++) {%>
+                                        <% danhsach[i].productList.forEach(function(id) { %>
+                                    <tr>
+                                        <td><%= i+1 %></td>
+                                        <td><%= id.productName %></td>
+                                        <td><%= danhsach[i].totalCount %></td>
+                                    </tr>
+                                    <% }); %>
+                                    <%}%>
                                 </tbody>
                         </table>
                     </div>

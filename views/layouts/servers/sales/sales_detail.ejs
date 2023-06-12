@@ -19,10 +19,11 @@
             <div class="table-agile-info">
                 <h3>Chi tiết </h3>
                 <div class="info-orders">
-                    <p><b>Mã đơn hàng:</b> ABCDXYZ </p>
-                    <p><b>Hình thức thanh toán:</b> Tiền mặt </p>
-                    <p><b>Ngày đặt:</b> 2023/06/09 09:30</p>
-                    <p><b>Tình trạng:</b> Đã xác nhận</p>
+                    <p><b>Mã đơn hàng:</b> <%= danhsach._id %> </p>
+                    <p><b>Hình thức thanh toán:</b> <%= danhsach.paymentMethod %> </p>
+                    <p><b>Ngày đặt:</b> <%= danhsach.timeIn %> </p>
+                    <p><b>Ngày nhận: </b><%= danhsach.timeOut %></p>
+                    <p><b>Tình trạng:</b> Đã nhận hàng</p>
                     
                 </div>
                 <div class="table-responsive" style="margin-top: 15px;">
@@ -35,30 +36,36 @@
                         </tr>
                         </thead>
                         <tbody>
+                            <% danhsach.items.forEach(function(id) { %>
                             <tr>
-                                <td>God of War</td>
-                                <td>1.500.000đ</td>
-                                <td>1</td>
+                                <td><%= id.productID.productName %></td>
+                                <td><%= VND.format(id.productID.priceOut) %></td>
+                                <td><%= id.quantity %></td>
                             </tr>
+                            <% }); %>
                         </tbody>
                     </table>
                     <div class="cart-price">
                         <table>
                             <tr>
                                 <td style="font-weight: bold;">Tổng giá sản phẩm:</td>
-                                <td style="text-align: right;">&nbsp;1.500.000đ</td>
+                                <td style="text-align: right;">&nbsp;<%= VND.format(money) %></td>
                             </tr>                
                             <tr>
                                 <td style="font-weight: bold;">Phí vận chuyển:</td>
-                                <td style="text-align: right;">0đ</td>
+                                <td style="text-align: right;"><%= VND.format(danhsach.shippingFee) %></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;">Giảm giá:</td>
-                                <td style="text-align: right;">0đ</td>
+                                <td style="text-align: right;"><%if(couponType==0){%>
+                                    <%= VND.format(couponValue*1000) %>
+                                    <%}else if(couponType==1){%>
+                                        <%= couponValue %>%
+                                        <%}%></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold;">Tổng thành tiền:</td>
-                                <td style="text-align: right;">&nbsp;1.500.000</td>
+                                <td style="text-align: right;">&nbsp;<%= VND.format(danhsach.total) %></td>
                             </tr>
                         </table>
                     </div>

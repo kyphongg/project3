@@ -67,6 +67,12 @@ var Order = new Schema({
   timeIn: {
     type: String,
   },
+  timeOut: {
+    type: String,
+  },
+  time: {
+    type: String,
+  },
   username: {
     type: Number,
   },
