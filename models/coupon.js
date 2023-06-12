@@ -17,6 +17,10 @@ var Coupon = new Schema({
     couponType:{
         type: Number
     },
+    userID:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    }],
     start_date:{
         type: String
     },

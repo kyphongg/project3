@@ -787,29 +787,50 @@ app.post("/add_coupon_checkout", async (req, res) => {
   if (req.session.guest) {
     let check = await Coupon.findOne({ couponCode: req.body.couponCode });
     if (check) {
-      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
-      let timeStart = check.start_date;
-      let timeEnd = check.end_date;
-      if (time < timeStart) {
-        req.flash("error", "Thêm mã giảm giá không thành công");
-      } else if (time > timeEnd) {
-        req.flash("error", "Thêm mã giảm giá không thành công");
+      let uid = req.session.userid;
+      let userCheck = await Coupon.findOne({
+        $and: [{ couponCode: req.body.couponCode }, { userID: uid }],
+      });
+      if (userCheck) {
+        req.flash(
+          "error",
+          "Mã giảm giá đã được sử dụng trong tài khoản của bạn"
+        );
       } else {
-        if (check.couponQuantity == 0) {
+        let time = moment
+          .tz(Date.now(), "Asia/Ho_Chi_Minh")
+          .format("DD/MM/YYYY");
+        let timeStart = check.start_date;
+        let timeEnd = check.end_date;
+        if (time < timeStart) {
+          req.flash("error", "Thêm mã giảm giá không thành công");
+        } else if (time > timeEnd) {
           req.flash("error", "Thêm mã giảm giá không thành công");
         } else {
-          if (check.couponType == 0) {
-            req.flash("cash", "- " + VND.format(check.couponValue * 1000));
-            req.flash("blunt", check.couponValue * 1000);
-            req.flash("percent", 0);
-            req.flash("code", check.couponCode);
-          } else if (check.couponType == 1) {
-            req.flash("cash", "- " + check.couponValue + "%");
-            req.flash("blunt", 0);
-            req.flash("percent", check.couponValue * 0.01);
-            req.flash("code", check.couponCode);
+          if (check.couponQuantity == 0) {
+            req.flash("error", "Thêm mã giảm giá không thành công");
+          } else {
+            if (check.couponType == 0) {
+              req.flash("cash", "- " + VND.format(check.couponValue * 1000));
+              req.flash("blunt", check.couponValue * 1000);
+              req.flash("percent", 0);
+              req.flash("code", check.couponCode);
+              await Coupon.updateOne(
+                { couponCode: req.body.couponCode },
+                { $addToSet: { userID: uid } }
+              );
+            } else if (check.couponType == 1) {
+              req.flash("cash", "- " + check.couponValue + "%");
+              req.flash("blunt", 0);
+              req.flash("percent", check.couponValue * 0.01);
+              req.flash("code", check.couponCode);
+              await Coupon.updateOne(
+                { couponCode: req.body.couponCode },
+                { $addToSet: { userID: uid } }
+              );
+            }
+            req.flash("success", "Thêm mã giảm giá thành công");
           }
-          req.flash("success", "Thêm mã giảm giá thành công");
         }
       }
     } else {
