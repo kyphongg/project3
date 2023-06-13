@@ -28,21 +28,21 @@
                     <div class="col">
                         <div class="spann" style="display: flex;">
                             <span>Họ và tên </span>
-                            <%if(nameError.length > 0){%><p style="font-size: 14px;color: red; margin: 12.5px 0px 0px 5px;"><%= nameError %></p><%}%>
+                            <%if(nameError.length > 0){%><p style="font-size: 14px; font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= nameError %></p><%}%>
                         </div>
                         <input type="text" name="fullname" class="box" placeholder="Nhập họ tên đầy đủ của bạn" value="<%= nameED %>">
                         
                         <div class="span" style="display: flex;">
                             <span>Số điện thoại </span>
-                            <%if(mobileError.length > 0){%><p style="font-size: 14px;color: red; margin: 12.5px 0px 0px 5px;"><%= mobileError %></p><%}%>
-                            <%if(errorPhone.length > 0){%><p style="font-size: 14px;color: red; margin: 12.5px 0px 0px 5px;"><%= errorPhone %></p><%}%>
+                            <%if(mobileError.length > 0){%><p style="font-size: 14px;font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= mobileError %></p><%}%>
+                            <%if(errorPhone.length > 0){%><p style="font-size: 14px; font-weight:600;color: red; margin: 12.5px 0px 0px 5px;"><%= errorPhone %></p><%}%>
                         </div>
                         <input type="text" name="phone" class="box" placeholder="Nhập số điện thoại của bạn" value="<%= mobileED %>">
                         
                         <div class="span" style="display: flex;">
                             <span>Tên đăng nhập: </span>
-                            <%if(usernameError.length > 0){%><p style="font-size: 14px;color: red; margin: 12.5px 0px 0px 5px;"><%= usernameError %></p><%}%>
-                            <%if(errorUsername.length > 0){%><p style="font-size: 14px;color: red; margin: 12.5px 0px 0px 5px;"><%= errorUsername %></p><%}%>
+                            <%if(usernameError.length > 0){%><p style="font-size: 14px; font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= usernameError %></p><%}%>
+                            <%if(errorUsername.length > 0){%><p style="font-size: 14px; font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= errorUsername %></p><%}%>
                         </div>
                         <input type="text" name="username" class="box" placeholder="Nhập tên đăng nhập của bạn" value="<%= usernameED %>">
                     </div>
@@ -50,14 +50,14 @@
                     <div class="col">
                         <div class="span" style="display: flex;">
                             <span>Email của bạn</span>
-                            <%if(emailError.length > 0){%><p style="font-size: 14px;color: red; margin: 12.5px 0px 0px 5px;"><%= emailError %></p><%}%>
-                            <%if(errorEmail.length > 0){%><p style="font-size: 14px;color: red; margin: 12.5px 0px 0px 5px;"><%= errorEmail %></p><%}%>
+                            <%if(emailError.length > 0){%><p style="font-size: 14px; font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= emailError %></p><%}%>
+                            <%if(errorEmail.length > 0){%><p style="font-size: 14px; font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= errorEmail %></p><%}%>
                         </div>
                         <input type="text" name="email" class="box" placeholder="Nhập email của bạn" value="<%= emailED %>">
                         
                         <div class="span" style="display: flex;">
                             <span>Mật khẩu</span>
-                            <%if(passwordError.length > 0){%><p style="font-size: 14px;color: red; margin: 12.5px 0px 0px 5px;"><%= passwordError %></p><%}%>
+                            <%if(passwordError.length > 0){%><p style="font-size: 14px; font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= passwordError %></p><%}%>
                         </div>
                         <input type="password" name="password" class="box" placeholder="Nhập mật khẩu" value="<%= passwordED %>">
 
@@ -70,7 +70,7 @@
                     <div class="checkbox">
                         <input type="checkbox" name="checkbox" id="remember-me">
                         <label for="remember-me">Đồng ý với Điều khoản dịch vụ của Gaming Shop</label>
-                        <%if(boxError.length > 0){%><p style="font-size: 14px;color: red; margin: 0px 0px 0px 5px;"><%= boxError %></p><%}%>
+                        <%if(boxError.length > 0){%><p style="font-size: 14px;color: red; font-weight:600; margin: 0px 0px 0px 5px;"><%= boxError %></p><%}%>
                     </div>
                     <input type="submit" value="Đăng ký" class="btn">
                 </div>

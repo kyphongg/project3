@@ -17,11 +17,19 @@
             </div>  
             <form action="/login" method="post">
                 <div class="form-login">
-                <span>Email</span>
-                <%if (error.length > 0){ %><%= error %> <%}%>
-                <input type="text" name="email" class="box" placeholder="Email" value="<%= errorEmail %>">
-                <span>Mật khẩu</span>
-                <%if (errorPassword.length > 0){ %><%= errorPassword %> <%}%>
+                    <div class="spann" style="display: flex;">
+                        <span>Email</span>
+                        <%if (error.length > 0){ %>
+                            <p style="font-size: 14px;font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= error %> </p>
+                        <%}%>
+                    </div>
+                    <input type="text" name="email" class="box" placeholder="Email" value="<%= errorEmail %>">
+                    <div class="spann" style="display: flex;">
+                        <span>Mật khẩu</span>
+                        <%if (errorPassword.length > 0){ %>
+                            <p style="font-size: 14px;font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= errorPassword %></p>
+                        <%}%>
+                    </div>
                 <input type="password" name="password" class="box" placeholder="Mật khẩu">
                 <!-- <div class="checkbox">
                     <input type="checkbox" name="" id="remember-me">
