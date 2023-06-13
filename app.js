@@ -11,6 +11,9 @@ const morgan = require("morgan");
 const cors = require("cors");
 const flash = require("connect-flash");
 const collect = require("collect.js");
+const nodemailer = require("nodemailer");
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
 
 app.use(cors());
 app.use(flash());
@@ -33,6 +36,18 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+//Mail
+
+let transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth:{
+    user: "lam3531xyz@gmail.com",
+    pass: "bwlzpnogtfovacqx",
+  },
+});
 
 //Money format
 const VND = new Intl.NumberFormat("vi-VN", {
@@ -65,6 +80,7 @@ const City = require("./models/city.js");
 const Cart = require("./models/cart.js");
 const Order = require("./models/order.js");
 const News = require("./models/news.js");
+const Password = require("./models/password.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -100,6 +116,19 @@ var upload = multer({
 //body-parser
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
+
+//Random
+function makeid(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
 
 //Client
 //Đăng nhập đăng ký tài khoản
@@ -276,6 +305,12 @@ app.post("/save", async function (req, res) {
     });
 
     user.save().then(function () {
+      req.flash("nameED", "");
+      req.flash("mobileED", "");
+      req.flash("emailED", "");
+      req.flash("usernameED", "");
+      req.flash("passwordED", "");
+      req.flash("password2ED", "");
       res.redirect("/");
     });
   }
@@ -327,6 +362,174 @@ app.post("/login", async function (req, res) {
   }
   if (e != 0) {
     res.redirect("/login");
+  }
+});
+
+//Quên mật khẩu
+app.get("/forget", function (req, res){
+  if (req.session.guest) {
+    res.redirect("/");
+  } else {
+    res.render("layouts/clients/forget", {
+      userid: 1,
+      fullname: 1,
+      cart: 0,
+      error: req.flash("error"),
+      errorEmail: req.flash("errorEmail"),
+      timeOut: req.flash("timeOut"),
+      done: req.flash("done"),
+    });
+  }
+});
+
+app.post("/requestPasswordReset",async function (req, res){
+  let errorEmail = req.body.email;
+  let email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  let e = 0;
+  let timeIn = moment
+    .tz(Date.now(), "Asia/Ho_Chi_Minh")
+    .format("DD/MM/YYYY hh:mm a");
+  let timeOut = moment
+    .tz(Date.now()+3600000, "Asia/Ho_Chi_Minh")
+    .format("DD/MM/YYYY hh:mm a");
+  if (errorEmail == "") {
+    req.flash("error", "Vui lòng nhập Email!");
+    e++;
+  } else {
+    if (email_regex.test(errorEmail) == false) {
+      req.flash("error", "Sai định dạng Email");
+      req.flash("errorEmail", errorEmail);
+      e++;
+    } else {
+      const user = await User.findOne({ email: req.body.email });
+      if(user){
+        let resetString = makeid(10);
+        await Password.deleteMany({userID:user._id});
+        await transporter.sendMail({
+          from: "lam3531xyz@gmail.com",
+          to: errorEmail,
+          subject: "Khôi phục mật khẩu tài khoản website GAMING STORE",
+          html: `<p>Nhấn vào <a href=${"http://localhost:3000/changePassword/"+user._id}>đường dẫn này</a> để khôi phục lại mật khẩu</p><p>Đường dẫn sẽ <b>hết hạn trong 60 phút!</b></p><p>Mã thay đổi: ${resetString}</p>`,
+        });
+        const newPasswordReset = new Password({
+          userID: user._id,
+          resetString: resetString,
+          start_date: timeIn,
+          end_date: timeOut,
+        });
+        await newPasswordReset.save();
+        res.redirect("/done");
+      } else {
+        req.flash("error", "Tài khoản không tồn tại");
+        req.flash("errorEmail", errorEmail);
+        e++;
+      }
+    }
+  }
+  if (e != 0) {
+    res.redirect("/forget");
+  } 
+});
+
+app.get("/done", function (req, res){
+  if (req.session.guest) {
+    res.redirect("/");
+  } else {
+    res.render("layouts/clients/done", {
+      userid: 1,
+      fullname: 1,
+      cart: 0,
+    });
+  }
+});
+
+app.get("/changePassword/:id",async function(req, res){
+  if (req.session.guest) {
+    res.redirect("/");
+  } else {
+    let check = await Password.findOne({userID:req.params.id});
+    let timeNow = moment
+    .tz(Date.now(), "Asia/Ho_Chi_Minh")
+    .format("DD/MM/YYYY hh:mm a");
+    let timeOut = check.end_Wdate;
+    let e = 0;
+    if(timeNow>=timeOut){
+      e++;
+      req.flash("timeOut","Đường dẫn đã hết hạn!");
+    } else {
+      res.render("layouts/clients/change", {
+        userid: 1,
+        fullname: 1,
+        cart: 0,
+        danhsach: check,
+        passwordError: req.flash("passwordError"),
+        passwordED: req.flash("passwordED"),
+        codeError: req.flash("codeError"),
+        codeED: req.flash("codeED"),
+      });
+    }
+    if(e!=0){
+      res.redirect("/forget");
+    }
+  }
+});
+
+app.post("/saveNewPassword",async function (req, res){
+  var userid = req.body.userid;
+  var code = req.body.code;
+  var password = req.body.password;
+  var password2 = req.body.password2;
+  var vnp_regex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/gm;
+  let errorForm = 0;
+
+  if (code == "") {
+    req.flash("codeError", "Bạn chưa điền mã xác nhận!");
+    errorForm++;
+  } else {
+    let check = await Password.findOne({resetString:code});
+    if(!check){
+      req.flash("codeError", "Mã xác nhận không đúng!");
+      errorForm++;
+      req.flash("codeED", code);
+    } else {
+      req.flash("codeED", code);
+    }
+  }
+
+  if (password == "") {
+    req.flash("passwordError", "Bạn chưa đặt mật khẩu!");
+    errorForm++;
+  }
+  if (password != "") {
+    if (vnp_regex.test(password) == false) {
+      req.flash(
+        "passwordError",
+        "Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt!"
+      );
+      errorForm++;
+    } else {
+      if (password2 == "") {
+        req.flash("passwordError", "Vui lòng xác thực lại mật khẩu!");
+        req.flash("passwordED", password);
+        errorForm++;
+      } else {
+        if (password != password2) {
+          req.flash("passwordError", "Mật khẩu không trùng khớp");
+          req.flash("passwordED", password);
+          errorForm++;
+        } else {
+          await User.updateOne({_id: userid},{$set: {password: password}});
+          await Password.deleteMany({userID: userid});
+          req.flash("passwordED", "");
+          req.flash("codeED", "");
+          res.redirect("/");
+        }
+      }
+    }
+  }
+  if(errorForm!=0){
+    res.redirect("/changePassword/"+userid);
   }
 });
 

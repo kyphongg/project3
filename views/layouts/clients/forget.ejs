@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quên mật khẩu</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <div class="container">
+        <div class="my-login">
+            <div class="login-heading">
+                <h3 style="text-align: center;">Quên mật khẩu</h3>
+            </div>  
+            <form action="/requestPasswordReset" method="post">
+                <div class="form-login">
+                    <%if (timeOut.length > 0){ %>
+                        <p style="font-size: 14px;font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= timeOut %> </p>
+                    <%}%>
+                    <div class="spann" style="display: flex;">
+                        <span>Email</span>
+                        <%if (error.length > 0){ %>
+                            <p style="font-size: 14px;font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= error %> </p>
+                        <%}%>
+                    </div>
+                    <input type="text" name="email" class="box" placeholder="Email" value="<%= errorEmail %>">
+                    <input type="submit" value="Khôi phục mật khẩu" class="btn">
+                </div>
+            </form>
+        </div>
+    </div>
+    
+     <%- include('partials/footer') %>
+</body>
+</html>
