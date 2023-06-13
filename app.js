@@ -1035,7 +1035,7 @@ app.post("/add_to_cart", async (req, res) => {
         );
       }
     }
-    res.redirect("/cart/:id");
+    res.redirect("/cart/"+uid);
   } else {
     var cartData = Cart({
       _id: uid,
@@ -1049,7 +1049,7 @@ app.post("/add_to_cart", async (req, res) => {
       userID: uid,
     });
     cartData.save().then(function () {
-      res.redirect("/cart/:id");
+      res.redirect("/cart/"+uid);
     });
   }
 });
@@ -1103,7 +1103,7 @@ app.post("/update_quantity_cart", async (req, res) => {
       }
     });
   }
-  res.redirect("/cart/:id");
+  res.redirect("/cart/"+uid);
 });
 
 app.get("/delete_cart_items/:id", async function (req, res) {
@@ -1133,7 +1133,7 @@ app.get("/delete_cart_items/:id", async function (req, res) {
         await Cart.deleteOne({
           userID: new mongoose.Types.ObjectId(req.session.userid),
         }).then(function () {
-          res.redirect("/cart/:id");
+          res.redirect("/cart/"+uid);
         });
       } else {
         await Cart.updateOne(
@@ -1144,7 +1144,7 @@ app.get("/delete_cart_items/:id", async function (req, res) {
           { $pull: { items: { _id: productId } } },
           { multi: true }
         ).then(function () {
-          res.redirect("/cart/:id");
+          res.redirect("/cart/"+uid);
         });
       }
     });
@@ -1209,6 +1209,7 @@ app.get("/checkout/:id", async (req, res) => {
 
 app.post("/add_coupon_checkout", async (req, res) => {
   if (req.session.guest) {
+    let uid = req.session.userid;
     let check = await Coupon.findOne({ couponCode: req.body.couponCode });
 
     var name = req.body.shippingName;
@@ -1288,7 +1289,7 @@ app.post("/add_coupon_checkout", async (req, res) => {
     } else {
       req.flash("error", "Thêm mã giảm giá không thành công");
     }
-    res.redirect("/checkout/:id");
+    res.redirect("/checkout/"+uid);
   } else {
     res.redirect("/login");
   }
@@ -1371,7 +1372,7 @@ app.post("/creat_new_order", async (req, res) => {
   }
 
   if (errorForm != 0) {
-    res.redirect("/checkout/:id");
+    res.redirect("/checkout/"+uid);
   } else {
     const data = collect(productId);
     const total = data.count();
@@ -1490,6 +1491,7 @@ app.get("/success", async (req, res) => {
 
 app.post("/get_order/:id", async (req, res) => {
   if (req.session.guest) {
+    let uid = req.session.userid;
     await Order.updateOne(
       { _id: req.params.id },
       {
@@ -1502,7 +1504,7 @@ app.post("/get_order/:id", async (req, res) => {
         },
       }
     );
-    res.redirect("/orders/:id");
+    res.redirect("/orders/"+uid);
   } else {
     res.redirect("/login");
   }
@@ -1510,6 +1512,7 @@ app.post("/get_order/:id", async (req, res) => {
 
 app.post("/cancel_order/:id", async (req, res) => {
   if (req.session.guest) {
+    let uid = req.session.userid;
     await Order.updateOne(
       { _id: req.params.id },
       {
@@ -1549,7 +1552,7 @@ app.post("/cancel_order/:id", async (req, res) => {
         );
       }
     }
-    res.redirect("/orders/:id");
+    res.redirect("/orders/"+uid);
   } else {
     res.redirect("/login");
   }
