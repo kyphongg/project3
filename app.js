@@ -534,6 +534,24 @@ app.post("/saveNewPassword",async function (req, res){
   }
 });
 
+app.get("/success-changepwd", (req, res) => {
+  if (req.session.guest) {
+    res.render("layouts/clients/success_changepwd", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      cart: req.session.cart,
+    });
+  } else {
+    res.render("layouts/clients/success_changepwd", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      cart: 0,
+    });
+  }
+});
+
 //Đăng xuất
 app.get("/logout", function (req, res) {
   req.session.destroy();
