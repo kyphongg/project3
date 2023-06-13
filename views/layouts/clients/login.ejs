@@ -14,26 +14,21 @@
         <div class="my-login">
             <div class="login-heading">
                 <h3 style="text-align: center;">Đăng nhập</h3>
-            </div>
-
-            <%if(error.length > 0){%>
-                <div class="noti">
-                    <%= error %>
-                </div>
-                    <%}%>
-                    
+            </div>  
             <form action="/login" method="post">
                 <div class="form-login">
-                <span>Tên đăng nhập</span>
+                <span>Email</span>
+                <%if (error.length > 0){ %><%= error %> <%}%>
                 <input type="text" name="email" class="box" placeholder="Email" value="<%= errorEmail %>">
                 <span>Mật khẩu</span>
-                <input type="password" name="password" class="box" placeholder="Mật khẩu" >
-                <div class="checkbox">
+                <%if (errorPassword.length > 0){ %><%= errorPassword %> <%}%>
+                <input type="password" name="password" class="box" placeholder="Mật khẩu">
+                <!-- <div class="checkbox">
                     <input type="checkbox" name="" id="remember-me">
                     <label for="remember-me">Ghi nhớ tài khoản</label>
-                </div>
+                </div> -->
                 <input type="submit" value="Đăng nhập" class="btn">
-                <p>Quên mật khẩu ? <a href="#">Ấn tại đây</a></p>
+                <!-- <p>Quên mật khẩu ? <a href="#">Ấn tại đây</a></p> -->
                 <p>Bạn chưa có tài khoản ? <a href="/signup">Tạo tài khoản</a></p>
                 </div>
             </form>
