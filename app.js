@@ -117,7 +117,7 @@ var upload = multer({
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//Random
+//Random code 
 function makeid(length) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -409,7 +409,7 @@ app.post("/requestPasswordReset",async function (req, res){
           from: "lam3531xyz@gmail.com",
           to: errorEmail,
           subject: "Khôi phục mật khẩu tài khoản website GAMING STORE",
-          html: `<p>Nhấn vào <a href=${"http://localhost:3000/changePassword/"+user._id}>đường dẫn này</a> để khôi phục lại mật khẩu</p><p>Đường dẫn sẽ <b>hết hạn trong 60 phút!</b></p><p>Mã thay đổi: ${resetString}</p>`,
+          html: `<p>Nhấn vào <a href=${"http://localhost:3000/changePassword/"+user._id}>đường dẫn này</a> để khôi phục lại mật khẩu.</p><p>Đường dẫn sẽ <b>hết hạn trong 60 phút!</b></p><p>Mã thay đổi: ${resetString}</p>`,
         });
         const newPasswordReset = new Password({
           userID: user._id,
@@ -464,6 +464,7 @@ app.get("/changePassword/:id",async function(req, res){
         danhsach: check,
         passwordError: req.flash("passwordError"),
         passwordED: req.flash("passwordED"),
+        password2ED: req.flash("password2ED"),
         codeError: req.flash("codeError"),
         codeED: req.flash("codeED"),
       });
@@ -815,10 +816,73 @@ app.get("/password/:id", (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      passwordError: req.flash("passwordError"),
+      password1Error: req.flash("password1Error"),
+      passwordED: req.flash("passwordED"),
+      password1ED: req.flash("password1ED"),
     });
   } else {
     res.redirect("/login");
   }
+});
+
+app.post("/changePasswordNew",async (req, res) => {
+  var userid = req.body.userid;
+  var password1 = req.body.password1;
+  var password = req.body.password;
+  var password2 = req.body.password2;
+  var vnp_regex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/gm;
+  let errorForm = 0;
+
+  if (password1 == "") {
+    req.flash("password1Error", "Bạn cần nhập mật khẩu cũ!");
+    errorForm++;
+  }
+  if(password1!=""){
+    let check = await User.findOne({_id:userid});
+    let pcheck = check.password;
+    if(password1 != pcheck){
+      req.flash("password1Error", "Mật khẩu cũ sai!");
+      errorForm++;
+    } else{
+      req.flash("password1ED", password1);
+    }
+  }
+  if (password == "") {
+    req.flash("passwordError", "Bạn chưa đặt mật khẩu!");
+    errorForm++;
+  }
+  if (password != "") {
+    if (vnp_regex.test(password) == false) {
+      req.flash(
+        "passwordError",
+        "Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt!"
+      );
+      errorForm++;
+    } else {
+      if (password2 == "") {
+        req.flash("passwordError", "Vui lòng xác thực lại mật khẩu!");
+        req.flash("passwordED", password);
+        errorForm++;
+      } else {
+        if (password != password2) {
+          req.flash("passwordError", "Mật khẩu không trùng khớp");
+          req.flash("passwordED", password);
+          errorForm++;
+        } else {
+          await User.updateOne({_id: userid},{$set: {password: password}});
+          req.flash("passwordED", "");
+          req.session.destroy();
+          res.redirect("/");
+        }
+      }
+    }
+  }
+  if(errorForm!=0){
+    res.redirect("/password/"+userid);
+  }
+
 });
 
 //Trang chi tiết lịch sử đơn hàng

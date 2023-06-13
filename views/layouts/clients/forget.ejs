@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quên mật khẩu</title>
+    <title>Khôi phục mật khẩu</title>
     <%- include('partials/head') %>
 </head>
 <body>
@@ -13,7 +13,7 @@
     <div class="container">
         <div class="my-login">
             <div class="login-heading">
-                <h3 style="text-align: center;">Quên mật khẩu</h3>
+                <h3 style="text-align: center;">Khôi phục mật khẩu</h3>
             </div>  
             <form action="/requestPasswordReset" method="post">
                 <div class="form-login">
@@ -21,6 +21,7 @@
                         <p style="font-size: 14px;font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= timeOut %> </p>
                     <%}%>
                     <div class="spann" style="display: flex;">
+                        <p>Nhập Email của tài khoản đã đăng ký để nhận mã khôi phục mật khẩu</p>
                         <span>Email</span>
                         <%if (error.length > 0){ %>
                             <p style="font-size: 14px;font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= error %> </p>
