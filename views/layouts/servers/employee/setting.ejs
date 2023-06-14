@@ -18,20 +18,24 @@
         <section class="wrapper">
             <div class="table-agile-info">
                 <h3>Thay đổi mật khẩu</h3>
+                <form action="/adminSaveNewPw" method="post">
                 <div class="security-input">
-                    <input class="password_field" id="password" type="password" required>
+                    <%if(password1Error.length > 0){%><p style="font-size: 14px; font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= password1Error %></p><%}%>
+                    <input class="password_field" id="password" type="password" name="password1" value="<%= password1ED %>">
                     <label for="password" class="password_label">Nhập mật khẩu cũ</label>
                 </div>
                 <div class="security-input">
-                    <input class="password_field" id="password" type="password" required>
+                    <%if(passwordError.length > 0){%><p style="font-size: 14px; font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= passwordError %></p><%}%>
+                    <input class="password_field" id="password" type="password" name="password" value="<%= passwordED %>">
                     <label for="password" class="password_label">Nhập mật khẩu mới</label>
                 </div>
                 <div class="security-input">
-                    <input class="password_field" id="password" type="password" required>
+                    <input class="password_field" id="password" type="password" name="password2">
                     <label for="password" class="password_label">Nhập lại mật khẩu mới</label>
                 </div>
                 <div></div>
-                <button class="passwordbtn-update">Cập nhật</button>
+                <button type="submit" class="passwordbtn-update">Cập nhật</button>
+                </form>
             </div>
         </section>
     </section>

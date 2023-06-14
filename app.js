@@ -524,7 +524,7 @@ app.post("/saveNewPassword",async function (req, res){
           await Password.deleteMany({userID: userid});
           req.flash("passwordED", "");
           req.flash("codeED", "");
-          res.redirect("/");
+          res.redirect("/success-changepwd");
         }
       }
     }
@@ -536,11 +536,12 @@ app.post("/saveNewPassword",async function (req, res){
 
 app.get("/success-changepwd", (req, res) => {
   if (req.session.guest) {
+    req.session.destroy();
     res.render("layouts/clients/success_changepwd", {
-      fullname: req.session.fullname,
-      userid: req.session.userid,
+      fullname: 1,
+      userid: 1,
       sID: req.session.sessionID,
-      cart: req.session.cart,
+      cart: 0,
     });
   } else {
     res.render("layouts/clients/success_changepwd", {
@@ -892,7 +893,7 @@ app.post("/changePasswordNew",async (req, res) => {
           await User.updateOne({_id: userid},{$set: {password: password}});
           req.flash("passwordED", "");
           req.session.destroy();
-          res.redirect("/");
+          res.redirect("/success-changepwd");
         }
       }
     }
@@ -2362,6 +2363,11 @@ app.get("/category/645c5a67cf52334165588928", (req, res) => {
 });
 
 //Servers
+//Test
+app.get("/test", (req, res) => {
+  res.render("layouts/servers/chart", {
+  });
+});
 //Trang đăng nhập
 app.get("/admin_login", (req, res) => {
   res.render("layouts/servers/login", {
@@ -2920,6 +2926,10 @@ app.get("/admin_setting/:id", async (req, res) => {
       admin_id: req.session.admin_id,
       nhanvat: data,
       admin_role: req.session.admin_role,
+      passwordError: req.flash("passwordError"),
+      password1Error: req.flash("password1Error"),
+      passwordED: req.flash("passwordED"),
+      password1ED: req.flash("password1ED"),
     });
   } else {
     res.redirect("/admin_login");
@@ -3162,6 +3172,65 @@ app.get("/employees_customer_care", async (req, res) => {
   } else {
     res.redirect("/admin_login");
   }
+});
+
+app.post("/adminSaveNewPw", async (req, res) => {
+  var adminid = req.session.admin_id;
+  var password1 = req.body.password1;
+  var password = req.body.password;
+  var password2 = req.body.password2;
+  var vnp_regex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/gm;
+  let errorForm = 0;
+
+  if (password1 == "") {
+    req.flash("password1Error", "Bạn cần nhập mật khẩu cũ!");
+    errorForm++;
+  }
+  if(password1!=""){
+    let check = await Admin.findOne({_id:adminid});
+    let pcheck = check.password;
+    if(password1 != pcheck){
+      req.flash("password1Error", "Mật khẩu cũ sai!");
+      errorForm++;
+    } else{
+      req.flash("password1ED", password1);
+    }
+  }
+  if (password == "") {
+    req.flash("passwordError", "Bạn chưa đặt mật khẩu!");
+    errorForm++;
+  }
+  if (password != "") {
+    if (vnp_regex.test(password) == false) {
+      req.flash(
+        "passwordError",
+        "Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt!"
+      );
+      errorForm++;
+    } else {
+      if (password2 == "") {
+        req.flash("passwordError", "Vui lòng xác thực lại mật khẩu!");
+        req.flash("passwordED", password);
+        errorForm++;
+      } else {
+        if (password != password2) {
+          req.flash("passwordError", "Mật khẩu không trùng khớp");
+          req.flash("passwordED", password);
+          errorForm++;
+        } else {
+          await Admin.updateOne({_id: adminid},{$set: {password: password}});
+          req.flash("passwordED", "");
+          req.session.destroy();
+          res.redirect("/admin_login");
+        }
+      }
+    }
+  }
+  if(errorForm!=0){
+    res.redirect("/admin_setting/"+adminid);
+  }
+
 });
 
 //Trang quản lý đơn hàng
