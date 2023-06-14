@@ -3480,12 +3480,26 @@ app.get("/sales", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
       let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let dateStart = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("YYYY-MM-DD");
+      let dateStart1 = moment.tz(Date.now(), "Asia/Ho_Chi_Minh");
+      let dateEnd = moment(dateStart1).add(6, 'd').format("YYYY-MM-DD");
       let data = await Order.find({ time: time });
       let money = 0;
+      var startOfWeek = moment.tz(Date.now(), "Asia/Ho_Chi_Minh");
+      var endOfWeek = moment(startOfWeek).add(6, 'd');
+      var middleOfWeek = moment(startOfWeek).add(3, 'd').format("YYYY-MM-DD");
+
+      var days = [];
+      var day = startOfWeek;
+
+      while (day <= endOfWeek) {
+        days.push(day.format("YYYY-MM-DD"));
+        day = day.clone().add(1, 'd');
+      }
+      console.log(days);
       for (let i = 0; i < data.length; i++) {
         money += data[i].total;
       }
-
       res.render("layouts/servers/sales/sales", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
@@ -3493,6 +3507,11 @@ app.get("/sales", async (req, res) => {
         danhsach: data,
         VND,
         money,
+        time,
+        dateStart,
+        dateEnd,
+        days,
+        middleOfWeek,
       });
     } else {
       res.redirect("/admin_home");
