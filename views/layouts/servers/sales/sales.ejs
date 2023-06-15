@@ -30,9 +30,9 @@
             Danh sách bán hàng ngày từ <%= timeMonday %> đến <%= timeSunday %>
           </h3>
 
-          <a href="/sales_daily">
+          <!-- <a href="/sales_daily">
             <button class="btn btn-primary">Sản phẩm bán ra</button>
-          </a>
+          </a> -->
           <input type="hidden" id="value1" value="<%= money1 %>" />
           <input type="hidden" id="value2" value="<%= money2 %>" />
           <input type="hidden" id="value3" value="<%= money3 %>" />
@@ -70,7 +70,7 @@
             </div>
           </div>
 
-          <div class="panel panel-default">
+          <!-- <div class="panel panel-default">
             <div class="table-responsive">
               <table
                 id="myTable"
@@ -117,12 +117,11 @@
               <%= VND.format(moneyNow) %>
             </p>
           </div>
-        </div>
+        </div> -->
       </section>
     </section>
     <script>
       var startOfWeek = moment(Date.now()).day(1);
-      console.log(startOfWeek);
       var endOfWeek = moment(startOfWeek).add(6, "d");
 
       var dates = [];
