@@ -67,57 +67,16 @@
               <button class="btn btn-primary" onclick="resetDate()">
                 Reset
               </button>
+              <a href="/monday"><button class="btn btn-primary">Thứ 2</button></a>
+              <a href="/tuesday"><button class="btn btn-primary">Thứ 3</button></a>
+              <a href="/wednesday"><button class="btn btn-primary">Thứ 4</button></a>
+              <a href="/thursday"><button class="btn btn-primary">Thứ 5</button></a>
+              <a href="/friday"><button class="btn btn-primary">Thứ 6</button></a>
+              <a href="/saturday"><button class="btn btn-primary">Thứ 7</button></a>
+              <a href="/sunday"><button class="btn btn-primary">Chủ nhật</button></a>
             </div>
           </div>
-
-          <!-- <div class="panel panel-default">
-            <div class="table-responsive">
-              <table
-                id="myTable"
-                class="table table-striped table-bordered"
-                style="text-align: center"
-              >
-                <thead>
-                  <tr>
-                    <th style="width: 50px; text-align: center">STT</th>
-                    <th style="text-align: center">Mã đơn hàng</th>
-                    <th style="text-align: center; width: 180px">Thời gian</th>
-                    <th style="text-align: center">Tổng tiền</th>
-                    <th style="text-align: center">Tùy biến</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for(let i=0; i < danhsach.length; i++) { %>
-                  <tr>
-                    <td><%= i+1 %></td>
-                    <td><%= danhsach[i]._id %></td>
-                    <td><%= danhsach[i].timeOut %></td>
-                    <td><%= VND.format(danhsach[i].total) %></td>
-                    <td>
-                      <a
-                        href="/sales_detail/<%= danhsach[i]._id %>"
-                        class="active"
-                        ui-toggle-class=""
-                      >
-                        <i
-                          class="fa-solid fa-eye"
-                          style="font-size: 25px; color: #5cb85c"
-                        ></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <%}%>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="sales-price">
-            <b style="margin-right: 35px">Tổng doanh thu:</b>
-            <p style="color: #dc3545; font-weight: 500">
-              <%= VND.format(moneyNow) %>
-            </p>
-          </div>
-        </div> -->
+        </div>
       </section>
     </section>
     <script>

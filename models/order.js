@@ -73,6 +73,9 @@ var Order = new Schema({
   time: {
     type: String,
   },
+  day: {
+    type: Number,
+  },
   username: {
     type: Number,
   },

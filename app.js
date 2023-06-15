@@ -1528,6 +1528,7 @@ app.post("/get_order/:id", async (req, res) => {
             .tz(Date.now(), "Asia/Ho_Chi_Minh")
             .format("DD/MM/YYYY hh:mm a"),
           time: moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY"),
+          number: moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(),
         },
       }
     );
@@ -3426,6 +3427,7 @@ app.post("/update_status_1/:id", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
       await Order.updateOne({ _id: req.params.id }, { orderStatus: 2 });
+      const order = await Order.find({ orderStatus: 2 }).count();
       res.redirect("/all_orders");
     } else {
       res.redirect("/admin_home");
@@ -3711,6 +3713,196 @@ app.get("/sales_detail/:id", async (req, res) => {
       }
     } else {
       res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Theo từng ngày trong tuần
+app.get("/monday", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(1).format("DD/MM/YYYY");
+      let data = await Order.find({ time: time });
+      let money = 0;
+      for (let i = 0; i < data.length; i++) {
+        money += data[i].total;
+      }
+      res.render("layouts/servers/sales/monday", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        time,
+        money,
+      });
+    } else {
+    res.redirect("/admin_login");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/tuesday", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(2).format("DD/MM/YYYY");
+      let data = await Order.find({ time: time });
+      let money = 0;
+      for (let i = 0; i < data.length; i++) {
+        money += data[i].total;
+      }
+      res.render("layouts/servers/sales/tuesday", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        time,
+        money,
+      });
+    } else {
+    res.redirect("/admin_login");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/wednesday", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(3).format("DD/MM/YYYY");
+      let data = await Order.find({ time: time });
+      let money = 0;
+      for (let i = 0; i < data.length; i++) {
+        money += data[i].total;
+      }
+      res.render("layouts/servers/sales/wednesday", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        time,
+        money,
+      });
+    } else {
+    res.redirect("/admin_login");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/thursday", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(4).format("DD/MM/YYYY");
+      let data = await Order.find({ time: time });
+      let money = 0;
+      for (let i = 0; i < data.length; i++) {
+        money += data[i].total;
+      }
+      res.render("layouts/servers/sales/thursday", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        time,
+        money,
+      });
+    } else {
+    res.redirect("/admin_login");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/friday", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(5).format("DD/MM/YYYY");
+      let data = await Order.find({ time: time });
+      let money = 0;
+      for (let i = 0; i < data.length; i++) {
+        money += data[i].total;
+      }
+      res.render("layouts/servers/sales/friday", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        time,
+        money,
+      });
+    } else {
+    res.redirect("/admin_login");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/saturday", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(6).format("DD/MM/YYYY");
+      let data = await Order.find({ time: time });
+      let money = 0;
+      for (let i = 0; i < data.length; i++) {
+        money += data[i].total;
+      }
+      res.render("layouts/servers/sales/saturday", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        time,
+        money,
+      });
+    } else {
+    res.redirect("/admin_login");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/sunday", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(8).format("DD/MM/YYYY");
+      let data = await Order.find({ time: time });
+      let money = 0;
+      for (let i = 0; i < data.length; i++) {
+        money += data[i].total;
+      }
+      res.render("layouts/servers/sales/sunday", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        time,
+        money,
+      });
+    } else {
+    res.redirect("/admin_login");
     }
   } else {
     res.redirect("/admin_login");
