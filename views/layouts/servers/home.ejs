@@ -7,6 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Thống kê</title>
     <%- include('partials/head') %>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
 </head>
 <body>
     <!--sidebar start-->
@@ -94,103 +101,165 @@
                 <div class="graphBox">
                     <div class="box">
                         <h3 style="text-align: center;">Sản phẩm bán chạy nhất</h3>
-                        <canvas id="myChart" style="margin-top: 15px;"></canvas>
+                        <canvas id="CircleChart" style="margin-top: 15px;"></canvas>
                     </div>
                     <div class="box">
-                        <div id="reportrange">
-                            <i class="fa fa-calendar"></i>&nbsp;
-                            <span></span> <i class="fa fa-caret-down"></i>
-                        </div>        
-                        <h3 style="text-align: center;">Biểu đồ doanh thu</h3>
-                        <canvas id="earning"></canvas>
+                        <h3 style="text-align: center;">Danh sách bán hàng ngày từ <%= timeMonday %> đến <%= timeSunday %></h3>
+                        <input type="hidden" id="value1" value="<%= money1 %>" />
+                        <input type="hidden" id="value2" value="<%= money2 %>" />
+                        <input type="hidden" id="value3" value="<%= money3 %>" />
+                        <input type="hidden" id="value4" value="<%= money4 %>" />
+                        <input type="hidden" id="value5" value="<%= money5 %>" />
+                        <input type="hidden" id="value6" value="<%= money6 %>" />
+                        <input type="hidden" id="value7" value="<%= money7 %>" />
+                        <canvas id="myChart" style="margin-top: 15px;"></canvas>
+                        Bắt đầu:
+                        <input type="date"name=""id="start"min="<%= dateStart %>"max="<%= dateNow %>"value="<%= dateStart %>"/>
+                        Kết thúc:
+                        <input type="date"name=""id="end"min="<%= dateStart %>"max="<%= dateNow %>"value="<%= dateNow %>"/>
+                        <button class="btn btn-primary" onclick="filterDate()">Filter</button>
+                        <button class="btn btn-primary" onclick="resetDate()">Reset</button>
                     </div>
                 </div>
                 <%}%>
             </div>
         </section>
     </section>
+    <!-- Biểu đồ cột -->
+    <script>
+        var startOfWeek = moment(Date.now()).day(1);
+        var endOfWeek = moment(startOfWeek).add(6, "d");
+    
+        var dates = [];
+        var day = startOfWeek;
+    
+        while (day <= endOfWeek) {
+          dates.push(day.format("YYYY-MM-DD"));
+          day = day.clone().add(1, "d");
+        }
+        // setup
+        //new Date("2023-06-14 00:00:00 GMT+07")
+        const convert = dates.map((date) => new Date(date).setHours(0, 0, 0, 0));
+    
+        const value1 = document.getElementById("value1").value;
+        const value2 = document.getElementById("value2").value;
+        const value3 = document.getElementById("value3").value;
+        const value4 = document.getElementById("value4").value;
+        const value5 = document.getElementById("value5").value;
+        const value6 = document.getElementById("value6").value;
+        const value7 = document.getElementById("value7").value;
+    
+        const datapoints = [
+          value1,
+          value2,
+          value3,
+          value4,
+          value5,
+          value6,
+          value7,
+        ];
+    
+        const data = {
+          labels: dates,
+          datasets: [
+            {
+              label: ["Doanh thu"],
+              data: [value1, value2, value3, value4, value5, value6, value7],
+              backgroundColor: [
+                "rgba(255, 26, 104, 0.2)",
+                "rgba(54, 162, 235, 0.6)",
+                "rgba(255, 206, 86, 0.6)",
+                "rgba(75, 192, 192, 0.6)",
+                "rgba(153, 102, 255, 0.6)",
+                "rgba(255, 159, 64, 0.6)",
+                "rgba(255, 99, 132, 0.6)",
+              ],
+              borderColor: ["rgba(255, 26, 104, 1)"],
+              borderWidth: 1,
+            },
+          ],
+        };
+    
+        // config
+        const config = {
+          type: "bar",
+          data,
+          options: {
+            scales: {
+              x: {
+                type: "time",
+                time: {
+                  unit: "day",
+                },
+              },
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        };
+    
+        // render init block
+        const myChart = new Chart(document.getElementById("myChart"), config);
+        function filterDate() {
+          const start1 = new Date(document.getElementById("start").value);
+          const start = start1.setHours(0, 0, 0, 0);
+          const end1 = new Date(document.getElementById("end").value);
+          const end = end1.setHours(0, 0, 0, 0);
+    
+          const filterDates = convert.filter(
+            (date) => date >= start && date <= end
+          );
+          const startArray = convert.indexOf(filterDates[0]);
+          const endArray = convert.indexOf(filterDates[filterDates.length - 1]);
+    
+          const copyDatapoints = [...datapoints];
+          copyDatapoints.splice(endArray + 1, filterDates.length);
+          copyDatapoints.splice(0, startArray);
+    
+          myChart.config.data.datasets[0].data = copyDatapoints;
+          myChart.config.data.labels = filterDates;
+          myChart.update();
+        }
+    
+        function resetDate() {
+          myChart.config.data.labels = convert;
+          myChart.config.data.datasets[0].data = datapoints;
+          myChart.update();
+        }
+    
+        // Instantly assign Chart.js version
+        const chartVersion = document.getElementById("chartVersion");
+        chartVersion.innerText = Chart.version;
+    </script>
+    <script type="text/javascript">
+        $(function() {
+            const ctx = document.getElementById('CircleChart');
+                new Chart(ctx, {
+                     type: 'doughnut',
+                     data: {
+                         labels: ['Mô Phỏng', 'Phiêu Lưu', 'Hành Động', 'Nhập Vai', 'Chiến Thuật', 'Thể thao'],
+                         datasets: [{
+                             label: 'Số lượng bán ra',
+                             data: [10, 25, 100, 45, 12, 3],
+                             borderWidth: 1
+                         }]
+                     },
+                     options: {
+                         responsive: true,
+                     }
+                 });
+        });
+    </script>
     <!--main content end-->
     <%- include('partials/footer') %>
 </body>
 
 
 <!-- Filter date -->
-<script type="text/javascript">
-    $(function() {
-    
-        var start = moment();
-        var end = moment();
-    
-        function cb(start, end) {
-            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-        }
-    
-        $('#reportrange').daterangepicker({
-            startDate: start,
-            endDate: end,
-            ranges: {
-               'Today': [moment(), moment()],
-               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-               'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-               'This Month': [moment().startOf('month'), moment().endOf('month')],
-               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            }
-        }, cb);
-    
-        cb(start, end);
-    
-    });
-</script>
 
 <!-- Biểu đồ -->
 
-<script type="text/javascript">
-    $(function() {
-        const ctx = document.getElementById('myChart');
-        const earning = document.getElementById('earning');
-            new Chart(ctx, {
-                 type: 'doughnut',
-                 data: {
-                     labels: ['Mô Phỏng', 'Phiêu Lưu', 'Hành Động', 'Nhập Vai', 'Chiến Thuật', 'Thể thao'],
-                     datasets: [{
-                         label: 'Số lượng bán ra',
-                         data: [10, 25, 100, 45, 12, 3],
-                         borderWidth: 1
-                     }]
-                 },
-                 options: {
-                     responsive: true,
-                 }
-             });
-
-             new Chart(earning, {
-                type: 'bar',
-                data: {
-                    labels: ['Tổng doanh thu'],
-                    datasets: [{
-                        label: 'Tổng doanh thu theo ngày',
-                        data: [150000],
-                        backgroundColor: [
-                            'rgba(255,99,132,1)',
-                        ],
-                        borderWidth: 1
-                    },
-                        {
-                            label: 'Tổng doanh thu theo năm',
-                            data: [5550000],
-                            backgroundColor: [
-                                'rgba(54,162,235,1)',
-                            ],
-                            borderWidth: 1
-                        }]
-                },
-                options: {
-                    responsive: true,
-                }
-            });
-        });
-</script>
 
 </html>
 

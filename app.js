@@ -2450,6 +2450,102 @@ app.get("/admin_home", async (req, res) => {
     const order = await Order.find({ orderStatus: 0 }).count();
     const customer = await User.find().count();
     const employee = await Admin.find().count();
+    let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+
+      let timeMonday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(1)
+        .format("DD/MM/YYYY");
+      let timeTuesday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(2)
+        .format("DD/MM/YYYY");
+      let timeWednesday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(3)
+        .format("DD/MM/YYYY");
+      let timeThursday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(4)
+        .format("DD/MM/YYYY");
+      let timeFriday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(5)
+        .format("DD/MM/YYYY");
+      let timeSaturday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(6)
+        .format("DD/MM/YYYY");
+      let timeSunday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(7)
+        .format("DD/MM/YYYY");
+
+      // let startOfMonth = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").startOf('month').format('YYYY-MM-DD');
+
+      let dateStart = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(1)
+        .format("YYYY-MM-DD");
+      let dateEnd = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(7)
+        .format("YYYY-MM-DD");
+      let dateNow = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .format("YYYY-MM-DD");
+
+      let dataNow = await Order.find({ time: time });
+
+      let data1 = await Order.find({ time: timeMonday });
+      let data2 = await Order.find({ time: timeTuesday });
+      let data3 = await Order.find({ time: timeWednesday });
+      let data4 = await Order.find({ time: timeThursday });
+      let data5 = await Order.find({ time: timeFriday });
+      let data6 = await Order.find({ time: timeSaturday });
+      let data7 = await Order.find({ time: timeSunday });
+
+      let moneyNow = 0;
+
+      let money1 = 0;
+      let money2 = 0;
+      let money3 = 0;
+      let money4 = 0;
+      let money5 = 0;
+      let money6 = 0;
+      let money7 = 0;
+
+      for (let i = 0; i < dataNow.length; i++) {
+        moneyNow += dataNow[i].total;
+      }
+
+      for (let i = 0; i < data1.length; i++) {
+        money1 += data1[i].total;
+      }
+
+      for (let i = 0; i < data2.length; i++) {
+        money2 += data2[i].total;
+      }
+
+      for (let i = 0; i < data3.length; i++) {
+        money3 += data3[i].total;
+      }
+
+      for (let i = 0; i < data4.length; i++) {
+        money4 += data4[i].total;
+      }
+
+      for (let i = 0; i < data5.length; i++) {
+        money5 += data5[i].total;
+      }
+
+      for (let i = 0; i < data6.length; i++) {
+        money6 += data6[i].total;
+      }
+
+      for (let i = 0; i < data7.length; i++) {
+        money7 += data7[i].total;
+      }
     res.render("layouts/servers/home", {
       fullname: req.session.fullname,
       number: customer,
@@ -2457,6 +2553,22 @@ app.get("/admin_home", async (req, res) => {
       order: order,
       admin_id: req.session.admin_id,
       admin_role: req.session.admin_role,
+      danhsach: dataNow,
+      VND,
+      moneyNow,
+      money1,
+      money2,
+      money3,
+      money4,
+      money5,
+      money6,
+      money7,
+      time,
+      dateStart,
+      dateEnd,
+      dateNow,
+      timeMonday,
+      timeSunday,
     });
   } else {
     res.redirect("/admin_login");
