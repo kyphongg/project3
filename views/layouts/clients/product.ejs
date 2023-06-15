@@ -51,7 +51,7 @@
             <div class="pproducer">
                 <p style="font-weight: bold">Nhà sản xuất: &nbsp</p>
                 <% danhsach[i].producerList.forEach(function(id) { %>
-                <p><%= id.producerName %>&nbsp</p>
+                <a style="text-decoration: none; color: black;" href="/producer/<%= id._id %>"><p><%= id.producerName %>&nbsp;</p></a>
                 <% }); %>
             </div>
             <div class="p-price" name="price">

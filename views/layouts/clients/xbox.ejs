@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">          
-    <title>Hành động</title>
+    <title>Xbox</title>
     <%- include('partials/head') %>
 </head>
 <body>
@@ -13,26 +13,24 @@
     <div class="container">
         <div class="cart-p">
             <div class="cart-heading">
-                <a href="/category/6476b3651cde57b995f9a9ed" style="text-decoration: none; color:black"><h3>Hành động</h3></a>      
+                <a href="/producer/645c5a7fcf5233416558892c" style="text-decoration: none; color:black"><h3>Xbox</h3></a>      
             </div>
           
         <div class="row row-cols-4">
             <% for(let i=0; i < danhsach.length; i++) { %>
-                <% danhsach[i].productList.forEach(function(id) { %>
                 <div class="col product">
                     <div class="sp-box">
-                        <a href="/product/<%= id._id %>">
-                            <img src="/images/<%= id.productImage %>" style="text-align: center" height="300px" width="100px" alt="">
+                        <a href="/product/<%= danhsach[i]._id %>">
+                            <img src="/images/<%= danhsach[i].productImage %>" style="text-align: center" height="300px" width="100px" alt="">
                             <div class="p-title">
-                                <p><%= id.productName %></p>
+                                <p><%= danhsach[i].productName %></p>
                             </div>
                             <div class="price">
-                                <p><%= VND.format(id.priceOut) %></p>
+                                <p><%= VND.format(danhsach[i].priceOut) %></p>
                             </div>
                         </a>
                     </div>
                 </div>
-                <% }); %>
                 <% } %>
         </div>
     </div>

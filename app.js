@@ -1769,20 +1769,102 @@ app.get("/product/:id", async (req, res) => {
 });
 
 //Trang danh mục theo NSX
-app.get("/ps4", async (req, res) => {
+//PS4
+app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
   if (req.session.guest) {
+    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c59f1cf52334165588918")});
     res.render("layouts/clients/ps4", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      danhsach: data,
+      VND,
     });
   } else {
+    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c59f1cf52334165588918")});
     res.render("layouts/clients/ps4", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      danhsach: data,
+      VND,
+    });
+  }
+});
+
+//PS5
+app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
+  if (req.session.guest) {
+    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b")});
+    res.render("layouts/clients/ps5", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      cart: req.session.cart,
+      danhsach: data,
+      VND,
+    });
+  } else {
+    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b")});
+    res.render("layouts/clients/ps5", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      cart: 0,
+      danhsach: data,
+      VND,
+    });
+  }
+});
+
+//Nintendo
+app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
+  if (req.session.guest) {
+    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5627e8da91e62f850537")});
+    res.render("layouts/clients/nintendo", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      cart: req.session.cart,
+      danhsach: data,
+      VND,
+    });
+  } else {
+    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5627e8da91e62f850537")});
+    res.render("layouts/clients/nintendo", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      cart: 0,
+      danhsach: data,
+      VND,
+    });
+  }
+});
+
+//Xbox
+app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
+  if (req.session.guest) {
+    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5a7fcf5233416558892c")});
+    res.render("layouts/clients/xbox", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      cart: req.session.cart,
+      danhsach: data,
+      VND,
+    });
+  } else {
+    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5a7fcf5233416558892c")});
+    res.render("layouts/clients/xbox", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      cart: 0,
+      danhsach: data,
+      VND,
     });
   }
 });
@@ -2471,7 +2553,7 @@ app.get("/admin_home", async (req, res) => {
     const employee = await Admin.find().count();
     let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
 
-      let timeMonday = moment
+    let timeMonday = moment
         .tz(Date.now(), "Asia/Ho_Chi_Minh")
         .day(1)
         .format("DD/MM/YYYY");
@@ -2565,6 +2647,38 @@ app.get("/admin_home", async (req, res) => {
       for (let i = 0; i < data7.length; i++) {
         money7 += data7[i].total;
       }
+
+      // let test = await Warehouse.aggregate([
+      //   { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+      //   {
+      //     $lookup: {
+      //       from: "products",
+      //       localField: "_id",
+      //       foreignField: "_id",
+      //       as: "productList",
+      //     },
+      //   },
+      // ]);
+      // let qty = [];
+      // let cate = [];
+
+      // for(let i = 0; i < test.length; i++) {
+      //   test[i].productList.forEach(function(id){
+      //     // id.categoryID.forEach(function(ca){
+      //     //   console.log(ca);
+      //     // });
+      //     cate.push(id.categoryID);
+      //     qty.push(test[i].total - id.productQuantity);
+      //   })
+      // }
+      
+      // let obj = cate.map((id, index_value) => {
+      //   return {
+      //     category: id,
+      //     quantity: qty[index_value],
+      //   };
+      // });
+            
     res.render("layouts/servers/home", {
       fullname: req.session.fullname,
       number: customer,
@@ -4296,6 +4410,12 @@ app.get("/sale_history/:id", async (req, res) => {
         },
         { "items.$": 1 }
       );
+      let money = 0;
+      for(let i=0; i < data.length; i++) {
+        data[i].items.forEach(function(id) {
+          money += id.quantity;
+        });
+      };
       const name = await Order.findOne(
         { "items._id": req.params.id },
         { "items.$": 1 }
@@ -4306,6 +4426,7 @@ app.get("/sale_history/:id", async (req, res) => {
         admin_role: req.session.admin_role,
         danhsach: data,
         name,
+        money,
       });
     } else {
       res.redirect("/admin_home");
