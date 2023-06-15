@@ -1768,6 +1768,25 @@ app.get("/product/:id", async (req, res) => {
   }
 });
 
+//Trang danh mục theo NSX
+app.get("/ps4", async (req, res) => {
+  if (req.session.guest) {
+    res.render("layouts/clients/ps4", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      cart: req.session.cart,
+    });
+  } else {
+    res.render("layouts/clients/ps4", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      cart: 0,
+    });
+  }
+});
+
 //Trang category
 //Hành động
 app.get("/category/6476b3651cde57b995f9a9ed", async (req, res) => {
