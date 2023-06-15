@@ -3838,6 +3838,31 @@ app.get("/monday", async (req, res) => {
     if (role == 0 || role == 2) {
       let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(1).format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
+      let list = await Order.aggregate([
+        { $match: { time: time } },
+        {
+          $unwind: "$items",
+        },
+        {
+          $unwind: "$items._id",
+        },
+        {
+          $group: {
+            _id: "$items._id",
+            totalCount: {
+              $sum: "$items.quantity",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+      ]);
       let money = 0;
       for (let i = 0; i < data.length; i++) {
         money += data[i].total;
@@ -3847,6 +3872,7 @@ app.get("/monday", async (req, res) => {
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
+        sanpham: list,
         VND,
         time,
         money,
@@ -3865,6 +3891,31 @@ app.get("/tuesday", async (req, res) => {
     if (role == 0 || role == 2) {
       let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(2).format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
+      let list = await Order.aggregate([
+        { $match: { time: time } },
+        {
+          $unwind: "$items",
+        },
+        {
+          $unwind: "$items._id",
+        },
+        {
+          $group: {
+            _id: "$items._id",
+            totalCount: {
+              $sum: "$items.quantity",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+      ]);
       let money = 0;
       for (let i = 0; i < data.length; i++) {
         money += data[i].total;
@@ -3874,6 +3925,7 @@ app.get("/tuesday", async (req, res) => {
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
+        sanpham: list,
         VND,
         time,
         money,
@@ -3892,6 +3944,31 @@ app.get("/wednesday", async (req, res) => {
     if (role == 0 || role == 2) {
       let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(3).format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
+      let list = await Order.aggregate([
+        { $match: { time: time } },
+        {
+          $unwind: "$items",
+        },
+        {
+          $unwind: "$items._id",
+        },
+        {
+          $group: {
+            _id: "$items._id",
+            totalCount: {
+              $sum: "$items.quantity",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+      ]);
       let money = 0;
       for (let i = 0; i < data.length; i++) {
         money += data[i].total;
@@ -3901,6 +3978,7 @@ app.get("/wednesday", async (req, res) => {
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
+        sanpham: list,
         VND,
         time,
         money,
@@ -3919,6 +3997,31 @@ app.get("/thursday", async (req, res) => {
     if (role == 0 || role == 2) {
       let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(4).format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
+      let list = await Order.aggregate([
+        { $match: { time: time } },
+        {
+          $unwind: "$items",
+        },
+        {
+          $unwind: "$items._id",
+        },
+        {
+          $group: {
+            _id: "$items._id",
+            totalCount: {
+              $sum: "$items.quantity",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+      ]);
       let money = 0;
       for (let i = 0; i < data.length; i++) {
         money += data[i].total;
@@ -3928,6 +4031,7 @@ app.get("/thursday", async (req, res) => {
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
+        sanpham: list,
         VND,
         time,
         money,
@@ -3946,6 +4050,31 @@ app.get("/friday", async (req, res) => {
     if (role == 0 || role == 2) {
       let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(5).format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
+      let list = await Order.aggregate([
+        { $match: { time: time } },
+        {
+          $unwind: "$items",
+        },
+        {
+          $unwind: "$items._id",
+        },
+        {
+          $group: {
+            _id: "$items._id",
+            totalCount: {
+              $sum: "$items.quantity",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+      ]);
       let money = 0;
       for (let i = 0; i < data.length; i++) {
         money += data[i].total;
@@ -3955,6 +4084,7 @@ app.get("/friday", async (req, res) => {
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
+        sanpham: list,
         VND,
         time,
         money,
@@ -3973,6 +4103,31 @@ app.get("/saturday", async (req, res) => {
     if (role == 0 || role == 2) {
       let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(6).format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
+      let list = await Order.aggregate([
+        { $match: { time: time } },
+        {
+          $unwind: "$items",
+        },
+        {
+          $unwind: "$items._id",
+        },
+        {
+          $group: {
+            _id: "$items._id",
+            totalCount: {
+              $sum: "$items.quantity",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+      ]);
       let money = 0;
       for (let i = 0; i < data.length; i++) {
         money += data[i].total;
@@ -3982,6 +4137,7 @@ app.get("/saturday", async (req, res) => {
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
+        sanpham: list,
         VND,
         time,
         money,
@@ -4000,6 +4156,31 @@ app.get("/sunday", async (req, res) => {
     if (role == 0 || role == 2) {
       let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(8).format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
+      let list = await Order.aggregate([
+        { $match: { time: time } },
+        {
+          $unwind: "$items",
+        },
+        {
+          $unwind: "$items._id",
+        },
+        {
+          $group: {
+            _id: "$items._id",
+            totalCount: {
+              $sum: "$items.quantity",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+      ]);
       let money = 0;
       for (let i = 0; i < data.length; i++) {
         money += data[i].total;
@@ -4009,6 +4190,7 @@ app.get("/sunday", async (req, res) => {
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
+        sanpham: list,
         VND,
         time,
         money,

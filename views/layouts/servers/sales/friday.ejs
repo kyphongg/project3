@@ -18,7 +18,7 @@
         <section class="wrapper">
             <div class="table-agile-info">
                 <h3>Doanh thu ngày <%= time %></h3>
-
+                <br>
                 <div class="panel panel-default">
                     <div class="table-responsive">
                       <table
@@ -59,12 +59,38 @@
                         </tbody>
                       </table>
                     </div>
-                  </div>
-                  <div class="sales-price">
-                    <b style="margin-right: 35px">Tổng doanh thu:</b>
-                    <p style="color: #dc3545; font-weight: 500">
-                      <%= VND.format(money) %>
-                    </p>
+                    <br>
+                    <div class="sales-price">
+                      <b style="margin-right: 35px">Tổng doanh thu:</b>
+                      <p style="color: #dc3545; font-weight: 500">
+                        <%= VND.format(money) %>
+                      </p>
+                    </div>
+                    <br>
+                    <h3>Số lượng từng sản phẩm bán ra theo ngày <%= time %></h3>
+                    <br>
+                    <div class="table-responsive">
+                      <table id="myTable"class="table table-striped table-bordered"style="text-align: center">
+                        <thead>
+                          <tr>
+                              <th style="width: 50px; text-align: center;">STT</th>
+                              <th style="text-align: center;">Sản phẩm</th>
+                              <th style="text-align: center;">Số lượng bán</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            <% for(let i = 0; i < sanpham.length; i++) {%>
+                                <% sanpham[i].productList.forEach(function(id) { %>
+                            <tr>
+                                <td><%= i+1 %></td>
+                                <td><%= id.productName %></td>
+                                <td><%= sanpham[i].totalCount %></td>
+                            </tr>
+                            <% }); %>
+                            <%}%>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 <a href="/sales">
                     <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
