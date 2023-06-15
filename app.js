@@ -40,10 +40,10 @@ app.use(passport.session());
 //Mail
 
 let transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
+  host: "smtp.gmail.com",
   port: 465,
   secure: true,
-  auth:{
+  auth: {
     user: "lam3531xyz@gmail.com",
     pass: "bwlzpnogtfovacqx",
   },
@@ -117,10 +117,11 @@ var upload = multer({
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//Random code 
+//Random code
 function makeid(length) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
   let counter = 0;
   while (counter < length) {
@@ -366,7 +367,7 @@ app.post("/login", async function (req, res) {
 });
 
 //Quên mật khẩu
-app.get("/forget", function (req, res){
+app.get("/forget", function (req, res) {
   if (req.session.guest) {
     res.redirect("/");
   } else {
@@ -382,7 +383,7 @@ app.get("/forget", function (req, res){
   }
 });
 
-app.post("/requestPasswordReset",async function (req, res){
+app.post("/requestPasswordReset", async function (req, res) {
   let errorEmail = req.body.email;
   let email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   let e = 0;
@@ -390,7 +391,7 @@ app.post("/requestPasswordReset",async function (req, res){
     .tz(Date.now(), "Asia/Ho_Chi_Minh")
     .format("DD/MM/YYYY hh:mm a");
   let timeOut = moment
-    .tz(Date.now()+3600000, "Asia/Ho_Chi_Minh")
+    .tz(Date.now() + 3600000, "Asia/Ho_Chi_Minh")
     .format("DD/MM/YYYY hh:mm a");
   if (errorEmail == "") {
     req.flash("error", "Vui lòng nhập Email!");
@@ -402,14 +403,16 @@ app.post("/requestPasswordReset",async function (req, res){
       e++;
     } else {
       const user = await User.findOne({ email: req.body.email });
-      if(user){
+      if (user) {
         let resetString = makeid(10);
-        await Password.deleteMany({userID:user._id});
+        await Password.deleteMany({ userID: user._id });
         await transporter.sendMail({
           from: "lam3531xyz@gmail.com",
           to: errorEmail,
           subject: "Khôi phục mật khẩu tài khoản website GAMING STORE",
-          html: `<p>Nhấn vào <a href=${"http://localhost:3000/changePassword/"+user._id}>đường dẫn này</a> để khôi phục lại mật khẩu.</p><p>Đường dẫn sẽ <b>hết hạn trong 60 phút!</b></p><p>Mã thay đổi: ${resetString}</p>`,
+          html: `<p>Nhấn vào <a href=${
+            "http://localhost:3000/changePassword/" + user._id
+          }>đường dẫn này</a> để khôi phục lại mật khẩu.</p><p>Đường dẫn sẽ <b>hết hạn trong 60 phút!</b></p><p>Mã thay đổi: ${resetString}</p>`,
         });
         const newPasswordReset = new Password({
           userID: user._id,
@@ -428,10 +431,10 @@ app.post("/requestPasswordReset",async function (req, res){
   }
   if (e != 0) {
     res.redirect("/forget");
-  } 
+  }
 });
 
-app.get("/done", function (req, res){
+app.get("/done", function (req, res) {
   if (req.session.guest) {
     res.redirect("/");
   } else {
@@ -443,19 +446,19 @@ app.get("/done", function (req, res){
   }
 });
 
-app.get("/changePassword/:id",async function(req, res){
+app.get("/changePassword/:id", async function (req, res) {
   if (req.session.guest) {
     res.redirect("/");
   } else {
-    let check = await Password.findOne({userID:req.params.id});
+    let check = await Password.findOne({ userID: req.params.id });
     let timeNow = moment
-    .tz(Date.now(), "Asia/Ho_Chi_Minh")
-    .format("DD/MM/YYYY hh:mm a");
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .format("DD/MM/YYYY hh:mm a");
     let timeOut = check.end_Wdate;
     let e = 0;
-    if(timeNow>=timeOut){
+    if (timeNow >= timeOut) {
       e++;
-      req.flash("timeOut","Đường dẫn đã hết hạn!");
+      req.flash("timeOut", "Đường dẫn đã hết hạn!");
     } else {
       res.render("layouts/clients/change", {
         userid: 1,
@@ -469,13 +472,13 @@ app.get("/changePassword/:id",async function(req, res){
         codeED: req.flash("codeED"),
       });
     }
-    if(e!=0){
+    if (e != 0) {
       res.redirect("/forget");
     }
   }
 });
 
-app.post("/saveNewPassword",async function (req, res){
+app.post("/saveNewPassword", async function (req, res) {
   var userid = req.body.userid;
   var code = req.body.code;
   var password = req.body.password;
@@ -488,8 +491,8 @@ app.post("/saveNewPassword",async function (req, res){
     req.flash("codeError", "Bạn chưa điền mã xác nhận!");
     errorForm++;
   } else {
-    let check = await Password.findOne({resetString:code});
-    if(!check){
+    let check = await Password.findOne({ resetString: code });
+    if (!check) {
       req.flash("codeError", "Mã xác nhận không đúng!");
       errorForm++;
       req.flash("codeED", code);
@@ -520,8 +523,11 @@ app.post("/saveNewPassword",async function (req, res){
           req.flash("passwordED", password);
           errorForm++;
         } else {
-          await User.updateOne({_id: userid},{$set: {password: password}});
-          await Password.deleteMany({userID: userid});
+          await User.updateOne(
+            { _id: userid },
+            { $set: { password: password } }
+          );
+          await Password.deleteMany({ userID: userid });
           req.flash("passwordED", "");
           req.flash("codeED", "");
           res.redirect("/success-changepwd");
@@ -529,8 +535,8 @@ app.post("/saveNewPassword",async function (req, res){
       }
     }
   }
-  if(errorForm!=0){
-    res.redirect("/changePassword/"+userid);
+  if (errorForm != 0) {
+    res.redirect("/changePassword/" + userid);
   }
 });
 
@@ -845,7 +851,7 @@ app.get("/password/:id", (req, res) => {
   }
 });
 
-app.post("/changePasswordNew",async (req, res) => {
+app.post("/changePasswordNew", async (req, res) => {
   var userid = req.body.userid;
   var password1 = req.body.password1;
   var password = req.body.password;
@@ -858,13 +864,13 @@ app.post("/changePasswordNew",async (req, res) => {
     req.flash("password1Error", "Bạn cần nhập mật khẩu cũ!");
     errorForm++;
   }
-  if(password1!=""){
-    let check = await User.findOne({_id:userid});
+  if (password1 != "") {
+    let check = await User.findOne({ _id: userid });
     let pcheck = check.password;
-    if(password1 != pcheck){
+    if (password1 != pcheck) {
       req.flash("password1Error", "Mật khẩu cũ sai!");
       errorForm++;
-    } else{
+    } else {
       req.flash("password1ED", password1);
     }
   }
@@ -890,7 +896,10 @@ app.post("/changePasswordNew",async (req, res) => {
           req.flash("passwordED", password);
           errorForm++;
         } else {
-          await User.updateOne({_id: userid},{$set: {password: password}});
+          await User.updateOne(
+            { _id: userid },
+            { $set: { password: password } }
+          );
           req.flash("passwordED", "");
           req.session.destroy();
           res.redirect("/success-changepwd");
@@ -898,10 +907,9 @@ app.post("/changePasswordNew",async (req, res) => {
       }
     }
   }
-  if(errorForm!=0){
-    res.redirect("/password/"+userid);
+  if (errorForm != 0) {
+    res.redirect("/password/" + userid);
   }
-
 });
 
 //Trang chi tiết lịch sử đơn hàng
@@ -1054,7 +1062,7 @@ app.post("/add_to_cart", async (req, res) => {
         );
       }
     }
-    res.redirect("/cart/"+uid);
+    res.redirect("/cart/" + uid);
   } else {
     var cartData = Cart({
       _id: uid,
@@ -1068,7 +1076,7 @@ app.post("/add_to_cart", async (req, res) => {
       userID: uid,
     });
     cartData.save().then(function () {
-      res.redirect("/cart/"+uid);
+      res.redirect("/cart/" + uid);
     });
   }
 });
@@ -1122,7 +1130,7 @@ app.post("/update_quantity_cart", async (req, res) => {
       }
     });
   }
-  res.redirect("/cart/"+uid);
+  res.redirect("/cart/" + uid);
 });
 
 app.get("/delete_cart_items/:id", async function (req, res) {
@@ -1152,7 +1160,7 @@ app.get("/delete_cart_items/:id", async function (req, res) {
         await Cart.deleteOne({
           userID: new mongoose.Types.ObjectId(req.session.userid),
         }).then(function () {
-          res.redirect("/cart/"+uid);
+          res.redirect("/cart/" + uid);
         });
       } else {
         await Cart.updateOne(
@@ -1163,7 +1171,7 @@ app.get("/delete_cart_items/:id", async function (req, res) {
           { $pull: { items: { _id: productId } } },
           { multi: true }
         ).then(function () {
-          res.redirect("/cart/"+uid);
+          res.redirect("/cart/" + uid);
         });
       }
     });
@@ -1308,7 +1316,7 @@ app.post("/add_coupon_checkout", async (req, res) => {
     } else {
       req.flash("error", "Thêm mã giảm giá không thành công");
     }
-    res.redirect("/checkout/"+uid);
+    res.redirect("/checkout/" + uid);
   } else {
     res.redirect("/login");
   }
@@ -1391,7 +1399,7 @@ app.post("/creat_new_order", async (req, res) => {
   }
 
   if (errorForm != 0) {
-    res.redirect("/checkout/"+uid);
+    res.redirect("/checkout/" + uid);
   } else {
     const data = collect(productId);
     const total = data.count();
@@ -1523,7 +1531,7 @@ app.post("/get_order/:id", async (req, res) => {
         },
       }
     );
-    res.redirect("/orders/"+uid);
+    res.redirect("/orders/" + uid);
   } else {
     res.redirect("/login");
   }
@@ -1571,7 +1579,7 @@ app.post("/cancel_order/:id", async (req, res) => {
         );
       }
     }
-    res.redirect("/orders/"+uid);
+    res.redirect("/orders/" + uid);
   } else {
     res.redirect("/login");
   }
@@ -2365,8 +2373,7 @@ app.get("/category/645c5a67cf52334165588928", (req, res) => {
 //Servers
 //Test
 app.get("/test", (req, res) => {
-  res.render("layouts/servers/chart", {
-  });
+  res.render("layouts/servers/chart", {});
 });
 //Trang đăng nhập
 app.get("/admin_login", (req, res) => {
@@ -3187,13 +3194,13 @@ app.post("/adminSaveNewPw", async (req, res) => {
     req.flash("password1Error", "Bạn cần nhập mật khẩu cũ!");
     errorForm++;
   }
-  if(password1!=""){
-    let check = await Admin.findOne({_id:adminid});
+  if (password1 != "") {
+    let check = await Admin.findOne({ _id: adminid });
     let pcheck = check.password;
-    if(password1 != pcheck){
+    if (password1 != pcheck) {
       req.flash("password1Error", "Mật khẩu cũ sai!");
       errorForm++;
-    } else{
+    } else {
       req.flash("password1ED", password1);
     }
   }
@@ -3219,7 +3226,10 @@ app.post("/adminSaveNewPw", async (req, res) => {
           req.flash("passwordED", password);
           errorForm++;
         } else {
-          await Admin.updateOne({_id: adminid},{$set: {password: password}});
+          await Admin.updateOne(
+            { _id: adminid },
+            { $set: { password: password } }
+          );
           req.flash("passwordED", "");
           req.session.destroy();
           res.redirect("/admin_login");
@@ -3227,10 +3237,9 @@ app.post("/adminSaveNewPw", async (req, res) => {
       }
     }
   }
-  if(errorForm!=0){
-    res.redirect("/admin_setting/"+adminid);
+  if (errorForm != 0) {
+    res.redirect("/admin_setting/" + adminid);
   }
-
 });
 
 //Trang quản lý đơn hàng
@@ -3474,44 +3483,128 @@ app.post("/admin_cancel_order/:id", async (req, res) => {
   }
 });
 
-//Trang tổng doanh thu theo ngày
+//Trang tổng doanh thu theo tuần
 app.get("/sales", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
       let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
-      let dateStart = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("YYYY-MM-DD");
-      let dateStart1 = moment.tz(Date.now(), "Asia/Ho_Chi_Minh");
-      let dateEnd = moment(dateStart1).add(6, 'd').format("YYYY-MM-DD");
-      let data = await Order.find({ time: time });
-      let money = 0;
-      var startOfWeek = moment.tz(Date.now(), "Asia/Ho_Chi_Minh");
-      var endOfWeek = moment(startOfWeek).add(6, 'd');
-      var middleOfWeek = moment(startOfWeek).add(3, 'd').format("YYYY-MM-DD");
 
-      var days = [];
-      var day = startOfWeek;
+      let timeMonday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(1)
+        .format("DD/MM/YYYY");
+      let timeTuesday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(2)
+        .format("DD/MM/YYYY");
+      let timeWednesday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(3)
+        .format("DD/MM/YYYY");
+      let timeThursday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(4)
+        .format("DD/MM/YYYY");
+      let timeFriday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(5)
+        .format("DD/MM/YYYY");
+      let timeSaturday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(6)
+        .format("DD/MM/YYYY");
+      let timeSunday = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(7)
+        .format("DD/MM/YYYY");
 
-      while (day <= endOfWeek) {
-        days.push(day.format("YYYY-MM-DD"));
-        day = day.clone().add(1, 'd');
+      // let startOfMonth = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").startOf('month').format('YYYY-MM-DD');
+
+      let dateStart = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(1)
+        .format("YYYY-MM-DD");
+      let dateEnd = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(7)
+        .format("YYYY-MM-DD");
+      let dateNow = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .format("YYYY-MM-DD");
+
+      let dataNow = await Order.find({ time: time });
+
+      let data1 = await Order.find({ time: timeMonday });
+      let data2 = await Order.find({ time: timeTuesday });
+      let data3 = await Order.find({ time: timeWednesday });
+      let data4 = await Order.find({ time: timeThursday });
+      let data5 = await Order.find({ time: timeFriday });
+      let data6 = await Order.find({ time: timeSaturday });
+      let data7 = await Order.find({ time: timeSunday });
+
+      let moneyNow = 0;
+
+      let money1 = 0;
+      let money2 = 0;
+      let money3 = 0;
+      let money4 = 0;
+      let money5 = 0;
+      let money6 = 0;
+      let money7 = 0;
+
+      for (let i = 0; i < dataNow.length; i++) {
+        moneyNow += dataNow[i].total;
       }
-      console.log(days);
-      for (let i = 0; i < data.length; i++) {
-        money += data[i].total;
+
+      for (let i = 0; i < data1.length; i++) {
+        money1 += data1[i].total;
       }
+
+      for (let i = 0; i < data2.length; i++) {
+        money2 += data2[i].total;
+      }
+
+      for (let i = 0; i < data3.length; i++) {
+        money3 += data3[i].total;
+      }
+
+      for (let i = 0; i < data4.length; i++) {
+        money4 += data4[i].total;
+      }
+
+      for (let i = 0; i < data5.length; i++) {
+        money5 += data5[i].total;
+      }
+
+      for (let i = 0; i < data6.length; i++) {
+        money6 += data6[i].total;
+      }
+
+      for (let i = 0; i < data7.length; i++) {
+        money7 += data7[i].total;
+      }
+
       res.render("layouts/servers/sales/sales", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
-        danhsach: data,
+        danhsach: dataNow,
         VND,
-        money,
+        moneyNow,
+        money1,
+        money2,
+        money3,
+        money4,
+        money5,
+        money6,
+        money7,
         time,
         dateStart,
         dateEnd,
-        days,
-        middleOfWeek,
+        dateNow,
+        timeMonday,
+        timeSunday,
       });
     } else {
       res.redirect("/admin_home");
