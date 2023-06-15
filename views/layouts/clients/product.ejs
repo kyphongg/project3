@@ -64,7 +64,7 @@
             <form action="/add_to_cart" method="post">
             <div class="quantity">
                     <p>Số lượng :</p>
-                    <input name="quantity" type="number" min="1" max="<%= danhsach[i].total %>" value="1">
+                    <input name="quantity" type="number" min="1" max="<%= pquantity %>" value="1">
                     <input name="product_id_hidden" type="hidden" value="<%= danhsach[i]._id %>">
                     <input name="username" type="hidden" class="form-control" value="0">
                     <input name="user_id_hidden" type="hidden" value="<%= userid %>">

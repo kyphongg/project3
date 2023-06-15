@@ -1673,6 +1673,7 @@ app.get("/product/:id", async (req, res) => {
   if (req.session.guest) {
     let name = await Product.findOne({ _id: req.params.id });
     let pname = name.productName;
+    let pquantity = name.productQuantity;
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
@@ -1710,6 +1711,7 @@ app.get("/product/:id", async (req, res) => {
           cart: req.session.cart,
           VND,
           pname,
+          pquantity,
         });
       })
       .catch((err) => {
@@ -1718,6 +1720,7 @@ app.get("/product/:id", async (req, res) => {
   } else {
     let name = await Product.findOne({ _id: req.params.id });
     let pname = name.productName;
+    let pquantity = name.productQuantity;
     Warehouse.aggregate([
       { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
       { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
@@ -1755,6 +1758,7 @@ app.get("/product/:id", async (req, res) => {
           VND,
           cart: 0,
           pname,
+          pquantity,
         });
       })
       .catch((err) => {
