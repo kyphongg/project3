@@ -91,23 +91,26 @@
             </div>
         </div>
     </div>
-
-    <div class="container">
-        <div class="comment">
-            <h3>Bình luận</h3>
-            <form action="#">
-                <!-- {{-- <input type="hidden" name="customer_id" class="customer_id" value="{{$customer_id}}">--}} -->
-                <textarea name="comment" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
-                <button type="button" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
-                </button>
-            </form>
-            <!-- <div id="notify_comment"></div>
-            <form>
-                <input type="hidden" name="game_id" class="game_id" value="">
-                <div id="comment_show"></div>
-            </form> -->
-        </div>
-    </div>
+    <% if(fullname == 1){ %>
+        <p>Vui lòng đăng nhập để bình luận</p>
+        <%}else{%>
+            <div class="container">
+                <div class="comment">
+                    <h3>Bình luận</h3>
+                    <form action="#">
+                        <!-- {{-- <input type="hidden" name="customer_id" class="customer_id" value="{{$customer_id}}">--}} -->
+                        <textarea name="comment" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
+                        <button type="button" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
+                        </button>
+                    </form>
+                    <!-- <div id="notify_comment"></div>
+                    <form>
+                        <input type="hidden" name="game_id" class="game_id" value="">
+                        <div id="comment_show"></div>
+                    </form> -->
+                </div>
+            </div>
+            <%}%>
      <%- include('../partials/footer') %>
 </body>
 </html>
