@@ -425,7 +425,7 @@ app.post("/requestPasswordReset", async (req, res) => {
           end_date: timeOut,
         });
         await newPasswordReset.save();
-        res.redirect("/done");
+        res.redirect("/doneRequest");
       } else {
         req.flash("error", "Tài khoản không tồn tại");
         req.flash("errorEmail", errorEmail);
@@ -438,7 +438,7 @@ app.post("/requestPasswordReset", async (req, res) => {
   }
 });
 
-app.get("/done", (req, res) => {
+app.get("/doneRequest", (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
   } else {
