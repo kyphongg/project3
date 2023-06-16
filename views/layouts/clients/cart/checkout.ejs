@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh toán</title>
-    <%- include('partials/head') %>
+    <%- include('../partials/head') %>
 </head>
 <body>
-    <%- include('partials/header') %>
+    <%- include('../partials/header') %>
     <div class="container">
         <div class="payment">
             <%if(!carti[0]){%>
@@ -220,6 +220,6 @@
         <form action="/add_coupon_checkout" method="post" id="sub-form"></form>
         </div>
         </div>
-     <%- include('partials/footer') %>
+     <%- include('../partials/footer') %>
 </body>
 </html>

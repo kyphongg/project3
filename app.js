@@ -137,7 +137,7 @@ app.get("/login", (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
   } else {
-    res.render("layouts/clients/login", {
+    res.render("layouts/clients/form/login", {
       userid: 1,
       fullname: 1,
       cart: 0,
@@ -152,7 +152,7 @@ app.get("/signup", (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
   } else {
-    res.render("layouts/clients/signup", {
+    res.render("layouts/clients/form/signup", {
       sID: req.sessionID,
       userid: 1,
       fullname: 1,
@@ -375,7 +375,7 @@ app.get("/forget", function (req, res) {
   if (req.session.guest) {
     res.redirect("/");
   } else {
-    res.render("layouts/clients/forget", {
+    res.render("layouts/clients/password/forget", {
       userid: 1,
       fullname: 1,
       cart: 0,
@@ -442,7 +442,7 @@ app.get("/done", function (req, res) {
   if (req.session.guest) {
     res.redirect("/");
   } else {
-    res.render("layouts/clients/done", {
+    res.render("layouts/clients/password/done", {
       userid: 1,
       fullname: 1,
       cart: 0,
@@ -464,7 +464,7 @@ app.get("/changePassword/:id", async function (req, res) {
       e++;
       req.flash("timeOut", "Đường dẫn đã hết hạn!");
     } else {
-      res.render("layouts/clients/change", {
+      res.render("layouts/clients/password/change", {
         userid: 1,
         fullname: 1,
         cart: 0,
@@ -547,14 +547,14 @@ app.post("/saveNewPassword", async function (req, res) {
 app.get("/success-changepwd", (req, res) => {
   if (req.session.guest) {
     req.session.destroy();
-    res.render("layouts/clients/success_changepwd", {
+    res.render("layouts/clients/password/success_changepwd", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
     });
   } else {
-    res.render("layouts/clients/success_changepwd", {
+    res.render("layouts/clients/password/success_changepwd", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -702,7 +702,7 @@ app.get("/terms_of_service", (req, res) => {
 app.get("/news", async (req, res) => {
   let data = await News.find().populate("newsProduct");
   if (req.session.guest) {
-    res.render("layouts/clients/news", {
+    res.render("layouts/clients/news/news", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -710,7 +710,7 @@ app.get("/news", async (req, res) => {
       danhsach: data,
     });
   } else {
-    res.render("layouts/clients/news", {
+    res.render("layouts/clients/news/news", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -723,7 +723,7 @@ app.get("/news", async (req, res) => {
 app.get("/news/:id", async (req, res) => {
   let data = await News.find({ _id: req.params.id }).populate("newsProduct");
   if (req.session.guest) {
-    res.render("layouts/clients/news_detail", {
+    res.render("layouts/clients/news/news_detail", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -731,7 +731,7 @@ app.get("/news/:id", async (req, res) => {
       danhsach: data,
     });
   } else {
-    res.render("layouts/clients/news_detail", {
+    res.render("layouts/clients/news/news_detail", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -831,7 +831,7 @@ app.get("/profile/:id", (req, res) => {
 app.get("/orders/:id", async (req, res) => {
   if (req.session.guest) {
     let data = await Order.find({ userID: req.session.userid });
-    res.render("layouts/clients/orders", {
+    res.render("layouts/clients/order/orders", {
       fullname: req.session.fullname,
       email: req.session.email,
       userid: req.session.userid,
@@ -847,7 +847,7 @@ app.get("/orders/:id", async (req, res) => {
 
 app.get("/password/:id", (req, res) => {
   if (req.session.guest) {
-    res.render("layouts/clients/password", {
+    res.render("layouts/clients/password/password", {
       fullname: req.session.fullname,
       email: req.session.email,
       userid: req.session.userid,
@@ -939,7 +939,7 @@ app.get("/orders_detail/:id", async (req, res) => {
       data.items.forEach(function (pid) {
         money += pid.productID.priceOut * pid.quantity;
       });
-      res.render("layouts/clients/orders_detail", {
+      res.render("layouts/clients/order/orders_detail", {
         fullname: req.session.fullname,
         email: req.session.email,
         userid: req.session.userid,
@@ -960,7 +960,7 @@ app.get("/orders_detail/:id", async (req, res) => {
         money += pid.productID.priceOut * pid.quantity;
       });
 
-      res.render("layouts/clients/orders_detail", {
+      res.render("layouts/clients/order/orders_detail", {
         fullname: req.session.fullname,
         email: req.session.email,
         userid: req.session.userid,
@@ -1013,7 +1013,7 @@ app.get("/cart/:id", async (req, res) => {
             money += pid.productID.priceOut * parseInt(pid.quantity);
           });
         }
-        res.render("layouts/clients/cart", {
+        res.render("layouts/clients/cart/cart", {
           fullname: req.session.fullname,
           userid: req.session.userid,
           sID: req.session.sessionID,
@@ -1210,7 +1210,7 @@ app.get("/checkout/:id", async (req, res) => {
           });
         }
         let convert = parseInt(money);
-        res.render("layouts/clients/checkout", {
+        res.render("layouts/clients/cart/checkout", {
           fullname: req.session.fullname,
           email: req.session.email,
           userid: req.session.userid,
@@ -1517,7 +1517,7 @@ app.get("/success", async (req, res) => {
     ]);
     var sess = req.session;
     sess.cart = cart;
-    res.render("layouts/clients/success", {
+    res.render("layouts/clients/cart/success", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1643,7 +1643,7 @@ app.get("/all_product", async (req, res) => {
     })
       .populate("categoryID")
       .populate("producerID");
-    res.render("layouts/clients/all_product", {
+    res.render("layouts/clients/main/all_product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1664,7 +1664,7 @@ app.get("/all_product", async (req, res) => {
     })
       .populate("categoryID")
       .populate("producerID");
-    res.render("layouts/clients/all_product", {
+    res.render("layouts/clients/main/all_product", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -1683,7 +1683,7 @@ app.get("/product/:id", async (req, res) => {
     let data = await Product.findOne({ _id: req.params.id })
       .populate("categoryID")
       .populate("producerID");
-    res.render("layouts/clients/product", {
+    res.render("layouts/clients/main/product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1698,7 +1698,7 @@ app.get("/product/:id", async (req, res) => {
     let data = await Product.findOne({ _id: req.params.id })
       .populate("categoryID")
       .populate("producerID");
-    res.render("layouts/clients/product", {
+    res.render("layouts/clients/main/product", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,

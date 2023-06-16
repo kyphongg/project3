@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <% for(let i=0; i < danhsach.length; i++) { %>
     <title><%= danhsach[i].newsTitle %></title>
-    <%- include('partials/head') %>
+    <%- include('../partials/head') %>
 </head>
 <body>
-    <%- include('partials/header') %>
+    <%- include('../partials/header') %>
     <div class="blog-header">
         <div class="header-content blog-container">
             <h1 class="header-title"><%= danhsach[i].newsTitle %></h1>
@@ -23,6 +23,6 @@
         <p class="blog-text"><%- danhsach[i].newsContent %></p>
     </div>
     <%}%>
-    <%- include('partials/footer') %>
+    <%- include('../partials/footer') %>
 </body>
 </html>
