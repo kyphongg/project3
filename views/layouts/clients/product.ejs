@@ -9,12 +9,10 @@
 </head>
 <body>
     <%- include('partials/header') %>
-    <% for(let i=0; i < danhsach.length; i++) { %>
-        <% danhsach[i].productList.forEach(function(id) { %>
     <div class="product-box">
         <div class="p-left">
             <div class="big-img">
-                <img src="/images/<%= id.productImage %>" style="text-align: center" height="300px"
+                <img src="/images/<%= danhsach.productImage %>" style="text-align: center" height="300px"
                      width="100px" alt="">
             </div>
         </div>
@@ -22,17 +20,17 @@
         <div class="p-right">
             <div class="url">
                 <a href="/">Trang chủ</a> >
-                <% danhsach[i].categoryList.forEach(function(id) { %>
-                    <a href="/category/<%= id._id %>"><%= id.categoryName %>&nbsp;/</a>
+                <% danhsach.categoryID.forEach(function(id){ %>
+                <a href="/category/<%= id._id %>"><%= id.categoryName %>&nbsp;/</a>
                 <% }); %>
             </div>
             <div class="pname" name="name"> 
-                <%= id.productName %>
+                <%= danhsach.productName %>
             </div>
             
             <div class="pstatus">
                 <p style="font-weight: bold">Tình trạng: &nbsp</p>
-                    <% if(id.productQuantity <= 0 ){ %>
+                    <% if(danhsach.productQuantity <= 0 ){ %>
                     <p>Hết Hàng</p>
                     <% }else{ %>
                     <p>Còn Hàng</p>
@@ -40,35 +38,33 @@
             </div>
             <div class="pid">
                 <p style="font-weight: bold">Số lượng: &nbsp</p>
-                <p><%= id.productQuantity %></p>
+                <p><%= danhsach.productQuantity %></p>
             </div>
             <div class="pcategory">
                 <p style="font-weight: bold">Thể loại: &nbsp</p>
-                <% danhsach[i].categoryList.forEach(function(id) { %>
+                <% danhsach.categoryID.forEach(function(id){ %>
                 <a style="text-decoration: none; color: black;" href="/category/<%= id._id %>"><p><%= id.categoryName %>&nbsp;</p></a>
                 <% }); %>
             </div>
             <div class="pproducer">
                 <p style="font-weight: bold">Nhà sản xuất: &nbsp</p>
-                <% danhsach[i].producerList.forEach(function(id) { %>
-                <a style="text-decoration: none; color: black;" href="/producer/<%= id._id %>"><p><%= id.producerName %>&nbsp;</p></a>
-                <% }); %>
+                <a style="text-decoration: none; color: black;" href="/producer/<%= danhsach.producerID._id %>"><p><%= danhsach.producerID.producerName %>&nbsp;</p></a>
             </div>
             <div class="p-price" name="price">
-                <%= VND.format(id.priceOut) %>
+                <%= VND.format(danhsach.priceOut) %>
                 </div>
 
             <form action="/add_to_cart" method="post">
             <div class="quantity">
                     <p>Số lượng :</p>
-                    <input name="quantity" type="number" min="1" max="<%= pquantity %>" value="1">
-                    <input name="product_id_hidden" type="hidden" value="<%= danhsach[i]._id %>">
+                    <input name="quantity" type="number" min="1" max="<%= danhsach.productQuantity %>" value="1">
+                    <input name="product_id_hidden" type="hidden" value="<%= danhsach._id %>">
                     <input name="username" type="hidden" class="form-control" value="0">
                     <input name="user_id_hidden" type="hidden" value="<%= userid %>">
                 </div>
                 
                 <div class="btn-box">
-                    <% if(danhsach[i].total==0){ %>
+                    <% if(danhsach.productQuantity==0){ %>
                         <button type="text" class="cart-btn" style="color:white">Liên hệ shop để đặt hàng</button>
                         <% }else{ %>
                             <% if(fullname==1){ %>
@@ -91,7 +87,7 @@
             </div>
 
             <div class="col-8 p-info">
-                <%- id.productDescription %>
+                <%- danhsach.productDescription %>
             </div>
         </div>
     </div>
@@ -112,8 +108,6 @@
             </form> -->
         </div>
     </div>
-    <% }); %>
-    <% } %>
      <%- include('partials/footer') %>
 </body>
 </html>

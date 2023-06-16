@@ -15,25 +15,22 @@
             <div class="cart-heading">
                 <a href="/category/645c554c5eca5bdb84a25d09" style="text-decoration: none; color:black"><h3>Chiến thuật</h3></a>      
             </div>
-        </div>
-
+          
         <div class="row row-cols-4">
             <% for(let i=0; i < danhsach.length; i++) { %>
-                <% danhsach[i].productList.forEach(function(id) { %>
                 <div class="col product">
                     <div class="sp-box">
-                        <a href="/product/<%= id._id %>">
-                            <img src="/images/<%= id.productImage %>" style="text-align: center" height="300px" width="100px" alt="">
+                        <a href="/product/<%= danhsach[i]._id %>">
+                            <img src="/images/<%= danhsach[i].productImage %>" style="text-align: center" height="300px" width="100px" alt="">
                             <div class="p-title">
-                                <p><%= id.productName %></p>
+                                <p><%= danhsach[i].productName %></p>
                             </div>
                             <div class="price">
-                                <p><%= VND.format(id.priceOut) %></p>
+                                <p><%= VND.format(danhsach[i].priceOut) %></p>
                             </div>
                         </a>
                     </div>
                 </div>
-                <% }); %>
                 <% } %>
         </div>
     </div>

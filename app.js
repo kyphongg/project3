@@ -149,27 +149,31 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/signup", (req, res) => {
-  res.render("layouts/clients/signup", {
-    sID: req.sessionID,
-    userid: 1,
-    fullname: 1,
-    cart: 0,
-    nameError: req.flash("nameError"),
-    mobileError: req.flash("mobileError"),
-    usernameError: req.flash("usernameError"),
-    boxError: req.flash("boxError"),
-    emailError: req.flash("emailError"),
-    passwordError: req.flash("passwordError"),
-    mobileED: req.flash("mobileED"),
-    emailED: req.flash("emailED"),
-    nameED: req.flash("nameED"),
-    usernameED: req.flash("usernameED"),
-    passwordED: req.flash("passwordED"),
-    password2ED: req.flash("password2ED"),
-    errorUsername: req.flash("errorUsername"),
-    errorEmail: req.flash("errorEmail"),
-    errorPhone: req.flash("errorPhone"),
-  });
+  if (req.session.guest) {
+    res.redirect("/");
+  } else {
+    res.render("layouts/clients/signup", {
+      sID: req.sessionID,
+      userid: 1,
+      fullname: 1,
+      cart: 0,
+      nameError: req.flash("nameError"),
+      mobileError: req.flash("mobileError"),
+      usernameError: req.flash("usernameError"),
+      boxError: req.flash("boxError"),
+      emailError: req.flash("emailError"),
+      passwordError: req.flash("passwordError"),
+      mobileED: req.flash("mobileED"),
+      emailED: req.flash("emailED"),
+      nameED: req.flash("nameED"),
+      usernameED: req.flash("usernameED"),
+      passwordED: req.flash("passwordED"),
+      password2ED: req.flash("password2ED"),
+      errorUsername: req.flash("errorUsername"),
+      errorEmail: req.flash("errorEmail"),
+      errorPhone: req.flash("errorPhone"),
+    });
+  }
 });
 
 app.post("/save", async function (req, res) {
@@ -591,49 +595,57 @@ app.get("/", async (req, res) => {
     ]);
     var sess = req.session;
     sess.cart = cart;
-    await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
+    let data = await Product.find({
+      $and: [
+        {
+          $or: [{ productStatus: 0 }, { productStatus: 1 }],
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    })
       .populate("categoryID")
-      .populate("producerID")
-      .then((data) => {
-        res.render("layouts/clients/home", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: req.session.cart,
-          tintuc: news,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .populate("producerID");
+    res.render("layouts/clients/home", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+      tintuc: news,
+    });
   } else {
     const news = await News.find({
       $or: [{ newsStatus: 0 }, { newsStatus: 1 }],
     });
-    await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
+    let data = await Product.find({
+      $and: [
+        {
+          $or: [{ productStatus: 0 }, { productStatus: 1 }],
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    })
       .populate("categoryID")
-      .populate("producerID")
-      .then((data) => {
-        res.render("layouts/clients/home", {
-          fullname: 1,
-          userid: 1,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: 0,
-          tintuc: news,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .populate("producerID");
+    res.render("layouts/clients/home", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+      tintuc: news,
+    });
   }
 });
 
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
-app.get("/about", async (req, res) => {
+app.get("/about", (req, res) => {
   if (req.session.guest) {
     res.render("layouts/clients/about", {
       fullname: req.session.fullname,
@@ -1589,182 +1601,112 @@ app.post("/cancel_order/:id", async (req, res) => {
 //Trang tìm kiếm
 app.get("/search", async (req, res) => {
   let kw = req.query.kw;
-  try {
-    if (req.session.guest) {
-      await Product.find({
-        productName: { $regex: ".*" + kw + ".*", $options: "i" },
-      })
-        .then(async (data) => {
-          res.render("layouts/clients/search", {
-            fullname: req.session.fullname,
-            userid: req.session.userid,
-            sID: req.session.sessionID,
-            danhsach: data,
-            VND,
-            cart: req.session.cart,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      await Product.find({
-        productName: { $regex: ".*" + kw + ".*", $options: "i" },
-      })
-        .then(async (data) => {
-          res.render("layouts/clients/search", {
-            fullname: 1,
-            userid: 1,
-            sID: req.session.sessionID,
-            danhsach: data,
-            VND,
-            cart: 0,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  } catch (error) {
-    res.status(400).json({ error: "Lỗi Tìm kiếm" });
+  if (req.session.guest) {
+    let data = await Product.find({
+      productName: { $regex: ".*" + kw + ".*", $options: "i" },
+    });
+    res.render("layouts/clients/search", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+    });
+  } else {
+    let data = await Product.find({
+      productName: { $regex: ".*" + kw + ".*", $options: "i" },
+    });
+    res.render("layouts/clients/search", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+    });
   }
 });
 
 //Trang tất cả các sản phẩm
 app.get("/all_product", async (req, res) => {
   if (req.session.guest) {
-    await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
+    let data = await Product.find({
+      $and: [
+        {
+          $or: [{ productStatus: 0 }, { productStatus: 1 }],
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    })
       .populate("categoryID")
-      .populate("producerID")
-      .then((data) => {
-        res.render("layouts/clients/all_product", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: req.session.cart,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .populate("producerID");
+    res.render("layouts/clients/all_product", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+    });
   } else {
-    await Product.find({ $or: [{ productStatus: 0 }, { productStatus: 1 }] })
+    let data = await Product.find({
+      $and: [
+        {
+          $or: [{ productStatus: 0 }, { productStatus: 1 }],
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    })
       .populate("categoryID")
-      .populate("producerID")
-      .then(async (data) => {
-        res.render("layouts/clients/all_product", {
-          fullname: 1,
-          userid: 1,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: 0,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .populate("producerID");
+    res.render("layouts/clients/all_product", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+    });
   }
 });
 
 //Trang chi tiết sản phẩm
 app.get("/product/:id", async (req, res) => {
   if (req.session.guest) {
-    let name = await Product.findOne({ _id: req.params.id });
-    let pname = name.productName;
-    let pquantity = name.productQuantity;
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
-        },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/product", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          cart: req.session.cart,
-          VND,
-          pname,
-          pquantity,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    let product = await Product.findOne({ _id: req.params.id });
+    let pname = product.productName;
+    let data = await Product.findOne({ _id: req.params.id })
+      .populate("categoryID")
+      .populate("producerID");
+    res.render("layouts/clients/product", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      cart: req.session.cart,
+      VND,
+      pname,
+    });
   } else {
-    let name = await Product.findOne({ _id: req.params.id });
-    let pname = name.productName;
-    let pquantity = name.productQuantity;
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
-        },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/product", {
-          fullname: 1,
-          userid: 1,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: 0,
-          pname,
-          pquantity,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    let product = await Product.findOne({ _id: req.params.id });
+    let pname = product.productName;
+    let data = await Product.findOne({ _id: req.params.id })
+      .populate("categoryID")
+      .populate("producerID");
+    res.render("layouts/clients/product", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+      pname,
+    });
   }
 });
 
@@ -1772,7 +1714,16 @@ app.get("/product/:id", async (req, res) => {
 //PS4
 app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
   if (req.session.guest) {
-    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c59f1cf52334165588918")});
+    let data = await Product.find({
+      $and: [
+        {
+          producerID: new mongoose.Types.ObjectId("645c59f1cf52334165588918"),
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    });
     res.render("layouts/clients/ps4", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1782,7 +1733,16 @@ app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
       VND,
     });
   } else {
-    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c59f1cf52334165588918")});
+    let data = await Product.find({
+      $and: [
+        {
+          producerID: new mongoose.Types.ObjectId("645c59f1cf52334165588918"),
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    });
     res.render("layouts/clients/ps4", {
       fullname: 1,
       userid: 1,
@@ -1797,7 +1757,16 @@ app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
 //PS5
 app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
   if (req.session.guest) {
-    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b")});
+    let data = await Product.find({
+      $and: [
+        {
+          producerID: new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b"),
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    });
     res.render("layouts/clients/ps5", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1807,7 +1776,16 @@ app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
       VND,
     });
   } else {
-    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b")});
+    let data = await Product.find({
+      $and: [
+        {
+          producerID: new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b"),
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    });
     res.render("layouts/clients/ps5", {
       fullname: 1,
       userid: 1,
@@ -1822,7 +1800,16 @@ app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
 //Nintendo
 app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
   if (req.session.guest) {
-    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5627e8da91e62f850537")});
+    let data = await Product.find({
+      $and: [
+        {
+          producerID: new mongoose.Types.ObjectId("645c5627e8da91e62f850537"),
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    });
     res.render("layouts/clients/nintendo", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1832,7 +1819,16 @@ app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
       VND,
     });
   } else {
-    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5627e8da91e62f850537")});
+    let data = await Product.find({
+      $and: [
+        {
+          producerID: new mongoose.Types.ObjectId("645c5627e8da91e62f850537"),
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    });
     res.render("layouts/clients/nintendo", {
       fullname: 1,
       userid: 1,
@@ -1847,7 +1843,16 @@ app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
 //Xbox
 app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
   if (req.session.guest) {
-    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5a7fcf5233416558892c")});
+    let data = await Product.find({
+      $and: [
+        {
+          producerID: new mongoose.Types.ObjectId("645c5a7fcf5233416558892c"),
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    });
     res.render("layouts/clients/xbox", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1857,7 +1862,16 @@ app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
       VND,
     });
   } else {
-    let data = await Product.find({producerID:new mongoose.Types.ObjectId("645c5a7fcf5233416558892c")});
+    let data = await Product.find({
+      $and: [
+        {
+          producerID: new mongoose.Types.ObjectId("645c5a7fcf5233416558892c"),
+        },
+        {
+          productQuantity: { $gt: 0 },
+        },
+      ],
+    });
     res.render("layouts/clients/xbox", {
       fullname: 1,
       userid: 1,
@@ -1873,606 +1887,258 @@ app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
 //Hành động
 app.get("/category/6476b3651cde57b995f9a9ed", async (req, res) => {
   if (req.session.guest) {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("6476b3651cde57b995f9a9ed"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "6476b3651cde57b995f9a9ed"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/hanhdong", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: req.session.cart,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/hanhdong", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+    });
   } else {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("6476b3651cde57b995f9a9ed"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "6476b3651cde57b995f9a9ed"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/hanhdong", {
-          fullname: 1,
-          userid: 1,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: 0,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/hanhdong", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+    });
   }
 });
 
 //Phiêu lưu
-app.get("/category/645c5a60cf52334165588925", (req, res) => {
+app.get("/category/645c5a60cf52334165588925", async (req, res) => {
   if (req.session.guest) {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c5a60cf52334165588925"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c5a60cf52334165588925"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/phieuluu", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: req.session.cart,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/phieuluu", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+    });
   } else {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c5a60cf52334165588925"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c5a60cf52334165588925"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/phieuluu", {
-          fullname: 1,
-          userid: 1,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: 0,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/phieuluu", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+    });
   }
 });
 
 //Thể thao
-app.get("/category/645c54d3c72a21d65472d42b", (req, res) => {
+app.get("/category/645c54d3c72a21d65472d42b", async (req, res) => {
   if (req.session.guest) {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c54d3c72a21d65472d42b"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/thethao", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: req.session.cart,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/thethao", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+    });
   } else {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c54d3c72a21d65472d42b"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/thethao", {
-          fullname: 1,
-          userid: 1,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: 0,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/thethao", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+    });
   }
 });
 
 //Chiến thuật
-app.get("/category/645c554c5eca5bdb84a25d09", (req, res) => {
+app.get("/category/645c554c5eca5bdb84a25d09", async (req, res) => {
   if (req.session.guest) {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c554c5eca5bdb84a25d09"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/chienthuat", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: req.session.cart,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/chienthuat", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+    });
   } else {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c554c5eca5bdb84a25d09"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/chienthuat", {
-          fullname: 1,
-          userid: 1,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: 0,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/chienthuat", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+    });
   }
 });
 
 //Nhập vai
-app.get("/category/645c5a59cf52334165588922", (req, res) => {
+app.get("/category/645c5a59cf52334165588922", async (req, res) => {
   if (req.session.guest) {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c5a59cf52334165588922"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c5a59cf52334165588922"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/nhapvai", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: req.session.cart,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/nhapvai", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+    });
   } else {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c5a59cf52334165588922"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c5a59cf52334165588922"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/nhapvai", {
-          fullname: 1,
-          userid: 1,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: 0,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/nhapvai", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+    });
   }
 });
 
 //Mô phỏng
-app.get("/category/645c5a67cf52334165588928", (req, res) => {
+app.get("/category/645c5a67cf52334165588928", async (req, res) => {
   if (req.session.guest) {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c5a67cf52334165588928"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c5a67cf52334165588928"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/mophong", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: req.session.cart,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/mophong", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+    });
   } else {
-    Warehouse.aggregate([
-      { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
+    let data = await Product.find({
+      $and: [
+        {
+          categoryID: new mongoose.Types.ObjectId("645c5a67cf52334165588928"),
         },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "productList.categoryID",
-          foreignField: "_id",
-          as: "categoryList",
+        {
+          productQuantity: { $gt: 0 },
         },
-      },
-      {
-        $match: {
-          "productList.categoryID": new mongoose.Types.ObjectId(
-            "645c5a67cf52334165588928"
-          ),
-        },
-      },
-      {
-        $lookup: {
-          from: "producers",
-          localField: "productList.producerID",
-          foreignField: "_id",
-          as: "producerList",
-        },
-      },
-    ])
-      .then((data) => {
-        res.render("layouts/clients/mophong", {
-          fullname: 1,
-          userid: 1,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: 0,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      ],
+    });
+    res.render("layouts/clients/mophong", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: 0,
+    });
   }
 });
 
@@ -2554,131 +2220,131 @@ app.get("/admin_home", async (req, res) => {
     let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
 
     let timeMonday = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(1)
-        .format("DD/MM/YYYY");
-      let timeTuesday = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(2)
-        .format("DD/MM/YYYY");
-      let timeWednesday = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(3)
-        .format("DD/MM/YYYY");
-      let timeThursday = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(4)
-        .format("DD/MM/YYYY");
-      let timeFriday = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(5)
-        .format("DD/MM/YYYY");
-      let timeSaturday = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(6)
-        .format("DD/MM/YYYY");
-      let timeSunday = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(7)
-        .format("DD/MM/YYYY");
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .day(1)
+      .format("DD/MM/YYYY");
+    let timeTuesday = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .day(2)
+      .format("DD/MM/YYYY");
+    let timeWednesday = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .day(3)
+      .format("DD/MM/YYYY");
+    let timeThursday = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .day(4)
+      .format("DD/MM/YYYY");
+    let timeFriday = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .day(5)
+      .format("DD/MM/YYYY");
+    let timeSaturday = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .day(6)
+      .format("DD/MM/YYYY");
+    let timeSunday = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .day(7)
+      .format("DD/MM/YYYY");
 
-      // let startOfMonth = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").startOf('month').format('YYYY-MM-DD');
+    // let startOfMonth = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").startOf('month').format('YYYY-MM-DD');
 
-      let dateStart = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(1)
-        .format("YYYY-MM-DD");
-      let dateEnd = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(7)
-        .format("YYYY-MM-DD");
-      let dateNow = moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .format("YYYY-MM-DD");
+    let dateStart = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .day(1)
+      .format("YYYY-MM-DD");
+    let dateEnd = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .day(7)
+      .format("YYYY-MM-DD");
+    let dateNow = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .format("YYYY-MM-DD");
 
-      let dataNow = await Order.find({ time: time });
+    let dataNow = await Order.find({ time: time });
 
-      let data1 = await Order.find({ time: timeMonday });
-      let data2 = await Order.find({ time: timeTuesday });
-      let data3 = await Order.find({ time: timeWednesday });
-      let data4 = await Order.find({ time: timeThursday });
-      let data5 = await Order.find({ time: timeFriday });
-      let data6 = await Order.find({ time: timeSaturday });
-      let data7 = await Order.find({ time: timeSunday });
+    let data1 = await Order.find({ time: timeMonday });
+    let data2 = await Order.find({ time: timeTuesday });
+    let data3 = await Order.find({ time: timeWednesday });
+    let data4 = await Order.find({ time: timeThursday });
+    let data5 = await Order.find({ time: timeFriday });
+    let data6 = await Order.find({ time: timeSaturday });
+    let data7 = await Order.find({ time: timeSunday });
 
-      let moneyNow = 0;
+    let moneyNow = 0;
 
-      let money1 = 0;
-      let money2 = 0;
-      let money3 = 0;
-      let money4 = 0;
-      let money5 = 0;
-      let money6 = 0;
-      let money7 = 0;
+    let money1 = 0;
+    let money2 = 0;
+    let money3 = 0;
+    let money4 = 0;
+    let money5 = 0;
+    let money6 = 0;
+    let money7 = 0;
 
-      for (let i = 0; i < dataNow.length; i++) {
-        moneyNow += dataNow[i].total;
-      }
+    for (let i = 0; i < dataNow.length; i++) {
+      moneyNow += dataNow[i].total;
+    }
 
-      for (let i = 0; i < data1.length; i++) {
-        money1 += data1[i].total;
-      }
+    for (let i = 0; i < data1.length; i++) {
+      money1 += data1[i].total;
+    }
 
-      for (let i = 0; i < data2.length; i++) {
-        money2 += data2[i].total;
-      }
+    for (let i = 0; i < data2.length; i++) {
+      money2 += data2[i].total;
+    }
 
-      for (let i = 0; i < data3.length; i++) {
-        money3 += data3[i].total;
-      }
+    for (let i = 0; i < data3.length; i++) {
+      money3 += data3[i].total;
+    }
 
-      for (let i = 0; i < data4.length; i++) {
-        money4 += data4[i].total;
-      }
+    for (let i = 0; i < data4.length; i++) {
+      money4 += data4[i].total;
+    }
 
-      for (let i = 0; i < data5.length; i++) {
-        money5 += data5[i].total;
-      }
+    for (let i = 0; i < data5.length; i++) {
+      money5 += data5[i].total;
+    }
 
-      for (let i = 0; i < data6.length; i++) {
-        money6 += data6[i].total;
-      }
+    for (let i = 0; i < data6.length; i++) {
+      money6 += data6[i].total;
+    }
 
-      for (let i = 0; i < data7.length; i++) {
-        money7 += data7[i].total;
-      }
+    for (let i = 0; i < data7.length; i++) {
+      money7 += data7[i].total;
+    }
 
-      // let test = await Warehouse.aggregate([
-      //   { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-      //   {
-      //     $lookup: {
-      //       from: "products",
-      //       localField: "_id",
-      //       foreignField: "_id",
-      //       as: "productList",
-      //     },
-      //   },
-      // ]);
-      // let qty = [];
-      // let cate = [];
+    // let test = await Warehouse.aggregate([
+    //   { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+    //   {
+    //     $lookup: {
+    //       from: "products",
+    //       localField: "_id",
+    //       foreignField: "_id",
+    //       as: "productList",
+    //     },
+    //   },
+    // ]);
+    // let qty = [];
+    // let cate = [];
 
-      // for(let i = 0; i < test.length; i++) {
-      //   test[i].productList.forEach(function(id){
-      //     // id.categoryID.forEach(function(ca){
-      //     //   console.log(ca);
-      //     // });
-      //     cate.push(id.categoryID);
-      //     qty.push(test[i].total - id.productQuantity);
-      //   })
-      // }
-      
-      // let obj = cate.map((id, index_value) => {
-      //   return {
-      //     category: id,
-      //     quantity: qty[index_value],
-      //   };
-      // });
-            
+    // for(let i = 0; i < test.length; i++) {
+    //   test[i].productList.forEach(function(id){
+    //     // id.categoryID.forEach(function(ca){
+    //     //   console.log(ca);
+    //     // });
+    //     cate.push(id.categoryID);
+    //     qty.push(test[i].total - id.productQuantity);
+    //   })
+    // }
+
+    // let obj = cate.map((id, index_value) => {
+    //   return {
+    //     category: id,
+    //     quantity: qty[index_value],
+    //   };
+    // });
+
     res.render("layouts/servers/home", {
       fullname: req.session.fullname,
       number: customer,
@@ -3969,7 +3635,10 @@ app.get("/monday", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(1).format("DD/MM/YYYY");
+      let time = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(1)
+        .format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
       let list = await Order.aggregate([
         { $match: { time: time } },
@@ -4011,7 +3680,7 @@ app.get("/monday", async (req, res) => {
         money,
       });
     } else {
-    res.redirect("/admin_login");
+      res.redirect("/admin_login");
     }
   } else {
     res.redirect("/admin_login");
@@ -4022,7 +3691,10 @@ app.get("/tuesday", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(2).format("DD/MM/YYYY");
+      let time = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(2)
+        .format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
       let list = await Order.aggregate([
         { $match: { time: time } },
@@ -4064,7 +3736,7 @@ app.get("/tuesday", async (req, res) => {
         money,
       });
     } else {
-    res.redirect("/admin_login");
+      res.redirect("/admin_login");
     }
   } else {
     res.redirect("/admin_login");
@@ -4075,7 +3747,10 @@ app.get("/wednesday", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(3).format("DD/MM/YYYY");
+      let time = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(3)
+        .format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
       let list = await Order.aggregate([
         { $match: { time: time } },
@@ -4117,7 +3792,7 @@ app.get("/wednesday", async (req, res) => {
         money,
       });
     } else {
-    res.redirect("/admin_login");
+      res.redirect("/admin_login");
     }
   } else {
     res.redirect("/admin_login");
@@ -4128,7 +3803,10 @@ app.get("/thursday", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(4).format("DD/MM/YYYY");
+      let time = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(4)
+        .format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
       let list = await Order.aggregate([
         { $match: { time: time } },
@@ -4170,7 +3848,7 @@ app.get("/thursday", async (req, res) => {
         money,
       });
     } else {
-    res.redirect("/admin_login");
+      res.redirect("/admin_login");
     }
   } else {
     res.redirect("/admin_login");
@@ -4181,7 +3859,10 @@ app.get("/friday", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(5).format("DD/MM/YYYY");
+      let time = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(5)
+        .format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
       let list = await Order.aggregate([
         { $match: { time: time } },
@@ -4223,7 +3904,7 @@ app.get("/friday", async (req, res) => {
         money,
       });
     } else {
-    res.redirect("/admin_login");
+      res.redirect("/admin_login");
     }
   } else {
     res.redirect("/admin_login");
@@ -4234,7 +3915,10 @@ app.get("/saturday", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(6).format("DD/MM/YYYY");
+      let time = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(6)
+        .format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
       let list = await Order.aggregate([
         { $match: { time: time } },
@@ -4276,7 +3960,7 @@ app.get("/saturday", async (req, res) => {
         money,
       });
     } else {
-    res.redirect("/admin_login");
+      res.redirect("/admin_login");
     }
   } else {
     res.redirect("/admin_login");
@@ -4287,7 +3971,10 @@ app.get("/sunday", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").day(8).format("DD/MM/YYYY");
+      let time = moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .day(8)
+        .format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
       let list = await Order.aggregate([
         { $match: { time: time } },
@@ -4329,7 +4016,7 @@ app.get("/sunday", async (req, res) => {
         money,
       });
     } else {
-    res.redirect("/admin_login");
+      res.redirect("/admin_login");
     }
   } else {
     res.redirect("/admin_login");
@@ -4411,11 +4098,11 @@ app.get("/sale_history/:id", async (req, res) => {
         { "items.$": 1 }
       );
       let money = 0;
-      for(let i=0; i < data.length; i++) {
-        data[i].items.forEach(function(id) {
+      for (let i = 0; i < data.length; i++) {
+        data[i].items.forEach(function (id) {
           money += id.quantity;
         });
-      };
+      }
       const name = await Order.findOne(
         { "items._id": req.params.id },
         { "items.$": 1 }
