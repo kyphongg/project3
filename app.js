@@ -3193,12 +3193,14 @@ app.get("/new_orders", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
       let data = await Order.find({ orderStatus: 0 }).populate("userID");
+      const order = await Order.find({ orderStatus: 0 }).count();
       res.render("layouts/servers/orders/new_orders", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
         VND,
+        order,
       });
     } else {
       res.redirect("/admin_home");
@@ -3265,12 +3267,14 @@ app.get("/accept_orders", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
       let data = await Order.find({ orderStatus: 1 }).populate("userID");
+      const order = await Order.find({ orderStatus: 1 }).count();
       res.render("layouts/servers/orders/accept_orders", {
         fullname: req.session.fullname,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
         VND,
+        order,
       });
     } else {
       res.redirect("/admin_home");
