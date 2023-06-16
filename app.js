@@ -647,14 +647,14 @@ app.get("/", async (req, res) => {
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
 app.get("/about", (req, res) => {
   if (req.session.guest) {
-    res.render("layouts/clients/about", {
+    res.render("layouts/clients/main/about", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/about", {
+    res.render("layouts/clients/main/about", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -665,14 +665,14 @@ app.get("/about", (req, res) => {
 
 app.get("/privacy_policy", (req, res) => {
   if (req.session.guest) {
-    res.render("layouts/clients/privacy_policy", {
+    res.render("layouts/clients/main/privacy_policy", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/privacy_policy", {
+    res.render("layouts/clients/main/privacy_policy", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -683,14 +683,14 @@ app.get("/privacy_policy", (req, res) => {
 
 app.get("/terms_of_service", (req, res) => {
   if (req.session.guest) {
-    res.render("layouts/clients/terms_of_service", {
+    res.render("layouts/clients/main/terms_of_service", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/terms_of_service", {
+    res.render("layouts/clients/main/terms_of_service", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -743,14 +743,14 @@ app.get("/news/:id", async (req, res) => {
 
 app.get("/hiring", (req, res) => {
   if (req.session.guest) {
-    res.render("layouts/clients/hiring", {
+    res.render("layouts/clients/main/hiring", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/hiring", {
+    res.render("layouts/clients/main/hiring", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -761,14 +761,14 @@ app.get("/hiring", (req, res) => {
 
 app.get("/support", (req, res) => {
   if (req.session.guest) {
-    res.render("layouts/clients/support", {
+    res.render("layouts/clients/main/support", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/support", {
+    res.render("layouts/clients/main/support", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -779,14 +779,14 @@ app.get("/support", (req, res) => {
 
 app.get("/hotline", (req, res) => {
   if (req.session.guest) {
-    res.render("layouts/clients/hotline", {
+    res.render("layouts/clients/main/hotline", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/hotline", {
+    res.render("layouts/clients/main/hotline", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -797,14 +797,14 @@ app.get("/hotline", (req, res) => {
 
 app.get("/customer_care", (req, res) => {
   if (req.session.guest) {
-    res.render("layouts/clients/customer_care", {
+    res.render("layouts/clients/main/customer_care", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
     });
   } else {
-    res.render("layouts/clients/customer_care", {
+    res.render("layouts/clients/main/customer_care", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -1605,7 +1605,7 @@ app.get("/search", async (req, res) => {
     let data = await Product.find({
       productName: { $regex: ".*" + kw + ".*", $options: "i" },
     });
-    res.render("layouts/clients/search", {
+    res.render("layouts/clients/main/search", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1617,7 +1617,7 @@ app.get("/search", async (req, res) => {
     let data = await Product.find({
       productName: { $regex: ".*" + kw + ".*", $options: "i" },
     });
-    res.render("layouts/clients/search", {
+    res.render("layouts/clients/main/search", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -1724,7 +1724,7 @@ app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/ps4", {
+    res.render("layouts/clients/producer/ps4", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1743,7 +1743,7 @@ app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/ps4", {
+    res.render("layouts/clients/producer/ps4", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -1767,7 +1767,7 @@ app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/ps5", {
+    res.render("layouts/clients/producer/ps5", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1786,7 +1786,7 @@ app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/ps5", {
+    res.render("layouts/clients/producer/ps5", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -1810,7 +1810,7 @@ app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/nintendo", {
+    res.render("layouts/clients/producer/nintendo", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1829,7 +1829,7 @@ app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/nintendo", {
+    res.render("layouts/clients/producer/nintendo", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -1853,7 +1853,7 @@ app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/xbox", {
+    res.render("layouts/clients/producer/xbox", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1872,7 +1872,7 @@ app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/xbox", {
+    res.render("layouts/clients/producer/xbox", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -1897,7 +1897,7 @@ app.get("/category/6476b3651cde57b995f9a9ed", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/hanhdong", {
+    res.render("layouts/clients/category/hanhdong", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1916,7 +1916,7 @@ app.get("/category/6476b3651cde57b995f9a9ed", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/hanhdong", {
+    res.render("layouts/clients/category/hanhdong", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -1940,7 +1940,7 @@ app.get("/category/645c5a60cf52334165588925", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/phieuluu", {
+    res.render("layouts/clients/category/phieuluu", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -1959,7 +1959,7 @@ app.get("/category/645c5a60cf52334165588925", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/phieuluu", {
+    res.render("layouts/clients/category/phieuluu", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -1983,7 +1983,7 @@ app.get("/category/645c54d3c72a21d65472d42b", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/thethao", {
+    res.render("layouts/clients/category/thethao", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -2002,7 +2002,7 @@ app.get("/category/645c54d3c72a21d65472d42b", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/thethao", {
+    res.render("layouts/clients/category/thethao", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -2026,7 +2026,7 @@ app.get("/category/645c554c5eca5bdb84a25d09", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/chienthuat", {
+    res.render("layouts/clients/category/chienthuat", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -2045,7 +2045,7 @@ app.get("/category/645c554c5eca5bdb84a25d09", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/chienthuat", {
+    res.render("layouts/clients/category/chienthuat", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -2069,7 +2069,7 @@ app.get("/category/645c5a59cf52334165588922", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/nhapvai", {
+    res.render("layouts/clients/category/nhapvai", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -2088,7 +2088,7 @@ app.get("/category/645c5a59cf52334165588922", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/nhapvai", {
+    res.render("layouts/clients/category/nhapvai", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
@@ -2112,7 +2112,7 @@ app.get("/category/645c5a67cf52334165588928", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/mophong", {
+    res.render("layouts/clients/category/mophong", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
@@ -2131,7 +2131,7 @@ app.get("/category/645c5a67cf52334165588928", async (req, res) => {
         },
       ],
     });
-    res.render("layouts/clients/mophong", {
+    res.render("layouts/clients/category/mophong", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,

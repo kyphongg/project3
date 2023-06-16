@@ -4,38 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">          
-    <title>Thể loại</title>
-    <%- include('partials/head') %>
+    <title>Chiến thuật</title>
+    <%- include('../partials/head') %>
 </head>
 <body>
-    <%- include('partials/header') %>
+    <%- include('../partials/header') %>
     
     <div class="container">
         <div class="cart-p">
             <div class="cart-heading">
-                <a href="/category/<%= id._id %>" style="text-decoration: none; color:black"><h3>Test</h3></a>      
+                <a href="/category/645c554c5eca5bdb84a25d09" style="text-decoration: none; color:black"><h3>Chiến thuật</h3></a>      
             </div>
-            <% for(let i=0; i < danhsach.length; i++) { %>
-                <% danhsach[i].productList.forEach(function(id) { %>
+          
         <div class="row row-cols-4">
+            <% for(let i=0; i < danhsach.length; i++) { %>
                 <div class="col product">
                     <div class="sp-box">
-                        <a href="/product/<%= id._id %>">
-                            <img src="/images/<%= id.productImage %>" style="text-align: center" height="300px" width="100px" alt="">
+                        <a href="/product/<%= danhsach[i]._id %>">
+                            <img src="/images/<%= danhsach[i].productImage %>" style="text-align: center" height="300px" width="100px" alt="">
                             <div class="p-title">
-                                <p><%= id.productName %></p>
+                                <p><%= danhsach[i].productName %></p>
                             </div>
                             <div class="price">
-                                <p><%= VND.format(id.priceOut) %></p>
+                                <p><%= VND.format(danhsach[i].priceOut) %></p>
                             </div>
                         </a>
                     </div>
                 </div>
+                <% } %>
         </div>
-        <% }); %>
-        <% } %>
     </div>
     
-     <%- include('partials/footer') %>
+     <%- include('../partials/footer') %>
 </body>
 </html>
