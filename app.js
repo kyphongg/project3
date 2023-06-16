@@ -395,7 +395,8 @@ app.post("/requestPasswordReset", async (req, res) => {
     .tz(Date.now(), "Asia/Ho_Chi_Minh")
     .format("DD/MM/YYYY hh:mm a");
   let timeOut = moment
-    .tz(Date.now() + 3600000, "Asia/Ho_Chi_Minh")
+    .tz(Date.now(), "Asia/Ho_Chi_Minh")
+    .add(15, 'minutes')
     .format("DD/MM/YYYY hh:mm a");
   if (errorEmail == "") {
     req.flash("error", "Vui lòng nhập Email!");
@@ -416,7 +417,7 @@ app.post("/requestPasswordReset", async (req, res) => {
           subject: "Khôi phục mật khẩu tài khoản website GAMING STORE",
           html: `<p>Nhấn vào <a href=${
             "http://localhost:3000/changePassword/" + user._id
-          }>đường dẫn này</a> để khôi phục lại mật khẩu.</p><p>Đường dẫn sẽ <b>hết hạn trong 60 phút!</b></p><p>Mã thay đổi: ${resetString}</p>`,
+          }>đường dẫn này</a> để khôi phục lại mật khẩu.</p><p>Đường dẫn sẽ <b>hết hạn trong 15 phút!</b></p><p>Mã thay đổi: ${resetString}</p>`,
         });
         const newPasswordReset = new Password({
           userID: user._id,
@@ -458,7 +459,7 @@ app.get("/changePassword/:id", async (req, res) => {
     let timeNow = moment
       .tz(Date.now(), "Asia/Ho_Chi_Minh")
       .format("DD/MM/YYYY hh:mm a");
-    let timeOut = check.end_Wdate;
+    let timeOut = check.end_date;
     let e = 0;
     if (timeNow >= timeOut) {
       e++;
