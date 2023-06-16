@@ -176,7 +176,7 @@ app.get("/signup", (req, res) => {
   }
 });
 
-app.post("/save", async function (req, res) {
+app.post("/save", async (req, res) => {
   var box = req.body.checkbox;
   var name = req.body.fullname;
   var email = req.body.email;
@@ -322,7 +322,7 @@ app.post("/save", async function (req, res) {
 });
 
 //Xử lý đăng nhập
-app.post("/login", async function (req, res) {
+app.post("/login", async (req, res) => {
   let errorEmail = req.body.email;
   let email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   let e = 0;
@@ -371,7 +371,7 @@ app.post("/login", async function (req, res) {
 });
 
 //Quên mật khẩu
-app.get("/forget", function (req, res) {
+app.get("/forget", (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
   } else {
@@ -387,7 +387,7 @@ app.get("/forget", function (req, res) {
   }
 });
 
-app.post("/requestPasswordReset", async function (req, res) {
+app.post("/requestPasswordReset", async (req, res) => {
   let errorEmail = req.body.email;
   let email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   let e = 0;
@@ -438,7 +438,7 @@ app.post("/requestPasswordReset", async function (req, res) {
   }
 });
 
-app.get("/done", function (req, res) {
+app.get("/done", (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
   } else {
@@ -450,7 +450,7 @@ app.get("/done", function (req, res) {
   }
 });
 
-app.get("/changePassword/:id", async function (req, res) {
+app.get("/changePassword/:id", async (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
   } else {
@@ -482,7 +482,7 @@ app.get("/changePassword/:id", async function (req, res) {
   }
 });
 
-app.post("/saveNewPassword", async function (req, res) {
+app.post("/saveNewPassword", async (req, res) => {
   var userid = req.body.userid;
   var code = req.body.code;
   var password = req.body.password;
@@ -564,7 +564,7 @@ app.get("/success-changepwd", (req, res) => {
 });
 
 //Đăng xuất
-app.get("/logout", function (req, res) {
+app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
@@ -1145,7 +1145,7 @@ app.post("/update_quantity_cart", async (req, res) => {
   res.redirect("/cart/" + uid);
 });
 
-app.get("/delete_cart_items/:id", async function (req, res) {
+app.get("/delete_cart_items/:id", async (req, res) => {
   if (req.session.guest) {
     const uid = req.session.userid;
     const productId = req.params.id;
@@ -2156,7 +2156,7 @@ app.get("/admin_login", (req, res) => {
 });
 
 //Xử lý đăng nhập
-app.post("/admin_login", async function (req, res) {
+app.post("/admin_login", async (req, res) => {
   //Kiểm tra xem tài khoản có tồn tại hay không
   let errorEmail = req.body.email;
   let errorPassword = req.body.password;
@@ -2206,7 +2206,7 @@ app.post("/admin_login", async function (req, res) {
 });
 
 //Đăng xuất
-app.get("/admin_logout", function (req, res) {
+app.get("/admin_logout", (req, res) => {
   req.session.destroy();
   res.redirect("/admin_login");
 });
@@ -2413,7 +2413,7 @@ app.get("/add_categories", (req, res) => {
   }
 });
 
-app.post("/categories_save", async function (req, res) {
+app.post("/categories_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var check = await Category.findOne({ categoryName: req.body.categoryName });
     if (check) {
@@ -2452,7 +2452,7 @@ app.get("/edit_categories/:id", async (req, res) => {
   }
 });
 
-app.post("/edit_categories_save", async function (req, res) {
+app.post("/edit_categories_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var check = await Category.findOne({ categoryName: req.body.categoryName });
     if (check) {
@@ -2474,7 +2474,7 @@ app.post("/edit_categories_save", async function (req, res) {
   }
 });
 
-app.get("/delete_categories/:id", function (req, res) {
+app.get("/delete_categories/:id", (req, res) => {
   if (req.session.daDangNhap) {
     Category.deleteOne({ _id: req.params.id }).then(function () {
       req.flash("success", "Xoá thành công");
@@ -2524,7 +2524,7 @@ app.get("/add_producers", (req, res) => {
   }
 });
 
-app.post("/producers_save", async function (req, res) {
+app.post("/producers_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var check = await Producer.findOne({ producerName: req.body.producerName });
     if (check) {
@@ -2563,7 +2563,7 @@ app.get("/edit_producers/:id", async (req, res) => {
   }
 });
 
-app.post("/edit_producers_save", async function (req, res) {
+app.post("/edit_producers_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var check = await Producer.findOne({ producerName: req.body.producerName });
     if (check) {
@@ -2585,7 +2585,7 @@ app.post("/edit_producers_save", async function (req, res) {
   }
 });
 
-app.get("/delete_producers/:id", function (req, res) {
+app.get("/delete_producers/:id", (req, res) => {
   if (req.session.daDangNhap) {
     Producer.deleteOne({ _id: req.params.id }).then(function () {
       req.flash("success", "Xoá thành công");
@@ -2859,7 +2859,7 @@ app.get("/admin_setting/:id", async (req, res) => {
   }
 });
 
-app.post("/admin_save", async function (req, res) {
+app.post("/admin_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     var vnn_regex =
@@ -2982,7 +2982,7 @@ app.get("/add_employee", (req, res) => {
   }
 });
 
-app.get("/edit/:id", async function (req, res) {
+app.get("/edit/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0) {
@@ -3001,7 +3001,7 @@ app.get("/edit/:id", async function (req, res) {
   }
 });
 
-app.post("/edit_save", async function (req, res) {
+app.post("/edit_save", async (req, res) => {
   if (req.session.daDangNhap) {
     let check = await Admin.findOne({
       $or: [{ email: req.body.email }, { username: req.body.username }],
@@ -3029,7 +3029,7 @@ app.post("/edit_save", async function (req, res) {
   }
 });
 
-app.get("/delete/:id", function (req, res) {
+app.get("/delete/:id", (req, res) => {
   if (req.session.daDangNhap) {
     Admin.deleteOne({ _id: req.params.id }).then(function () {
       req.flash("success", "Xoá thành công");
@@ -4209,7 +4209,7 @@ app.get("/add_coupon", async (req, res) => {
   }
 });
 
-app.post("/coupon_save", async function (req, res) {
+app.post("/coupon_save", async (req, res) => {
   if (req.session.daDangNhap) {
     let check = await Coupon.findOne({ couponCode: req.body.couponCode });
     if (check) {
@@ -4254,7 +4254,7 @@ app.get("/edit_coupon/:id", async (req, res) => {
   }
 });
 
-app.post("/edit_coupon_save", async function (req, res) {
+app.post("/edit_coupon_save", async (req, res) => {
   if (req.session.daDangNhap) {
     Coupon.updateOne(
       { _id: req.body.couponId },
@@ -4275,7 +4275,7 @@ app.post("/edit_coupon_save", async function (req, res) {
   }
 });
 
-app.get("/delete_coupon/:id", function (req, res) {
+app.get("/delete_coupon/:id", (req, res) => {
   if (req.session.daDangNhap) {
     Coupon.deleteOne({ _id: req.params.id }).then(function () {
       res.redirect("/coupon");
@@ -4325,7 +4325,7 @@ app.get("/add_cities", async (req, res) => {
   }
 });
 
-app.post("/cities_save", async function (req, res) {
+app.post("/cities_save", async (req, res) => {
   if (req.session.daDangNhap) {
     let check = await City.findOne({ cityName: req.body.cityName });
     if (check) {
@@ -4365,7 +4365,7 @@ app.get("/edit_cities/:id", async (req, res) => {
   }
 });
 
-app.post("/edit_cities_save", async function (req, res) {
+app.post("/edit_cities_save", async (req, res) => {
   if (req.session.daDangNhap) {
     City.updateOne(
       { _id: req.body.cityId },
@@ -4381,7 +4381,7 @@ app.post("/edit_cities_save", async function (req, res) {
   }
 });
 
-app.get("/delete_cities/:id", function (req, res) {
+app.get("/delete_cities/:id", (req, res) => {
   if (req.session.daDangNhap) {
     City.deleteOne({ _id: req.params.id }).then(function () {
       req.flash("success", "Xoá thành công");
@@ -4438,7 +4438,7 @@ app.get("/add_news", async (req, res) => {
   }
 });
 
-app.post("/news_save", async function (req, res) {
+app.post("/news_save", async (req, res) => {
   if (req.session.daDangNhap) {
     upload(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
@@ -4497,7 +4497,7 @@ app.get("/edit_news/:id", async (req, res) => {
   }
 });
 
-app.post("/edit_news_save", async function (req, res) {
+app.post("/edit_news_save", async (req, res) => {
   if (req.session.daDangNhap) {
     upload(req, res, function (err) {
       //Không chọn file mới
@@ -4550,7 +4550,7 @@ app.post("/edit_news_save", async function (req, res) {
   }
 });
 
-app.get("/delete_news/:id", function (req, res) {
+app.get("/delete_news/:id", (req, res) => {
   if (req.session.daDangNhap) {
     News.deleteOne({ _id: req.params.id }).then(function () {
       req.flash("success", "Xoá thành công");
