@@ -2415,37 +2415,6 @@ app.get("/admin_home", async (req, res) => {
       money7 += data7[i].total;
     }
 
-    // let test = await Warehouse.aggregate([
-    //   { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
-    //   {
-    //     $lookup: {
-    //       from: "products",
-    //       localField: "_id",
-    //       foreignField: "_id",
-    //       as: "productList",
-    //     },
-    //   },
-    // ]);
-    // let qty = [];
-    // let cate = [];
-
-    // for(let i = 0; i < test.length; i++) {
-    //   test[i].productList.forEach(function(id){
-    //     // id.categoryID.forEach(function(ca){
-    //     //   console.log(ca);
-    //     // });
-    //     cate.push(id.categoryID);
-    //     qty.push(test[i].total - id.productQuantity);
-    //   })
-    // }
-
-    // let obj = cate.map((id, index_value) => {
-    //   return {
-    //     category: id,
-    //     quantity: qty[index_value],
-    //   };
-    // });
-
     res.render("layouts/servers/home", {
       fullname: req.session.fullname,
       number: customer,
