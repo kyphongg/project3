@@ -597,14 +597,7 @@ app.get("/", async (req, res) => {
     var sess = req.session;
     sess.cart = cart;
     let data = await Product.find({
-      $and: [
-        {
-          $or: [{ productStatus: 0 }, { productStatus: 1 }],
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
       .populate("categoryID")
       .populate("producerID");
@@ -622,14 +615,7 @@ app.get("/", async (req, res) => {
       $or: [{ newsStatus: 0 }, { newsStatus: 1 }],
     });
     let data = await Product.find({
-      $and: [
-        {
-          $or: [{ productStatus: 0 }, { productStatus: 1 }],
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
       .populate("categoryID")
       .populate("producerID");
@@ -1643,14 +1629,7 @@ app.get("/all_product", async (req, res) => {
   
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          $or: [{ productStatus: 0 }, { productStatus: 1 }],
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
       .limit(limit*1)
       .skip((page-1) *limit)
@@ -1659,14 +1638,7 @@ app.get("/all_product", async (req, res) => {
       .exec();
 
       let count = await Product.find({
-        $and: [
-          {
-            $or: [{ productStatus: 0 }, { productStatus: 1 }],
-          },
-          {
-            productQuantity: { $gt: 0 },
-          },
-        ],
+        $or: [{ productStatus: 0 }, { productStatus: 1 }],
       })
       .countDocuments();   
     res.render("layouts/clients/main/all_product", {
@@ -1683,14 +1655,7 @@ app.get("/all_product", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          $or: [{ productStatus: 0 }, { productStatus: 1 }],
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      $or: [{ productStatus: 0 }, { productStatus: 1 }],
     }).limit(limit*1)
       .skip((page-1) *limit)
       .populate("categoryID")
@@ -1699,15 +1664,8 @@ app.get("/all_product", async (req, res) => {
      
       
     let count = await Product.find({
-        $and: [
-          {
-            $or: [{ productStatus: 0 }, { productStatus: 1 }],
-          },
-          {
-            productQuantity: { $gt: 0 },
-          },
-        ],
-      })
+      $or: [{ productStatus: 0 }, { productStatus: 1 }],
+    })
       .countDocuments();   
     res.render("layouts/clients/main/all_product", {
       fullname: 1,
@@ -1764,14 +1722,7 @@ app.get("/product/:id", async (req, res) => {
 app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          producerID: new mongoose.Types.ObjectId("645c59f1cf52334165588918"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      producerID: new mongoose.Types.ObjectId("645c59f1cf52334165588918"),
     });
     res.render("layouts/clients/producer/ps4", {
       fullname: req.session.fullname,
@@ -1783,14 +1734,7 @@ app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          producerID: new mongoose.Types.ObjectId("645c59f1cf52334165588918"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      producerID: new mongoose.Types.ObjectId("645c59f1cf52334165588918"),
     });
     res.render("layouts/clients/producer/ps4", {
       fullname: 1,
@@ -1807,14 +1751,7 @@ app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
 app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          producerID: new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      producerID: new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b"),
     });
     res.render("layouts/clients/producer/ps5", {
       fullname: req.session.fullname,
@@ -1826,14 +1763,7 @@ app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          producerID: new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      producerID: new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b"),
     });
     res.render("layouts/clients/producer/ps5", {
       fullname: 1,
@@ -1850,14 +1780,7 @@ app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
 app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          producerID: new mongoose.Types.ObjectId("645c5627e8da91e62f850537"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      producerID: new mongoose.Types.ObjectId("645c5627e8da91e62f850537"),
     });
     res.render("layouts/clients/producer/nintendo", {
       fullname: req.session.fullname,
@@ -1869,14 +1792,7 @@ app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          producerID: new mongoose.Types.ObjectId("645c5627e8da91e62f850537"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      producerID: new mongoose.Types.ObjectId("645c5627e8da91e62f850537"),
     });
     res.render("layouts/clients/producer/nintendo", {
       fullname: 1,
@@ -1893,14 +1809,7 @@ app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
 app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          producerID: new mongoose.Types.ObjectId("645c5a7fcf5233416558892c"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      producerID: new mongoose.Types.ObjectId("645c5a7fcf5233416558892c"),
     });
     res.render("layouts/clients/producer/xbox", {
       fullname: req.session.fullname,
@@ -1912,14 +1821,7 @@ app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          producerID: new mongoose.Types.ObjectId("645c5a7fcf5233416558892c"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      producerID: new mongoose.Types.ObjectId("645c5a7fcf5233416558892c"),
     });
     res.render("layouts/clients/producer/xbox", {
       fullname: 1,
@@ -1937,14 +1839,7 @@ app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
 app.get("/category/6476b3651cde57b995f9a9ed", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("6476b3651cde57b995f9a9ed"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("6476b3651cde57b995f9a9ed"),
     });
     res.render("layouts/clients/category/hanhdong", {
       fullname: req.session.fullname,
@@ -1956,14 +1851,7 @@ app.get("/category/6476b3651cde57b995f9a9ed", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("6476b3651cde57b995f9a9ed"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("6476b3651cde57b995f9a9ed"),
     });
     res.render("layouts/clients/category/hanhdong", {
       fullname: 1,
@@ -1980,14 +1868,7 @@ app.get("/category/6476b3651cde57b995f9a9ed", async (req, res) => {
 app.get("/category/645c5a60cf52334165588925", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c5a60cf52334165588925"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c5a60cf52334165588925"),
     });
     res.render("layouts/clients/category/phieuluu", {
       fullname: req.session.fullname,
@@ -1999,14 +1880,7 @@ app.get("/category/645c5a60cf52334165588925", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c5a60cf52334165588925"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c5a60cf52334165588925"),
     });
     res.render("layouts/clients/category/phieuluu", {
       fullname: 1,
@@ -2023,14 +1897,7 @@ app.get("/category/645c5a60cf52334165588925", async (req, res) => {
 app.get("/category/645c54d3c72a21d65472d42b", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b"),
     });
     res.render("layouts/clients/category/thethao", {
       fullname: req.session.fullname,
@@ -2042,14 +1909,7 @@ app.get("/category/645c54d3c72a21d65472d42b", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b"),
     });
     res.render("layouts/clients/category/thethao", {
       fullname: 1,
@@ -2066,14 +1926,7 @@ app.get("/category/645c54d3c72a21d65472d42b", async (req, res) => {
 app.get("/category/645c554c5eca5bdb84a25d09", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09"),
     });
     res.render("layouts/clients/category/chienthuat", {
       fullname: req.session.fullname,
@@ -2085,14 +1938,7 @@ app.get("/category/645c554c5eca5bdb84a25d09", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09"),
     });
     res.render("layouts/clients/category/chienthuat", {
       fullname: 1,
@@ -2109,14 +1955,7 @@ app.get("/category/645c554c5eca5bdb84a25d09", async (req, res) => {
 app.get("/category/645c5a59cf52334165588922", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c5a59cf52334165588922"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c5a59cf52334165588922"),
     });
     res.render("layouts/clients/category/nhapvai", {
       fullname: req.session.fullname,
@@ -2128,14 +1967,7 @@ app.get("/category/645c5a59cf52334165588922", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c5a59cf52334165588922"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c5a59cf52334165588922"),
     });
     res.render("layouts/clients/category/nhapvai", {
       fullname: 1,
@@ -2152,14 +1984,7 @@ app.get("/category/645c5a59cf52334165588922", async (req, res) => {
 app.get("/category/645c5a67cf52334165588928", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c5a67cf52334165588928"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c5a67cf52334165588928"),
     });
     res.render("layouts/clients/category/mophong", {
       fullname: req.session.fullname,
@@ -2171,14 +1996,7 @@ app.get("/category/645c5a67cf52334165588928", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      $and: [
-        {
-          categoryID: new mongoose.Types.ObjectId("645c5a67cf52334165588928"),
-        },
-        {
-          productQuantity: { $gt: 0 },
-        },
-      ],
+      categoryID: new mongoose.Types.ObjectId("645c5a67cf52334165588928"),
     });
     res.render("layouts/clients/category/mophong", {
       fullname: 1,
@@ -2192,10 +2010,6 @@ app.get("/category/645c5a67cf52334165588928", async (req, res) => {
 });
 
 //Servers
-//Test
-app.get("/test", (req, res) => {
-  res.render("layouts/servers/chart", {});
-});
 //Trang đăng nhập
 app.get("/admin_login", (req, res) => {
   res.render("layouts/servers/login", {
@@ -2743,6 +2557,7 @@ app.post("/save_product", async (req, res) => {
             priceIn: req.body.priceIn,
             priceOut: req.body.priceOut,
             productStatus: req.body.productStatus,
+            productQuantity: 0,
             created_date: moment
               .tz(Date.now(), "Asia/Ho_Chi_Minh")
               .format("DD/MM/YYYY hh:mm a"),

@@ -54,6 +54,7 @@
                 <%= VND.format(danhsach.priceOut) %>
                 </div>
 
+            <% if(danhsach.productQuantity!=0){ %>
             <form action="/add_to_cart" method="post">
             <div class="quantity">
                     <p>Số lượng :</p>
@@ -64,19 +65,18 @@
                 </div>
                 
                 <div class="btn-box">
-                    <% if(danhsach.productQuantity==0){ %>
-                        <button type="text" class="cart-btn" style="color:white">Liên hệ shop để đặt hàng</button>
-                        <% }else{ %>
-                            <% if(fullname==1){ %>
-                                <button type="text" class="cart-btn"><a href="/login" style="text-decoration: none; color:white"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</a></button>
-                                <% }else{ %>
-                                    <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
-                                    <% } %>
-                            <% } %>
+                    <% if(fullname==1){ %>
+                        <button type="text" class="cart-btn"><a href="/login" style="text-decoration: none; color:white"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</a></button>
+                    <% }else{ %>
+                        <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
+                    <% } %>
                 </div>
             </div>
             
             </form>
+            <% }else{ %>
+                <button type="text" class="cart-btn" style="color:white">Liên hệ shop để đặt hàng</button>
+            <%}%>                
         </div>
     </div>
 
