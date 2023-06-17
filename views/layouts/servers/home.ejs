@@ -168,27 +168,15 @@
                             </thead>
     
                             <tbody>
+                              <% for(let i=0; i < outOfStock.length; i++) { %>
                               <tr>
-                                <td>1</td>
-                                <td>God of War</td>
-                                <td><img src="/images/ps4(sp1).jpg"   width="50" height="80" alt=""></td>
-                                <td>20</td>
+                                <td><%= i+1 %></td>
+                                <td><%= outOfStock[i].productName %></td>
+                                <td><img src="/images/<%= outOfStock[i].productImage %>"   width="50" height="80" alt=""></td>
+                                <td><%= outOfStock[i].productQuantity %></td>
                                 <td><p class="btn btn-warning">Sắp hết hàng</p></td>
                               </tr>
-                              <tr>
-                                <td>2</td>
-                                <td>God of War</td>
-                                <td><img src="/images/ps4(sp1).jpg"   width="50" height="80" alt=""></td>
-                                <td>20</td>
-                                <td><p class="btn btn-warning">Sắp hết hàng</p></td>
-                              </tr>
-                              <tr>
-                                <td>3</td>
-                                <td>God of War</td>
-                                <td><img src="/images/ps4(sp1).jpg"   width="50" height="80" alt=""></td>
-                                <td>20</td>
-                                <td><p class="btn btn-warning">Sắp hết hàng</p></td>
-                              </tr>
+                              <% } %>
                             </tbody>
                           </table>
                       </div>

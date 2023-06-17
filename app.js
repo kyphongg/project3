@@ -2266,6 +2266,8 @@ app.get("/admin_home", async (req, res) => {
     const order = await Order.find({ orderStatus: 0 }).count();
     const customer = await User.find().count();
     const employee = await Admin.find().count();
+
+    let outOfStock = await Product.find({productQuantity:{$lte:20}});
     
     let limit = await Order.aggregate([
       { $match: { orderStatus: 3 } },
@@ -2468,6 +2470,7 @@ app.get("/admin_home", async (req, res) => {
       timeMonday,
       timeSunday,
       bestSale,
+      outOfStock,
     });
   } else {
     res.redirect("/admin_login");
