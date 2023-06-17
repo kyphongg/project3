@@ -2261,7 +2261,7 @@ app.get("/admin_logout", (req, res) => {
 });
 
 //Trang home admin
-app.get("/admin_home", async (req, res) => {a
+app.get("/admin_home", async (req, res) => {
   if (req.session.daDangNhap) {
     const order = await Order.find({ orderStatus: 0 }).count();
     const customer = await User.find().count();
