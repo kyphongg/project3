@@ -1677,7 +1677,9 @@ app.get("/all_product", async (req, res) => {
       VND,
       cart: req.session.cart,
       totalPages: Math.ceil(count/limit),
-      currentPage: page 
+      currentPage: page,
+      prevPage: page - 1,
+      nextPage: page + 1
     });
   } else {
     let data = await Product.find({
