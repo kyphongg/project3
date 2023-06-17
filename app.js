@@ -2266,6 +2266,56 @@ app.get("/admin_home", async (req, res) => {
     const order = await Order.find({ orderStatus: 0 }).count();
     const customer = await User.find().count();
     const employee = await Admin.find().count();
+    
+    let limit = await Order.aggregate([
+      { $match: { orderStatus: 3 } },
+      {
+        $unwind: "$items",
+      },
+      {
+        $unwind: "$items._id",
+      },
+      {
+        $group: {
+          _id: "$items._id",
+          totalCount: {
+            $sum: "$items.quantity",
+          },
+        },
+      },
+    ]);
+    let sum = 0;
+    for(let i = 0; i<limit.length; i++){
+      sum += limit[i].totalCount;
+    }
+    let tb = sum/(limit.length);
+    let bestSale = await Order.aggregate([
+      { $match: { orderStatus: 3 } },
+      {
+        $unwind: "$items",
+      },
+      {
+        $unwind: "$items._id",
+      },
+      {
+        $group: {
+          _id: "$items._id",
+          totalCount: {
+            $sum: "$items.quantity",
+          },
+        },
+      },
+      {$match:{"totalCount":{$gt:tb}}},
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productList",
+        },
+      },
+      { $limit : 5 },
+    ]).sort({"totalCount":-1});
     let time = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
 
     let timeMonday = moment
