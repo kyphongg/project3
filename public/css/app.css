@@ -1762,6 +1762,14 @@ input:focus{
     padding: 15px;
 }
 
+.paginationn{
+    display: flex;
+    justify-content: right;
+    align-items: right;
+    margin-top: 15px;
+    margin-right: 35px;
+}
+
 
 
 

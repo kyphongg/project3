@@ -1631,6 +1631,16 @@ app.get("/search", async (req, res) => {
 
 //Trang tất cả các sản phẩm
 app.get("/all_product", async (req, res) => {
+  var page= req.query.page;
+  if(page){
+    page=parseInt(page);
+    if(page < 1) {
+      page = 1 
+    } 
+  }
+
+  const limit = 4;
+  
   if (req.session.guest) {
     let data = await Product.find({
       $and: [
@@ -1642,8 +1652,23 @@ app.get("/all_product", async (req, res) => {
         },
       ],
     })
+      .limit(limit*1)
+      .skip((page-1) *limit)
       .populate("categoryID")
-      .populate("producerID");
+      .populate("producerID")
+      .exec();
+
+      let count = await Product.find({
+        $and: [
+          {
+            $or: [{ productStatus: 0 }, { productStatus: 1 }],
+          },
+          {
+            productQuantity: { $gt: 0 },
+          },
+        ],
+      })
+      .countDocuments();   
     res.render("layouts/clients/main/all_product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1651,6 +1676,8 @@ app.get("/all_product", async (req, res) => {
       danhsach: data,
       VND,
       cart: req.session.cart,
+      totalPages: Math.ceil(count/limit),
+      currentPage: page 
     });
   } else {
     let data = await Product.find({
@@ -1662,9 +1689,24 @@ app.get("/all_product", async (req, res) => {
           productQuantity: { $gt: 0 },
         },
       ],
-    })
+    }).limit(limit*1)
+      .skip((page-1) *limit)
       .populate("categoryID")
-      .populate("producerID");
+      .populate("producerID")
+      .exec();
+     
+      
+    let count = await Product.find({
+        $and: [
+          {
+            $or: [{ productStatus: 0 }, { productStatus: 1 }],
+          },
+          {
+            productQuantity: { $gt: 0 },
+          },
+        ],
+      })
+      .countDocuments();   
     res.render("layouts/clients/main/all_product", {
       fullname: 1,
       userid: 1,
@@ -1672,6 +1714,10 @@ app.get("/all_product", async (req, res) => {
       danhsach: data,
       VND,
       cart: 0,
+      totalPages: Math.ceil(count/limit),
+      currentPage: page,
+      prevPage: page - 1,
+      nextPage: page + 1
     });
   }
 });

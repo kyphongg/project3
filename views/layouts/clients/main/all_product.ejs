@@ -15,6 +15,7 @@
             <div class="cart-heading">
                     <h3>Tất cả các sản phẩm</h3>
             </div>
+        </div>
         
         <div class="row row-cols-4">
             <% for(let i=0; i < danhsach.length; i++) { %>
@@ -33,7 +34,16 @@
                 </div>
             <% } %>
         </div>
-        
+
+        <div class="paginationn">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="?page=<%= prevPage %>">Previous</a></li>
+                <%  for (let j = 1; j <= totalPages; j++) { %>
+                <li class="page-item"><a class="page-link" href="?page=<%= j %>"><%= j %></a></li>
+                <%  } %>
+                <li class="page-item"><a class="page-link" href="?page=<%= nextPage %>">Next</a></li>      
+            </ul>
+        </div>
     </div>
     
      <%- include('../partials/footer') %>
