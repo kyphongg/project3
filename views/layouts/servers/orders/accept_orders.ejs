@@ -31,8 +31,11 @@
                 </div>
                 <div class="panel panel-default">
                     <% if(order==0){ %>
-                        Trống
-                        <%}else{%>
+                        <div class="empty-table">
+                            <img src="/images/empty-order.jpg" alt="" width="250" height="250">
+                            <p>Không có đơn hàng đã được xác nhận</p>
+                        </div>
+                    <%}else{%>
                     <div class="table-responsive">
                         <table id="myTable" class="table table-striped table-bordered">
                             <thead>

@@ -3630,3 +3630,9 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
 .table-bestSells th{
     text-align: center;
 }
+
+.empty-table{
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+}
