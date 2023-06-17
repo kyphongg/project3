@@ -2415,6 +2415,7 @@ app.get("/admin_home", async (req, res) => {
       dateNow,
       timeMonday,
       timeSunday,
+      bestSale,
     });
   } else {
     res.redirect("/admin_login");
