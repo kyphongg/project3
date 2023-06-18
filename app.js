@@ -2500,12 +2500,38 @@ app.get("/admin_setting/:id", async (req, res) => {
   }
 });
 
+app.get("/add_employee", (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0) {
+      res.render("layouts/servers/employee/add_employee", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        nameError: req.flash("nameError"),
+        usernameError: req.flash("usernameError"),
+        emailError: req.flash("emailError"),
+        passwordError: req.flash("passwordError"),
+        emailED: req.flash("emailED"),
+        nameED: req.flash("nameED"),
+        usernameED: req.flash("usernameED"),
+        passwordED: req.flash("passwordED"),
+        errorUsername: req.flash("errorUsername"),
+        errorEmail: req.flash("errorEmail"),
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
 app.post("/admin_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     var vnn_regex =
       /^[a-zA-Z'-'\saAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]*$/g;
-    var vnf_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
     var vnp_regex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/gm;
     let errorForm = 0;
@@ -2578,45 +2604,16 @@ app.post("/admin_save", async (req, res) => {
     if (errorForm != 0) {
       res.redirect("/add_employee");
     } else {
-      var admin = Admin({
+      await Admin({
         fullname: req.body.fullname,
         email: req.body.email,
         password: req.body.password,
         username: req.body.username,
         role: req.body.role,
         status: req.body.status,
-      });
-      admin.save().then(function () {
-        req.flash("success", "Thêm thành công");
-        res.redirect("/employees");
-      });
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.get("/add_employee", (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0) {
-      res.render("layouts/servers/employee/add_employee", {
-        fullname: req.session.fullname,
-        admin_id: req.session.admin_id,
-        admin_role: req.session.admin_role,
-        nameError: req.flash("nameError"),
-        usernameError: req.flash("usernameError"),
-        emailError: req.flash("emailError"),
-        passwordError: req.flash("passwordError"),
-        emailED: req.flash("emailED"),
-        nameED: req.flash("nameED"),
-        usernameED: req.flash("usernameED"),
-        passwordED: req.flash("passwordED"),
-        errorUsername: req.flash("errorUsername"),
-        errorEmail: req.flash("errorEmail"),
-      });
-    } else {
-      res.redirect("/admin_home");
+      }).save();
+      req.flash("success", "Thêm thành công");
+      res.redirect("/employees");
     }
   } else {
     res.redirect("/admin_login");
@@ -2633,6 +2630,14 @@ app.get("/edit/:id", async (req, res) => {
         admin_id: req.session.admin_id,
         nhanvat: data,
         admin_role: req.session.admin_role,
+        nameError: req.flash("nameError"),
+        usernameError: req.flash("usernameError"),
+        emailError: req.flash("emailError"),
+        emailED: req.flash("emailED"),
+        nameED: req.flash("nameED"),
+        usernameED: req.flash("usernameED"),
+        errorUsername: req.flash("errorUsername"),
+        errorEmail: req.flash("errorEmail"),
       });
     } else {
       res.redirect("/admin_home");
@@ -2644,14 +2649,67 @@ app.get("/edit/:id", async (req, res) => {
 
 app.post("/edit_save", async (req, res) => {
   if (req.session.daDangNhap) {
-    let check = await Admin.findOne({
-      $or: [{ email: req.body.email }, { username: req.body.username }],
-    });
-    if (check) {
-      req.flash("error", "Tài khoản đã tồn tại");
-      res.redirect("/employees");
+    let id = req.body.id;
+    var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var vnn_regex =
+      /^[a-zA-Z'-'\saAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]*$/g;
+    let errorForm = 0;
+    var name = req.body.fullname;
+    var email = req.body.email;
+    var username = req.body.username;
+    if (name == "") {
+      req.flash("nameError", "Bạn chưa điền họ và tên!");
+      errorForm++;
+    }
+    if (email == "") {
+      req.flash("emailError", "Bạn chưa điền Email!");
+      errorForm++;
+    }
+    if (username == "") {
+      req.flash("usernameError", "Bạn chưa điền tên đăng nhập!");
+      errorForm++;
+    }
+    if (name != "") {
+      if (vnn_regex.test(name) == false) {
+        req.flash("nameError", "Sai định dạng Họ và tên!");
+        req.flash("nameED", name);
+        errorForm++;
+      } else {
+        let nameED = name;
+        req.flash("nameED", nameED);
+      }
+    }
+    if (email != "") {
+      const checkEmail = await Admin.findOne({ email: email });
+      if (checkEmail) {
+        req.flash("errorEmail", "Email đã tồn tại");
+        req.flash("emailED", email);
+        errorForm++;
+      } else {
+        if (email_regex.test(email) == false) {
+          req.flash("emailError", "Sai định dạng Email!");
+          req.flash("emailED", email);
+          errorForm++;
+        } else {
+          let emailED = email;
+          req.flash("emailED", emailED);
+        }
+      }
+    }
+    if (username != "") {
+      const checkUsername = await Admin.findOne({ username: username });
+      if (checkUsername) {
+        req.flash("errorUsername", "Username đã tồn tại");
+        req.flash("usernameED", username);
+        errorForm++;
+      } else {
+        req.flash("usernameED", username);
+      }
+    }
+    if (errorForm != 0) {
+      res.redirect("/edit/" + id);
     } else {
-      Admin.updateOne(
+      await Admin.updateOne(
         { _id: req.body.id },
         {
           fullname: req.body.fullname,
@@ -2660,22 +2718,20 @@ app.post("/edit_save", async (req, res) => {
           role: req.body.role,
           status: req.body.status,
         }
-      ).then(function () {
-        req.flash("success", "Sửa thành công");
-        res.redirect("/employees");
-      });
+      );
+      req.flash("success", "Sửa thành công");
+      res.redirect("/employees");
     }
   } else {
     res.redirect("/admin_login");
   }
 });
 
-app.get("/delete/:id", (req, res) => {
+app.get("/delete/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    Admin.deleteOne({ _id: req.params.id }).then(function () {
-      req.flash("success", "Xoá thành công");
-      res.redirect("/employees");
-    });
+    await Admin.deleteOne({ _id: req.params.id });
+    req.flash("success", "Xoá thành công");
+    res.redirect("/employees");
   } else {
     res.redirect("/admin_login");
   }
@@ -3618,7 +3674,7 @@ app.get("/sunday", async (req, res) => {
     if (role == 0 || role == 2) {
       let time = moment
         .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .day(8)
+        .day(7)
         .format("DD/MM/YYYY");
       let data = await Order.find({ time: time });
       let list = await Order.aggregate([
@@ -3673,7 +3729,7 @@ app.get("/warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      Warehouse.aggregate([
+      let data = await Warehouse.aggregate([
         { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
         {
           $lookup: {
@@ -3683,20 +3739,15 @@ app.get("/warehouse", async (req, res) => {
             as: "productList",
           },
         },
-      ])
-        .then(async (data) => {
-          res.render("layouts/servers/warehouse/warehouse", {
-            fullname: req.session.fullname,
-            admin_id: req.session.admin_id,
-            danhsach: data,
-            VND,
-            admin_role: req.session.admin_role,
-            success: req.flash("success"),
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      ]);
+      res.render("layouts/servers/warehouse/warehouse", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        admin_role: req.session.admin_role,
+        success: req.flash("success"),
+      });
     } else {
       res.redirect("/admin_home");
     }
@@ -3709,21 +3760,16 @@ app.get("/list_warehouse/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      await Warehouse.find({ productID: req.params.id })
+      let data = await Warehouse.find({ productID: req.params.id })
         .populate("productID")
-        .populate("created_by")
-        .then((data) => {
-          res.render("layouts/servers/warehouse/list_warehouse", {
-            fullname: req.session.fullname,
-            admin_id: req.session.admin_id,
-            danhsach: data,
-            VND,
-            admin_role: req.session.admin_role,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .populate("created_by");
+      res.render("layouts/servers/warehouse/list_warehouse", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        admin_role: req.session.admin_role,
+      });
     } else {
       res.redirect("/admin_home");
     }
