@@ -34,12 +34,16 @@
                                 <p style="font-size: 14px; font-weight:600; color: red; margin: 12.5px 0px 0px 5px;"><%= passwordError %></p>
                             <%}%>
                         </div>
-                            <input type="password" name="password" class="box" value="<%= passwordED %>">
+                            <input type="password" name="password" class="box box-inputPwd" value="<%= passwordED %>">
+                            <i class="fa-regular fa-eye-slash eyee eye-close"></i>
+                            <i class="fa-regular fa-eye eyee eye-open hidden"></i>
                         
                         <div class="spann" style="display: flex;">
                             <span>Nhập lại mật khẩu mới</span>
                         </div>
-                        <input type="password" name="password2" class="box" value="<%= password2ED %>">
+                        <input type="password" name="password2" class="box box-inputPwdd" value="<%= password2ED %>">
+                        <i class="fa-regular fa-eye-slash eyees eye-closee"></i>
+                        <i class="fa-regular fa-eye eyees eye-openn hidden"></i>
                         
                         <a href="/success-changepwd">
                             <button type="submit" class="btn">Cập nhật mật khẩu mới</button>
@@ -52,4 +56,40 @@
 
      <%- include('../partials/footer') %>
 </body>
+
+<script type="text/javascript">
+    const inputPwd = document.querySelector(".box-inputPwd");
+    const eyeOpen = document.querySelector(".eye-open");
+    const eyeClose = document.querySelector(".eye-close");
+    const inputPwdd = document.querySelector(".box-inputPwdd");
+    const eyeOpenn = document.querySelector(".eye-openn");
+    const eyeClosee = document.querySelector(".eye-closee");
+
+
+    eyeOpen.addEventListener("click", function(){
+        eyeOpen.classList.add("hidden");
+        eyeClose.classList.remove("hidden");
+        inputPwd.setAttribute("type","password");
+    })
+
+    eyeClose.addEventListener("click", function(){
+        eyeOpen.classList.remove("hidden");
+        eyeClose.classList.add("hidden");
+        inputPwd.setAttribute("type","text");
+    })
+
+    eyeOpenn.addEventListener("click", function(){
+        eyeOpenn.classList.add("hidden");
+        eyeClosee.classList.remove("hidden");
+        inputPwdd.setAttribute("type","password");
+    })
+
+    eyeClosee.addEventListener("click", function(){
+        eyeOpenn.classList.remove("hidden");
+        eyeClosee.classList.add("hidden");
+        inputPwdd.setAttribute("type","text");
+    })
+
+</script>
+
 </html>

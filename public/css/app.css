@@ -1294,6 +1294,22 @@ input:focus{
     margin-bottom: 15px;
 }
 
+.changePassword .form-group{
+    position: relative;
+}
+
+.eyye {
+    position: absolute;
+    left: 41%;
+    top: 67%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.changePassword .form-group .hidden{
+    display: none;
+}
+
 .password-change label{
     position: absolute;
     padding: 0px 5px;
@@ -1800,6 +1816,30 @@ input:focus{
     width: 350px;
     margin-top: 60px;
     margin-bottom: 30px;
+}
+
+.form-changepwd{
+    position: relative;;
+}
+
+.eyee{
+    position: absolute;
+    right: 3%;
+    top: 46%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.eyees{
+    position: absolute;
+    right: 10px;
+    top: 73%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.form-changepwd .hidden{
+    display: none;
 }
 
 .form-changepwd span{
