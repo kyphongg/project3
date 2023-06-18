@@ -61,6 +61,19 @@ body a:hover{
     border-bottom: 2px solid #adadad;
     margin: 30px 0;
   }
+
+  .eye{
+    position: absolute;
+    right: 2%;
+    top: 55%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  form .txt_field .hidden{
+    display: none;
+  }
+
   .txt_field input{
     width: 100%;
     padding: 0 5px;
@@ -3027,6 +3040,14 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     position: relative;
     margin-top: 25px;
     margin-bottom: 10px;
+}
+
+.eyye{
+    position: absolute;
+    left: 32%;
+    top: 52%;
+    transform: translateY(-50%);
+    cursor: pointer; 
 }
 
 .password_field {
