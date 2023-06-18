@@ -2092,13 +2092,11 @@ app.post("/categories_save", async (req, res) => {
       req.flash("error", "Thể loại đã tồn tại");
       res.redirect("/admin_categories");
     } else {
-      var category = Category({
+      await Category({
         categoryName: req.body.categoryName,
-      });
-      category.save().then(function () {
-        req.flash("success", "Thêm thành công");
-        res.redirect("/admin_categories");
-      });
+      }).save();
+      req.flash("success", "Thêm thành công");
+      res.redirect("/admin_categories");
     }
   } else {
     res.redirect("/admin_login");
@@ -2131,27 +2129,25 @@ app.post("/edit_categories_save", async (req, res) => {
       req.flash("error", "Sửa không thành công");
       res.redirect("/admin_categories");
     } else {
-      Category.updateOne(
+      await Category.updateOne(
         { _id: req.body.categoryId },
         {
           categoryName: req.body.categoryName,
         }
-      ).then(function () {
-        req.flash("success", "Sửa thành công");
-        res.redirect("/admin_categories");
-      });
+      );
+      req.flash("success", "Sửa thành công");
+      res.redirect("/admin_categories");
     }
   } else {
     res.redirect("/admin_login");
   }
 });
 
-app.get("/delete_categories/:id", (req, res) => {
+app.get("/delete_categories/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    Category.deleteOne({ _id: req.params.id }).then(function () {
-      req.flash("success", "Xoá thành công");
-      res.redirect("/admin_categories");
-    });
+    await Category.deleteOne({ _id: req.params.id });
+    req.flash("success", "Xoá thành công");
+    res.redirect("/admin_categories");
   } else {
     res.redirect("/admin_login");
   }
@@ -2203,13 +2199,11 @@ app.post("/producers_save", async (req, res) => {
       req.flash("error", "NSX đã tồn tại");
       res.redirect("/admin_producers");
     } else {
-      var producer = Producer({
+      await Producer({
         producerName: req.body.producerName,
-      });
-      producer.save().then(function () {
-        req.flash("success", "Thêm thành công");
-        res.redirect("/admin_producers");
-      });
+      }).save();
+      req.flash("success", "Thêm thành công");
+      res.redirect("/admin_producers");
     }
   } else {
     res.redirect("/admin_login");
@@ -2242,27 +2236,25 @@ app.post("/edit_producers_save", async (req, res) => {
       req.flash("error", "Sửa không thành công");
       res.redirect("/admin_producers");
     } else {
-      Producer.updateOne(
+      await Producer.updateOne(
         { _id: req.body.producerId },
         {
           producerName: req.body.producerName,
         }
-      ).then(function () {
-        req.flash("success", "Sửa thành công");
-        res.redirect("/admin_producers");
-      });
+      );
+      req.flash("success", "Sửa thành công");
+      res.redirect("/admin_producers");
     }
   } else {
     res.redirect("/admin_login");
   }
 });
 
-app.get("/delete_producers/:id", (req, res) => {
+app.get("/delete_producers/:id", async (req, res) => {
   if (req.session.daDangNhap) {
-    Producer.deleteOne({ _id: req.params.id }).then(function () {
-      req.flash("success", "Xoá thành công");
-      res.redirect("/admin_producers");
-    });
+    await Producer.deleteOne({ _id: req.params.id });
+    req.flash("success", "Xoá thành công");
+    res.redirect("/admin_producers");
   } else {
     res.redirect("/admin_login");
   }
@@ -2273,23 +2265,18 @@ app.get("/admin_product", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      await Product.find()
+      let data = await Product.find()
         .populate("categoryID")
-        .populate("producerID")
-        .then((data) => {
-          res.render("layouts/servers/product/product", {
-            fullname: req.session.fullname,
-            admin_id: req.session.admin_id,
-            danhsach: data,
-            VND,
-            admin_role: req.session.admin_role,
-            success: req.flash("success"),
-            error: req.flash("error"),
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .populate("producerID");
+      res.render("layouts/servers/product/product", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        admin_role: req.session.admin_role,
+        success: req.flash("success"),
+        error: req.flash("error"),
+      });
     } else {
       res.redirect("/admin_home");
     }
@@ -2324,17 +2311,12 @@ app.post("/save_product", async (req, res) => {
       } else if (err) {
         req.flash("error", "Lỗi bất ngờ xảy ra");
       } else {
-        let check = await Product.findOne({
-          $or: [
-            { productName: req.body.productName },
-            { productImage: req.file.filename },
-          ],
-        });
+        let check = await Product.findOne({ productName: req.body.productName });
         if (check) {
           req.flash("error", "Sản phẩm đã tồn tại");
           res.redirect("/admin_product");
         } else {
-          var product = Product({
+          await Product({
             productName: req.body.productName,
             productDescription: req.body.productDescription,
             productImage: req.file.filename,
@@ -2348,11 +2330,9 @@ app.post("/save_product", async (req, res) => {
               .tz(Date.now(), "Asia/Ho_Chi_Minh")
               .format("DD/MM/YYYY hh:mm a"),
             created_by: req.session.fullname,
-          });
-          product.save().then(function () {
-            req.flash("success", "Thêm thành công");
-            res.redirect("/admin_product");
-          });
+          }).save();
+          req.flash("success", "Thêm thành công");
+          res.redirect("/admin_product");
         }
       }
     });
@@ -2365,21 +2345,16 @@ app.get("/edit_product/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      await Product.findById(req.params.id)
+      let data = await Product.findById(req.params.id)
         .populate("categoryID")
-        .populate("producerID")
-        .then((data) => {
-          res.render("layouts/servers/product/edit_product", {
-            fullname: req.session.fullname,
-            admin_id: req.session.admin_id,
-            danhsach: data,
-            VND,
-            admin_role: req.session.admin_role,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        .populate("producerID");
+      res.render("layouts/servers/product/edit_product", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        admin_role: req.session.admin_role,
+      });
     } else {
       res.redirect("/admin_home");
     }
@@ -2390,20 +2365,15 @@ app.get("/edit_product/:id", async (req, res) => {
 
 app.post("/edit_product_save", async (req, res) => {
   if (req.session.daDangNhap) {
-    let check = await Product.findOne({
-      $or: [
-        { productName: req.body.productName },
-        { productImage: req.file.filename },
-      ],
-    });
+    let check = await Product.findOne({ productName: req.body.productName });
     if (check) {
       req.flash("error", "Sản phẩm đã tồn tại");
       res.redirect("/admin_product");
     } else {
-      upload(req, res, function (err) {
+      upload(req, res, async function (err) {
         //Không chọn file mới
         if (!req.file) {
-          Product.updateOne(
+          await Product.updateOne(
             { _id: req.body.productId },
             {
               productName: req.body.productName,
@@ -2418,10 +2388,9 @@ app.post("/edit_product_save", async (req, res) => {
                 .tz(Date.now(), "Asia/Ho_Chi_Minh")
                 .format("DD/MM/YYYY hh:mm a"),
             }
-          ).then(function () {
-            req.flash("success", "Sửa thành công");
-            res.redirect("/admin_product");
-          });
+          );
+          req.flash("success", "Sửa thành công");
+          res.redirect("/admin_product");
           // Chọn file mới
         } else {
           if (err instanceof multer.MulterError) {
@@ -2429,7 +2398,7 @@ app.post("/edit_product_save", async (req, res) => {
           } else if (err) {
             req.flash("error", "Lỗi bất ngờ xảy ra");
           } else {
-            Product.updateOne(
+            await Product.updateOne(
               { _id: req.body.productId },
               {
                 productName: req.body.productName,
@@ -2445,10 +2414,9 @@ app.post("/edit_product_save", async (req, res) => {
                   .tz(Date.now(), "Asia/Ho_Chi_Minh")
                   .format("DD/MM/YYYY hh:mm a"),
               }
-            ).then(function () {
-              req.flash("success", "Sửa thành công");
-              res.redirect("/admin_product");
-            });
+            );
+            req.flash("success", "Sửa thành công");
+            res.redirect("/admin_product");
           }
         }
       });
