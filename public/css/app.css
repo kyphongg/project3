@@ -362,7 +362,20 @@ input:focus{
     margin-top: 55px;
 }
 
+.eye{
+    position: absolute;
+    right: 10px;
+    top: 48%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.form-login .hidden{
+    display: none;
+}
+
 .form-login{
+    position: relative;
     margin-top: 50px;
 }
 
@@ -443,6 +456,26 @@ input:focus{
 .my-signup form .checkbox label{
     font-size: 18px;
     color: black;
+    cursor: pointer;
+}
+
+.eyes{
+    position: absolute;
+    left: 57%;
+    top: 55%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.pwd .hidden{
+    display: none;
+}
+
+.eyess{
+    position: absolute;
+    left: 57%;
+    top: 87%;
+    transform: translateY(-50%);
     cursor: pointer;
 }
 
