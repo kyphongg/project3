@@ -68,8 +68,14 @@
                     <% if(fullname==1){ %>
                         <button type="text" class="cart-btn"><a href="/login" style="text-decoration: none; color:white"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</a></button>
                     <% }else{ %>
-                        <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
+                        <button type="submit" class="cart-btn" onclick="openPopup()"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
                     <% } %>
+                </div>
+                <div class="popupp" id="pop-up">
+                    <img src="/images/404-tick.png" alt="">
+                    <h2>Thành công</h2>
+                    <p>Bạn đã thêm sản phẩm vào giỏ hàng<br> Cảm ơn bạn!</p>
+                    <button type="button" onclick="closePopup()">Tiếp tục mua hàng</button>
                 </div>
             </div>
             
@@ -113,4 +119,17 @@
             <%}%>
      <%- include('../partials/footer') %>
 </body>
+
+<script type="text/javascript">
+    let popUp = document.getElementById("pop-up");
+
+    function openPopup(){
+        popUp.classList.add("open-popup");
+    }
+
+    function closePopup(){
+        popUp.classList.remove("open-popup");
+    }
+</script>
+
 </html>
