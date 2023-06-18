@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">          
+    <title><%= title %></title>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div class="container">
+        <div class="cart-p">
+            <div class="cart-heading">
+                <a href="/producer/<%= id %>" style="text-decoration: none; color:black"><h3><%= title %></h3></a>   
+            </div>
+          
+        <div class="row row-cols-4">
+            <% for(let i=0; i < danhsach.length; i++) { %>
+                <div class="col product">
+                    <div class="sp-box">
+                        <a href="/product/<%= danhsach[i]._id %>">
+                            <img src="/images/<%= danhsach[i].productImage %>" style="text-align: center" height="300px" width="100px" alt="">
+                            <div class="p-title">
+                                <p><%= danhsach[i].productName %></p>
+                            </div>
+                            <div class="price">
+                                <p><%= VND.format(danhsach[i].priceOut) %></p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <% } %>
+        </div>
+    </div>
+    
+     <%- include('../partials/footer') %>
+</body>
+</html>

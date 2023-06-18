@@ -1718,293 +1718,79 @@ app.get("/product/:id", async (req, res) => {
 });
 
 //Trang danh mục theo NSX
-//PS4
-app.get("/producer/645c59f1cf52334165588918", async (req, res) => {
+app.get("/producer/:id", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId("645c59f1cf52334165588918"),
+      producerID: new mongoose.Types.ObjectId(req.params.id)
     });
-    res.render("layouts/clients/producer/ps4", {
+    let producer = await Producer.findOne({_id: new mongoose.Types.ObjectId(req.params.id)});
+    let title = producer.producerName;
+    let id = producer._id;
+    res.render("layouts/clients/producer/producer", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
       danhsach: data,
       VND,
+      title,
+      id,
     });
   } else {
     let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId("645c59f1cf52334165588918"),
+      producerID: new mongoose.Types.ObjectId(req.params.id)
     });
-    res.render("layouts/clients/producer/ps4", {
+    let producer = await Producer.findOne({_id: new mongoose.Types.ObjectId(req.params.id)});
+    let title = producer.producerName;
+    let id = producer._id;
+    res.render("layouts/clients/producer/producer", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
       danhsach: data,
       VND,
-    });
-  }
-});
-
-//PS5
-app.get("/producer/645c5707b102c1336cab8b5b", async (req, res) => {
-  if (req.session.guest) {
-    let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b"),
-    });
-    res.render("layouts/clients/producer/ps5", {
-      fullname: req.session.fullname,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
-      cart: req.session.cart,
-      danhsach: data,
-      VND,
-    });
-  } else {
-    let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId("645c5707b102c1336cab8b5b"),
-    });
-    res.render("layouts/clients/producer/ps5", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-      cart: 0,
-      danhsach: data,
-      VND,
-    });
-  }
-});
-
-//Nintendo
-app.get("/producer/645c5627e8da91e62f850537", async (req, res) => {
-  if (req.session.guest) {
-    let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId("645c5627e8da91e62f850537"),
-    });
-    res.render("layouts/clients/producer/nintendo", {
-      fullname: req.session.fullname,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
-      cart: req.session.cart,
-      danhsach: data,
-      VND,
-    });
-  } else {
-    let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId("645c5627e8da91e62f850537"),
-    });
-    res.render("layouts/clients/producer/nintendo", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-      cart: 0,
-      danhsach: data,
-      VND,
-    });
-  }
-});
-
-//Xbox
-app.get("/producer/645c5a7fcf5233416558892c", async (req, res) => {
-  if (req.session.guest) {
-    let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId("645c5a7fcf5233416558892c"),
-    });
-    res.render("layouts/clients/producer/xbox", {
-      fullname: req.session.fullname,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
-      cart: req.session.cart,
-      danhsach: data,
-      VND,
-    });
-  } else {
-    let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId("645c5a7fcf5233416558892c"),
-    });
-    res.render("layouts/clients/producer/xbox", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-      cart: 0,
-      danhsach: data,
-      VND,
+      title,
+      id,
     });
   }
 });
 
 //Trang category
-//Hành động
-app.get("/category/6476b3651cde57b995f9a9ed", async (req, res) => {
+app.get("/category/:id", async (req, res) => {
   if (req.session.guest) {
     let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("6476b3651cde57b995f9a9ed"),
+      categoryID: new mongoose.Types.ObjectId(req.params.id)
     });
-    res.render("layouts/clients/category/hanhdong", {
+    let category = await Category.findOne({_id: new mongoose.Types.ObjectId(req.params.id)});
+    let title = category.categoryName;
+    let id = category._id;
+    res.render("layouts/clients/category/category", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
+      cart: req.session.cart,
       danhsach: data,
       VND,
-      cart: req.session.cart,
+      title,
+      id,
     });
   } else {
     let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("6476b3651cde57b995f9a9ed"),
+      categoryID: new mongoose.Types.ObjectId(req.params.id)
     });
-    res.render("layouts/clients/category/hanhdong", {
+    let category = await Category.findOne({_id: new mongoose.Types.ObjectId(req.params.id)});
+    let title = category.categoryName;
+    let id = category._id;
+    res.render("layouts/clients/category/category", {
       fullname: 1,
       userid: 1,
       sID: req.session.sessionID,
-      danhsach: data,
-      VND,
       cart: 0,
-    });
-  }
-});
-
-//Phiêu lưu
-app.get("/category/645c5a60cf52334165588925", async (req, res) => {
-  if (req.session.guest) {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c5a60cf52334165588925"),
-    });
-    res.render("layouts/clients/category/phieuluu", {
-      fullname: req.session.fullname,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
       danhsach: data,
       VND,
-      cart: req.session.cart,
-    });
-  } else {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c5a60cf52334165588925"),
-    });
-    res.render("layouts/clients/category/phieuluu", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-      danhsach: data,
-      VND,
-      cart: 0,
-    });
-  }
-});
-
-//Thể thao
-app.get("/category/645c54d3c72a21d65472d42b", async (req, res) => {
-  if (req.session.guest) {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b"),
-    });
-    res.render("layouts/clients/category/thethao", {
-      fullname: req.session.fullname,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
-      danhsach: data,
-      VND,
-      cart: req.session.cart,
-    });
-  } else {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c54d3c72a21d65472d42b"),
-    });
-    res.render("layouts/clients/category/thethao", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-      danhsach: data,
-      VND,
-      cart: 0,
-    });
-  }
-});
-
-//Chiến thuật
-app.get("/category/645c554c5eca5bdb84a25d09", async (req, res) => {
-  if (req.session.guest) {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09"),
-    });
-    res.render("layouts/clients/category/chienthuat", {
-      fullname: req.session.fullname,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
-      danhsach: data,
-      VND,
-      cart: req.session.cart,
-    });
-  } else {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c554c5eca5bdb84a25d09"),
-    });
-    res.render("layouts/clients/category/chienthuat", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-      danhsach: data,
-      VND,
-      cart: 0,
-    });
-  }
-});
-
-//Nhập vai
-app.get("/category/645c5a59cf52334165588922", async (req, res) => {
-  if (req.session.guest) {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c5a59cf52334165588922"),
-    });
-    res.render("layouts/clients/category/nhapvai", {
-      fullname: req.session.fullname,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
-      danhsach: data,
-      VND,
-      cart: req.session.cart,
-    });
-  } else {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c5a59cf52334165588922"),
-    });
-    res.render("layouts/clients/category/nhapvai", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-      danhsach: data,
-      VND,
-      cart: 0,
-    });
-  }
-});
-
-//Mô phỏng
-app.get("/category/645c5a67cf52334165588928", async (req, res) => {
-  if (req.session.guest) {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c5a67cf52334165588928"),
-    });
-    res.render("layouts/clients/category/mophong", {
-      fullname: req.session.fullname,
-      userid: req.session.userid,
-      sID: req.session.sessionID,
-      danhsach: data,
-      VND,
-      cart: req.session.cart,
-    });
-  } else {
-    let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId("645c5a67cf52334165588928"),
-    });
-    res.render("layouts/clients/category/mophong", {
-      fullname: 1,
-      userid: 1,
-      sID: req.session.sessionID,
-      danhsach: data,
-      VND,
-      cart: 0,
+      title,
+      id,
     });
   }
 });
