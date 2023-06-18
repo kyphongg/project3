@@ -1017,71 +1017,73 @@ app.get("/cart/:id", async (req, res) => {
 });
 
 app.post("/add_to_cart", async (req, res) => {
-  const productId = req.body.product_id_hidden;
-  const quantity = parseInt(req.body.quantity);
-  const convert = req.body.quantity;
-  const uid = req.body.user_id_hidden;
-  const qty = await Product.findOne({ _id: productId });
-  let cart = await Cart.find({ userID: req.body.user_id_hidden });
-  if (cart[0]) {
-    const isE = cart[0].items.findIndex((item) => {
-      return new String(item.productID).trim() == new String(productId).trim();
-    });
-    if (isE == -1) {
-      await Cart.updateOne(
-        { userID: uid },
-        {
-          $addToSet: {
-            items: {
-              _id: productId,
-              productID: productId,
-              quantity: quantity,
-            },
-          },
-        }
-      );
-    } else {
-      if (cart[0].items[isE].quantity == qty.productQuantity) {
-        req.flash("error", "Số lượng của sản phẩm đã đầy");
-      } else if (quantity + cart[0].items[isE].quantity > qty.productQuantity) {
+  if(req.session.guest){
+    const productId = req.body.product_id_hidden;
+    const quantity = parseInt(req.body.quantity);
+    const convert = req.body.quantity;
+    const uid = req.body.user_id_hidden;
+    const qty = await Product.findOne({ _id: productId });
+    let cartE = await Cart.find({ userID: req.body.user_id_hidden });
+    if (cartE[0]) {
+      const isE = cartE[0].items.findIndex((item) => {
+        return new String(item.productID).trim() == new String(productId).trim();
+      });
+      if (isE == -1) {
         await Cart.updateOne(
+          { userID: uid },
           {
-            userID: uid,
-            items: { $elemMatch: { _id: productId } },
-          },
-          { $set: { "items.$.quantity": qty.productQuantity } }
+            $addToSet: {
+              items: {
+                _id: productId,
+                productID: productId,
+                quantity: quantity,
+              },
+            },
+          }
         );
       } else {
-        await Cart.updateOne(
-          {
-            userID: uid,
-            items: { $elemMatch: { _id: productId } },
-          },
-          { $inc: { "items.$.quantity": convert } }
-        );
+        if (cartE[0].items[isE].quantity == qty.productQuantity) {
+          req.flash("error", "Số lượng của sản phẩm đã đầy");
+        } else if (quantity + cartE[0].items[isE].quantity > qty.productQuantity) {
+          await Cart.updateOne(
+            {
+              userID: uid,
+              items: { $elemMatch: { _id: productId } },
+            },
+            { $set: { "items.$.quantity": qty.productQuantity } }
+          );
+        } else {
+          await Cart.updateOne(
+            {
+              userID: uid,
+              items: { $elemMatch: { _id: productId } },
+            },
+            { $inc: { "items.$.quantity": convert } }
+          );
+        }
       }
+    } else {
+      var cartData = Cart({
+        _id: uid,
+        items: [
+          {
+            quantity: quantity,
+            productID: productId,
+            _id: productId,
+          },
+        ],
+        userID: uid,
+      });
+      await cartData.save();
     }
-    res.redirect("/cart/" + uid);
   } else {
-    var cartData = Cart({
-      _id: uid,
-      items: [
-        {
-          quantity: quantity,
-          productID: productId,
-          _id: productId,
-        },
-      ],
-      userID: uid,
-    });
-    cartData.save().then(function () {
-      res.redirect("/cart/" + uid);
-    });
+    res.redirect("/login");
   }
 });
 
 app.post("/update_quantity_cart", async (req, res) => {
-  const quantity = req.body.quantity;
+  if(req.session.guest){
+    const quantity = req.body.quantity;
   const productId = req.body.product_id_hidden;
   const uid = req.body.user_id_hidden;
   if (quantity > 0) {
@@ -1130,6 +1132,9 @@ app.post("/update_quantity_cart", async (req, res) => {
     });
   }
   res.redirect("/cart/" + uid);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/delete_cart_items/:id", async (req, res) => {
