@@ -1691,7 +1691,7 @@ app.get("/all_product", async (req, res) => {
 });
 
 //Trang chi tiết sản phẩm
-app.get("/product/:id", async (req, res) => {a
+app.get("/product/:id", async (req, res) => {
   if (req.session.guest) {
     const cart = await Cart.aggregate([
       { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
