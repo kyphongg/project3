@@ -991,26 +991,24 @@ app.get("/cart/:id", async (req, res) => {
     const carti = await Cart.find({
       userID: new mongoose.Types.ObjectId(req.session.userid),
     });
-    await Cart.find({ userID: new mongoose.Types.ObjectId(req.session.userid) })
-      .populate("items.productID")
-      .then((data) => {
-        let money = 0;
-        for (let i = 0; i < data.length; i++) {
-          data[i].items.forEach(async function (pid) {
-            money += pid.productID.priceOut * parseInt(pid.quantity);
-          });
-        }
-        res.render("layouts/clients/cart/cart", {
-          fullname: req.session.fullname,
-          userid: req.session.userid,
-          sID: req.session.sessionID,
-          danhsach: data,
-          VND,
-          cart: req.session.cart,
-          carti,
-          money,
-        });
+    let data = await Cart.find({ userID: new mongoose.Types.ObjectId(req.session.userid) })
+      .populate("items.productID");
+    let money = 0;
+    for (let i = 0; i < data.length; i++) {
+      data[i].items.forEach(function (pid) {
+        money += pid.productID.priceOut * parseInt(pid.quantity);
       });
+    }
+    res.render("layouts/clients/cart/cart", {
+      fullname: req.session.fullname,
+      userid: req.session.userid,
+      sID: req.session.sessionID,
+      danhsach: data,
+      VND,
+      cart: req.session.cart,
+      carti,
+      money,
+    });
   } else {
     res.redirect("/login");
   }
