@@ -54,10 +54,10 @@
                         <div class="form-group">
                             <label >Trạng thái</label>
                             <select name="couponStatus" class="form-control m-bot15">
-                                <% if(danhsach.couponType == 0){ %>
+                                <% if(danhsach.couponStatus == 0){ %>
                                     <option selected value="0">Hoạt động</option>
                                     <option value="1">Ngừng hoạt động</option>
-                                <% }else if(danhsach.couponType == 1){ %>
+                                <% }else if(danhsach.couponStatus == 1){ %>
                                     <option selected value="1">Ngừng hoạt động</option>
                                     <option value="0">Hoạt động</option>
                                 <% } %>
