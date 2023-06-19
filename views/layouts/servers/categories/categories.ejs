@@ -35,6 +35,7 @@
                         <table class="table table-striped table-bordered">
                             <thead >
                             <tr>
+                                <th style="display: none;"></th>
                                 <th style="width: 50px; text-align: center;">STT</th>
                                 <th  style="text-align: center;">Tên thể loại</th>
                                 <th  style="text-align: center;">Tùy biến</th>
@@ -43,15 +44,17 @@
                                 <tbody>
                                     <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
+                                    <td style="display: none;"><%= danhsach[i]._id %></td>
                                     <td><%= i+1 %></td>
                                     <td><%= danhsach[i].categoryName %></td>
                                     <td>
                                         <a href="/edit_categories/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
                                             <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
                                         </a>
-                                        <a href="/delete_categories/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
+                                        <button type="button" onClick="find(this);" class="btn btn-danger js-buy-tickets"><i class="fa-solid fa-square-xmark js-buy-tickets" style="font-size: 25px; color: #D9534F;"></i></button>
+                                        <!-- <a href="/delete_categories/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
                                             <i class="fa-solid fa-square-xmark js-buy-tickets" style="font-size: 25px; color: #D9534F;"></i>
-                                        </a>
+                                        </a> -->
                                         <div class="modal js-modal">
                                             <div class="modal-container js-modal-container">
                                                 
@@ -81,6 +84,12 @@
     <!--main content end-->
 
 </section>
+    <script>
+    function find( element ) {
+        let link = element.parentNode.parentNode.cells[0].innerHTML;
+        document.getElementById("buy-tickets").href = "/delete_categories/"+link;
+    }
+    </script>
     <%- include('../partials/footer') %>
 </body>
 </html>
