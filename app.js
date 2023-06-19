@@ -1135,7 +1135,7 @@ app.post("/update_quantity_cart", async (req, res) => {
   }
 });
 
-app.get("/delete_cart_items/:id", async (req, res) => {
+app.get("/delete_cart_items/:id", async (req, res) => {a
   if (req.session.guest) {
     const uid = req.session.userid;
     const productId = req.params.id;
