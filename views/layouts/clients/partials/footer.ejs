@@ -126,6 +126,10 @@
   const modalClosee = document.querySelector(".js-cancel");
 
   // Hàm hiển thị modal xóa sp (thêm class open vào modal)
+  function find( element ) {
+    let link = element.parentNode.parentNode.cells[0].innerHTML;
+    document.getElementById("buy-tickets").href = "/delete_cart_items/"+link;
+  }
   function showBuyTickets() {
     modal.classList.add("open");
   }

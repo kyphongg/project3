@@ -40,6 +40,7 @@
               <table class="table table-bordered table-striped">
                 <thead>
                   <tr>
+                      <th style="display: none;"></th>
                       <th>Hình ảnh</th>
                       <th>Tên sản phẩm</th>
                       <th style="border-right:none;">Đơn giá</th>
@@ -52,6 +53,7 @@
                   <% for(let i=0; i < danhsach.length; i++) { %> <%
                     danhsach[i].items.forEach(function(pid) { %>
                   <tr>
+                    <td style="display: none;"><%= pid.productID._id %></td>
                     <td style="width: 155px;">
                       <img
                         style="width: 60px; height: 80px;"
@@ -77,7 +79,7 @@
                       <p style="color: #dc4e45"><%= VND.format(pid.productID.priceOut * parseInt(pid.quantity)) %></p>
                     </td>
                     <td style="width: 200px;">
-                      <a style="text-decoration: none;" class="btn btn-danger js-buy-tickets"><i class="fa-regular fa-trash-can" style="color: white;"></i> Xóa sản phẩm</a>
+                      <button type="button" onClick="find(this);" class="btn btn-danger js-buy-tickets"><i class="fa-regular fa-trash-can" style="color: white;"></i> Xóa sản phẩm</button></td>
                     </td>
                     <div class="modal js-modal">
                       <div class="modal-container js-modal-container">
@@ -91,7 +93,7 @@
                                   Quý khách có muốn xóa sản phẩm này?
                               </label>
                               <div class="btn-js" style="margin-top:50px; margin-left:200px;">
-                                  <a href="/delete_cart_items/<%= pid._id %>" id="buy-tickets" style="margin-right:15px; background-color: #DC3545;"> Xóa </a>
+                                  <a href="/delete_cart_items/www" id="buy-tickets" style="margin-right:15px; background-color: #DC3545;"> Xóa </a>
                                   <a id="buy-tickets" class="modal-close js-modal-close" style="background-color: #6C757D;"> Hủy </a>
                               </div>
                           </div>
