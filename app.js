@@ -14,6 +14,7 @@ const collect = require("collect.js");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
+const Swal = require('sweetalert2');
 
 app.use(cors());
 app.use(flash());
@@ -1041,7 +1042,7 @@ app.post("/add_to_cart", async (req, res) => {
         );
       } else {
         if (cartE[0].items[isE].quantity == qty.productQuantity) {
-          req.flash("error", "Số lượng của sản phẩm đã đầy");
+          req.flash("error", "Số lượng của sản phẩm trong giỏ đã đầy");
         } else if (quantity + cartE[0].items[isE].quantity > qty.productQuantity) {
           await Cart.updateOne(
             {
@@ -1060,6 +1061,8 @@ app.post("/add_to_cart", async (req, res) => {
           );
         }
       }
+      req.flash("add", "Thêm vào giỏ thành công");
+      res.redirect("/product/"+productId);
     } else {
       var cartData = Cart({
         _id: uid,
@@ -1073,6 +1076,8 @@ app.post("/add_to_cart", async (req, res) => {
         userID: uid,
       });
       await cartData.save();
+      req.flash("add", "Thêm vào giỏ thành công");
+      res.redirect("/product/"+productId);
     }
   } else {
     res.redirect("/login");
@@ -1688,6 +1693,26 @@ app.get("/all_product", async (req, res) => {
 //Trang chi tiết sản phẩm
 app.get("/product/:id", async (req, res) => {
   if (req.session.guest) {
+    const cart = await Cart.aggregate([
+      { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
+      {
+        $addFields: {
+          size: {
+            $size: "$items",
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          item_count: {
+            $sum: "$size",
+          },
+        },
+      },
+    ]);
+    var sess = req.session;
+    sess.cart = cart;
     let product = await Product.findOne({ _id: req.params.id });
     let pname = product.productName;
     let data = await Product.findOne({ _id: req.params.id })
@@ -1701,6 +1726,7 @@ app.get("/product/:id", async (req, res) => {
       cart: req.session.cart,
       VND,
       pname,
+      add: req.flash("add"),
     });
   } else {
     let product = await Product.findOne({ _id: req.params.id });
@@ -1716,6 +1742,7 @@ app.get("/product/:id", async (req, res) => {
       VND,
       cart: 0,
       pname,
+      add: req.flash("add"),
     });
   }
 });
