@@ -99,31 +99,6 @@
 
                 <% if(admin_role == 0) { %>
                 <div class="graphBox">
-                    <div class="box">
-                        <h3 style="text-align: center;">Sản phẩm bán chạy nhất</h3>
-                        <canvas id="CircleChart" style="margin-top: 15px;"></canvas>
-                    </div>
-                    <div class="box">
-                        <h3 style="text-align: center;">Danh sách bán hàng ngày từ <%= timeMonday %> đến <%= timeSunday %></h3>
-                        <input type="hidden" id="value1" value="<%= money1 %>" />
-                        <input type="hidden" id="value2" value="<%= money2 %>" />
-                        <input type="hidden" id="value3" value="<%= money3 %>" />
-                        <input type="hidden" id="value4" value="<%= money4 %>" />
-                        <input type="hidden" id="value5" value="<%= money5 %>" />
-                        <input type="hidden" id="value6" value="<%= money6 %>" />
-                        <input type="hidden" id="value7" value="<%= money7 %>" />
-                        <canvas id="myChart" style="margin-top: 15px;"></canvas>
-                        Bắt đầu:
-                        <input type="date"name=""id="start"min="<%= dateStart %>"max="<%= dateNow %>"value="<%= dateStart %>"/>
-                        Kết thúc:
-                        <input type="date"name=""id="end"min="<%= dateStart %>"max="<%= dateNow %>"value="<%= dateNow %>"/>
-                        <button class="btn btn-primary" onclick="filterDate()">Filter</button>
-                        <button class="btn btn-primary" onclick="resetDate()">Reset</button>
-                    </div>
-                </div>
-                <%}%>
-
-                <div class="other-Box">
                   <div class="box">
                     <div class="bestSells-Box">
                       <div class="table-agile-info">
@@ -153,6 +128,27 @@
                     </div>
                   </div>
                   
+                    <div class="box">
+                        <h3 style="text-align: center;">Danh sách bán hàng ngày từ <%= timeMonday %> đến <%= timeSunday %></h3>
+                        <input type="hidden" id="value1" value="<%= money1 %>" />
+                        <input type="hidden" id="value2" value="<%= money2 %>" />
+                        <input type="hidden" id="value3" value="<%= money3 %>" />
+                        <input type="hidden" id="value4" value="<%= money4 %>" />
+                        <input type="hidden" id="value5" value="<%= money5 %>" />
+                        <input type="hidden" id="value6" value="<%= money6 %>" />
+                        <input type="hidden" id="value7" value="<%= money7 %>" />
+                        <canvas id="myChart" style="margin-top: 15px;"></canvas>
+                        Bắt đầu:
+                        <input type="date"name=""id="start"min="<%= dateStart %>"max="<%= dateNow %>"value="<%= dateStart %>"/>
+                        Kết thúc:
+                        <input type="date"name=""id="end"min="<%= dateStart %>"max="<%= dateNow %>"value="<%= dateNow %>"/>
+                        <button class="btn btn-primary" onclick="filterDate()">Filter</button>
+                        <button class="btn btn-primary" onclick="resetDate()">Reset</button>
+                    </div>
+                </div>
+                <%}%>
+
+                <div class="other-Box">
                   <div class="box">
                     <div class="outOfStock-Box">
                       <div class="table-agile-info">
