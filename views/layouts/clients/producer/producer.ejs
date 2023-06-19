@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">          
-    <title>Nintendo</title>
+    <title><%= title %></title>
     <%- include('../partials/head') %>
 </head>
 <body>
@@ -13,7 +13,7 @@
     <div class="container">
         <div class="cart-p">
             <div class="cart-heading">
-                <a href="/producer/645c5627e8da91e62f850537" style="text-decoration: none; color:black"><h3>Nintendo</h3></a>      
+                <a href="/producer/<%= id %>" style="text-decoration: none; color:black"><h3><%= title %></h3></a>   
             </div>
           
         <div class="row row-cols-4">
