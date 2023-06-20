@@ -1716,7 +1716,8 @@ app.get("/product/:id", async (req, res) => {
     var sess = req.session;
     sess.cart = cart;
     let product = await Product.findOne({ _id: req.params.id });
-    let comments = await Comment.find({productID: new mongoose.Types.ObjectId(req.params.id)});
+    let comments = await Comment.find({productID: new mongoose.Types.ObjectId(req.params.id)})
+      .populate("userID");
     let pname = product.productName;
     let data = await Product.findOne({ _id: req.params.id })
       .populate("categoryID")
