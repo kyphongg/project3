@@ -1716,10 +1716,11 @@ app.get("/product/:id", async (req, res) => {
     var sess = req.session;
     sess.cart = cart;
     let product = await Product.findOne({ _id: req.params.id });
+    let comments = await Comment.find({productID: new mongoose.Types.ObjectId(req.params.id)});
     let pname = product.productName;
     let data = await Product.findOne({ _id: req.params.id })
       .populate("categoryID")
-      .populate("producerID");
+      .populate("producerID")
     res.render("layouts/clients/main/product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1728,6 +1729,7 @@ app.get("/product/:id", async (req, res) => {
       cart: req.session.cart,
       VND,
       pname,
+      comments,
       add: req.flash("add"),
     });
   } else {

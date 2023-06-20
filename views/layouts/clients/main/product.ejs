@@ -117,14 +117,16 @@
                     </form>
 
                     <div class="row style_comment">
+                        <% for(let i=0; i < comments.length; i++) { %>
                         <div class="col-md-2">
                             <img style="width: 80px;" src="/images/avataricon.png">
                         </div>
                         <div class="col-md-10" style="margin-left: -100px;">
-                            <p style="line-height: 0.2;"><b>Kỳ Phong</b></p>
-                            <p style="color: #6B7684;">Bình luận vào lúc: 09:23 19/06</p>
-                            <p>Game chơi rất là tuyệt!</p>
+                            <p style="line-height: 0.2;"><b><%= comments[i]. userID %></b></p>
+                            <p style="color: #6B7684;">Bình luận vào lúc: <%= comments[i].commentDate %></p>
+                            <p><%= comments[i].commentInfo %></p>
                         </div>
+                        <% } %> 
                     </div>
                 </div>
             </div>
