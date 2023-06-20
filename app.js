@@ -3150,6 +3150,37 @@ app.post("/admin_cancel_order/:id", async (req, res) => {
   }
 });
 
+//Trang tổng doanh thu
+app.get("/revenue", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0) {
+      let data = await Warehouse.aggregate([
+        { $group: { _id: "$productID", total: { $sum: "$quantityIn" } } },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+      ]);
+      res.render("layouts/servers/sales/revenue", {
+        fullname: req.session.fullname,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+    res.redirect("/admin_home");
+    } 
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
 //Trang tổng doanh thu theo tuần
 app.get("/sales", async (req, res) => {
   if (req.session.daDangNhap) {
