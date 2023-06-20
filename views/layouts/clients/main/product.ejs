@@ -65,20 +65,20 @@
                 </div>
 
             <% if(danhsach.productQuantity!=0){ %>
-            <form action="/add_to_cart" method="post">
+            <form action="/add_to_cart" method="post" id="cartForm">
             <div class="quantity">
                     <p>Số lượng :</p>
-                    <input name="quantity" type="number" min="1" max="<%= danhsach.productQuantity %>" value="1">
-                    <input name="product_id_hidden" type="hidden" value="<%= danhsach._id %>">
-                    <input name="username" type="hidden" class="form-control" value="0">
-                    <input name="user_id_hidden" type="hidden" value="<%= userid %>">
+                    <input form="cartForm" name="quantity" type="number" min="1" max="<%= danhsach.productQuantity %>" value="1">
+                    <input form="cartForm" name="product_id_hidden" type="hidden" value="<%= danhsach._id %>">
+                    <input form="cartForm" name="username" type="hidden" class="form-control" value="0">
+                    <input form="cartForm" name="user_id_hidden" type="hidden" value="<%= userid %>">
                 </div>
                 
                 <div class="btn-box">
                     <% if(fullname==1){ %>
                         <button type="text" class="cart-btn"><a href="/login" style="text-decoration: none; color:white"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</a></button>
                     <% }else{ %>
-                        <button type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
+                        <button form="cartForm" type="submit" class="cart-btn"><i class="fa-solid fa-cart-plus"></i> Thêm vào Giỏ</button>
                     <% } %>
                 </div>
             </div>
@@ -107,12 +107,12 @@
             <div class="container">
                 <div class="comment">
                     <h3>Bình luận</h3>
-                    <form action="/comment" method="post">
-                        <input name="commentProduct" type="hidden" class="form-control" value="<%= danhsach._id  %>">
-                        <input name="commentName" type="hidden" class="form-control" value="<%= fullname %>">
+                    <form action="/comment" method="post" id="commentForm">
+                        <input form="commentForm" name="productID" type="hidden" class="form-control" value="<%= danhsach._id  %>">
+                        <input form="commentForm" name="userID" type="hidden" class="form-control" value="<%= userid  %>">
                         <input name="username" type="hidden" class="form-control" value="0">
-                        <textarea name="commentInfo" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
-                        <button  type="submit" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
+                        <textarea form="commentForm" name="commentInfo" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
+                        <button form="commentForm" type="submit" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
                         </button>
                     </form>
 

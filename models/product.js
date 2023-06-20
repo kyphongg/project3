@@ -32,12 +32,7 @@ var Product = new Schema({
     productQuantity:{
         type: Number,
         default: 0,
-    }
-    ,
-    commentID:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment'
-    }],
+    },
     created_date:{
         type: String
     },

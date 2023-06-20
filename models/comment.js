@@ -3,18 +3,19 @@ const Schema = mongoose.Schema
 const passportLocalMongoose = require('passport-local-mongoose');
 const moment = require("moment-timezone");
 var Comment = new Schema({
-    commentProduct:{
+    productID:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product'
+    },
+    userID:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     commentInfo:{
         type: String
     },
     commentStatus:{
         type: Number
-    },
-    commentName:{
-        type: String
     },
     commentDate:{
         type: String

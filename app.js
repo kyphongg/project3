@@ -1752,9 +1752,10 @@ app.get("/product/:id", async (req, res) => {
 app.post("/comment", async (req, res) => {
   if (req.session.guest) {
     var comment = Comment({ 
-      commentProduct: req.body.commentProduct,
+      productID: req.body.productID,
+      userID: req.body.userID,
       commentInfo: req.body.commentInfo,
-      commentName: req.body.commentName,
+      commentStatus: 0,
       commentDate: moment
       .tz(Date.now(), "Asia/Ho_Chi_Minh")
       .format("DD/MM/YYYY hh:mm a"),
