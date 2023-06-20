@@ -82,6 +82,8 @@ const Cart = require("./models/cart.js");
 const Order = require("./models/order.js");
 const News = require("./models/news.js");
 const Password = require("./models/password.js");
+const Comment = require("./models/comment.js")
+
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -1744,6 +1746,23 @@ app.get("/product/:id", async (req, res) => {
       pname,
       add: req.flash("add"),
     });
+  }
+});
+
+app.post("/comment", async (req, res) => {
+  if (req.session.guest) {
+    var comment = Comment({ 
+      commentProduct: req.body.commentProduct,
+      commentInfo: req.body.commentInfo,
+      commentName: req.body.commentName,
+      commentDate: moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .format("DD/MM/YYYY hh:mm a"),
+    });
+    comment.save();
+    res.redirect("/");
+  } else {
+    res.redirect("/login");
   }
 });
 

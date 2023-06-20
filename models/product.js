@@ -34,6 +34,10 @@ var Product = new Schema({
         default: 0,
     }
     ,
+    commentID:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+    }],
     created_date:{
         type: String
     },

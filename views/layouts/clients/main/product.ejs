@@ -100,17 +100,25 @@
             <div class="container">
                 <div class="comment">
                     <h3>Bình luận</h3>
-                    <form action="#">
-                        <!-- {{-- <input type="hidden" name="customer_id" class="customer_id" value="{{$customer_id}}">--}} -->
-                        <textarea name="comment" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
-                        <button type="button" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
+                    <form action="/comment" method="post">
+                        <input name="commentProduct" type="hidden" class="form-control" value="<%= danhsach._id  %>">
+                        <input name="commentName" type="hidden" class="form-control" value="<%= fullname %>">
+                        <input name="username" type="hidden" class="form-control" value="0">
+                        <textarea name="commentInfo" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
+                        <button  type="submit" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
                         </button>
                     </form>
-                    <!-- <div id="notify_comment"></div>
-                    <form>
-                        <input type="hidden" name="game_id" class="game_id" value="">
-                        <div id="comment_show"></div>
-                    </form> -->
+
+                    <div class="row style_comment">
+                        <div class="col-md-2">
+                            <img style="width: 80px;" src="/images/avataricon.png">
+                        </div>
+                        <div class="col-md-10" style="margin-left: -100px;">
+                            <p style="line-height: 0.2;"><b>Kỳ Phong</b></p>
+                            <p style="color: #6B7684;">Bình luận vào lúc: 09:23 19/06</p>
+                            <p>Game chơi rất là tuyệt!</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <%}%>
