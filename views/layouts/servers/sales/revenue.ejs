@@ -36,6 +36,7 @@
                     <th style="text-align: center; width: 150px">Tổng nhập</th>
                     <th style="text-align: center; width: 180px">Tổng bán</th>
                     <th style="text-align: center; width: 170px">Doanh thu</th>
+                    <th style="display: none">0</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -51,12 +52,18 @@
                         <td style="text-align: center;"><%= id.productQuantity %></td>
                         <td style="text-align: center;"><%= VND.format((danhsach[i].total) * (id.priceIn)) %></td>
                         <td style="text-align: center;"><%= VND.format(((danhsach[i].total)-(id.productQuantity)) * (id.priceOut)) %></td>
-                        <td style="text-align: center;"><%= VND.format(((danhsach[i].total)-(id.productQuantity)) * (id.priceOut) - (danhsach[i].total) * (id.priceIn)) %></td>
+                        <td style="text-align: center;"><%= VND.format((((danhsach[i].total)-(id.productQuantity)) * (id.priceOut)) - ((danhsach[i].total) * (id.priceIn))) %></td>
+                        <td style="display: none" id="revenue"><%= (((danhsach[i].total)-(id.productQuantity)) * (id.priceOut)) - ((danhsach[i].total) * (id.priceIn)) %></td>
                     </tr>
                         <% }); %>
                     <% } %>
                 </tbody>
               </table>
+              <div class="sales-price">
+                <b style="margin-right: 15px">Tổng doanh thu:</b>
+                <p id="all" style="color: #dc3545; font-weight: 500">
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -64,5 +71,20 @@
       <!--main content end-->
     </section>
     <%- include('../partials/footer') %>
+    <script>
+        const VND = new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        });
+        const tb = document.getElementById('myTable');
+        const trs = document.getElementsByTagName('tr');
+        var all = 0;
+        for(var i=0; i<trs.length; i++){
+            const revenue = document.getElementById("myTable").rows[i].cells[10].innerHTML;
+            const convert = parseInt(revenue);
+            all += convert;
+        }
+        document.getElementById("all").innerHTML = VND.format(all);      
+    </script>
   </body>
 </html>
