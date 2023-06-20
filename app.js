@@ -1754,6 +1754,7 @@ app.get("/product/:id", async (req, res) => {
 
 app.post("/comment", async (req, res) => {
   if (req.session.guest) {
+    let id = req.body.productID;
     var comment = Comment({ 
       productID: req.body.productID,
       userID: req.body.userID,
@@ -1764,7 +1765,7 @@ app.post("/comment", async (req, res) => {
       .format("DD/MM/YYYY hh:mm a"),
     });
     comment.save();
-    res.redirect("/");
+    res.redirect("/product/"+id);
   } else {
     res.redirect("/login");
   }
