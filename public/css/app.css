@@ -479,6 +479,15 @@ input:focus{
     cursor: pointer;
 }
 
+.sucesssingup-heading{
+    position: relative;
+    border-radius: 10px;
+    background-color: white;
+    text-align: center;
+    margin-top: 30px;
+    padding: 15px;
+}
+
 .my-slide{
     margin: 10px;
     z-index: 2;
@@ -1735,6 +1744,7 @@ input:focus{
 }
 
 .modal-container{
+    border-radius: 5px;
     background-color: #fff;
     width: 350px;
     max-width: calc(100% - 32px);
