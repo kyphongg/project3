@@ -2116,7 +2116,7 @@ app.post("/admin_login", async (req, res) => {
           if (result) {
             var sess = req.session;
             sess.daDangNhap = true;
-            sess.fullname = admin.fullname;
+            sess.adminName = admin.fullname;
             sess.admin_id = admin._id;
             sess.admin_role = admin.role;
             res.redirect("/admin_home");
@@ -2300,7 +2300,7 @@ app.get("/admin_home", async (req, res) => {
     }
 
     res.render("layouts/servers/home", {
-      fullname: req.session.fullname,
+      adminName: req.session.adminName,
       number: customer,
       numberal: employee,
       order: order,
@@ -2337,7 +2337,7 @@ app.get("/admin_categories", async (req, res) => {
     if (role == 0 || role == 1) {
       let data = await Category.find();
       res.render("layouts/servers/categories/categories", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         admin_role: req.session.admin_role,
@@ -2357,7 +2357,7 @@ app.get("/add_categories", (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
       res.render("layouts/servers/categories/add_categories", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
       });
@@ -2393,7 +2393,7 @@ app.get("/edit_categories/:id", async (req, res) => {
     if (role == 0 || role == 1) {
       let data = await Category.findById(req.params.id);
       res.render("layouts/servers/categories/edit_categories", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         admin_role: req.session.admin_role,
@@ -2444,7 +2444,7 @@ app.get("/admin_producers", async (req, res) => {
     if (role == 0 || role == 1) {
       let data = await Producer.find();
       res.render("layouts/servers/producers/producers", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         admin_role: req.session.admin_role,
@@ -2464,7 +2464,7 @@ app.get("/add_producers", (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
       res.render("layouts/servers/producers/add_producers", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
       });
@@ -2500,7 +2500,7 @@ app.get("/edit_producers/:id", async (req, res) => {
     if (role == 0 || role == 1) {
       let data = await Producer.findById(req.params.id);
       res.render("layouts/servers/producers/edit_producers", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         admin_role: req.session.admin_role,
@@ -2553,7 +2553,7 @@ app.get("/admin_product", async (req, res) => {
         .populate("categoryID")
         .populate("producerID");
       res.render("layouts/servers/product/product", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         VND,
@@ -2574,7 +2574,7 @@ app.get("/add_product", (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
       res.render("layouts/servers/product/add_product", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         VND,
         admin_role: req.session.admin_role,
@@ -2613,7 +2613,7 @@ app.post("/save_product", async (req, res) => {
             created_date: moment
               .tz(Date.now(), "Asia/Ho_Chi_Minh")
               .format("DD/MM/YYYY hh:mm a"),
-            created_by: req.session.fullname,
+            created_by: req.session.adminName,
           }).save();
           req.flash("success", "Thêm thành công");
           res.redirect("/admin_product");
@@ -2633,7 +2633,7 @@ app.get("/edit_product/:id", async (req, res) => {
         .populate("categoryID")
         .populate("producerID");
       res.render("layouts/servers/product/edit_product", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         VND,
@@ -2667,7 +2667,7 @@ app.post("/edit_product_save", async (req, res) => {
               priceIn: req.body.priceIn,
               priceOut: req.body.priceOut,
               productStatus: req.body.productStatus,
-              updated_by: req.session.fullname,
+              updated_by: req.session.adminName,
               updated_date: moment
                 .tz(Date.now(), "Asia/Ho_Chi_Minh")
                 .format("DD/MM/YYYY hh:mm a"),
@@ -2693,7 +2693,7 @@ app.post("/edit_product_save", async (req, res) => {
                 priceIn: req.body.priceIn,
                 priceOut: req.body.priceOut,
                 productStatus: req.body.productStatus,
-                updated_by: req.session.fullname,
+                updated_by: req.session.adminName,
                 updated_date: moment
                   .tz(Date.now(), "Asia/Ho_Chi_Minh")
                   .format("DD/MM/YYYY hh:mm a"),
@@ -2717,7 +2717,7 @@ app.get("/customers", async (req, res) => {
     if (role == 0 || role == 3) {
       let data = await User.find();
       res.render("layouts/servers/customer/customer", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         nhanvat: data,
         admin_role: req.session.admin_role,
@@ -2737,7 +2737,7 @@ app.get("/employees", async (req, res) => {
     if (role == 0) {
       let data = await Admin.find();
       res.render("layouts/servers/employee/employee", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         nhanvat: data,
         admin_role: req.session.admin_role,
@@ -2756,7 +2756,7 @@ app.get("/admin_profile/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await Admin.findById({ _id: req.params.id });
     res.render("layouts/servers/employee/profile", {
-      fullname: req.session.fullname,
+      adminName: req.session.adminName,
       admin_id: req.session.admin_id,
       nhanvat: data,
       admin_role: req.session.admin_role,
@@ -2770,7 +2770,7 @@ app.get("/admin_setting/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await Admin.findById({ _id: req.params.id });
     res.render("layouts/servers/employee/setting", {
-      fullname: req.session.fullname,
+      adminName: req.session.adminName,
       admin_id: req.session.admin_id,
       nhanvat: data,
       admin_role: req.session.admin_role,
@@ -2789,7 +2789,7 @@ app.get("/add_employee", (req, res) => {
     let role = req.session.admin_role;
     if (role == 0) {
       res.render("layouts/servers/employee/add_employee", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         nameError: req.flash("nameError"),
@@ -2889,7 +2889,7 @@ app.post("/admin_save", async (req, res) => {
       res.redirect("/add_employee");
     } else {
       await Admin({
-        fullname: req.body.fullname,
+        adminName: req.body.fullname,
         email: req.body.email,
         password: req.body.password,
         username: req.body.username,
@@ -2910,7 +2910,7 @@ app.get("/edit/:id", async (req, res) => {
     if (role == 0) {
       let data = await Admin.findById(req.params.id);
       res.render("layouts/servers/employee/edit_employee", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         nhanvat: data,
         admin_role: req.session.admin_role,
@@ -2938,7 +2938,7 @@ app.post("/edit_save", async (req, res) => {
     var vnn_regex =
       /^[a-zA-Z'-'\saAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]*$/g;
     let errorForm = 0;
-    var name = req.body.fullname;
+    var name = req.body.adminName;
     var email = req.body.email;
     var username = req.body.username;
     if (name == "") {
@@ -2996,7 +2996,7 @@ app.post("/edit_save", async (req, res) => {
       await Admin.updateOne(
         { _id: req.body.id },
         {
-          fullname: req.body.fullname,
+          adminName: req.body.adminName,
           email: req.body.email,
           username: req.body.username,
           role: req.body.role,
@@ -3027,7 +3027,7 @@ app.get("/employees_store", async (req, res) => {
     if (role == 0) {
       let data = await Admin.find({ role: 1 });
       res.render("layouts/servers/employee/store_employee", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         nhanvat: data,
         admin_role: req.session.admin_role,
@@ -3046,7 +3046,7 @@ app.get("/employees_order", async (req, res) => {
     if (role == 0) {
       let data = await Admin.find({ role: 2 });
       res.render("layouts/servers/employee/order_employee", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         nhanvat: data,
         admin_role: req.session.admin_role,
@@ -3065,7 +3065,7 @@ app.get("/employees_customer_care", async (req, res) => {
     if (role == 0) {
       let data = await Admin.find({ role: 3 });
       res.render("layouts/servers/employee/customer_care_employee", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         nhanvat: data,
         admin_role: req.session.admin_role,
@@ -3150,7 +3150,7 @@ app.get("/all_orders", async (req, res) => {
       const orderDone = await Order.find({ orderStatus: 3 }).count();
       const orderCancel = await Order.find({ orderStatus: 4 }).count();
       res.render("layouts/servers/orders/all_orders", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3175,7 +3175,7 @@ app.get("/new_orders", async (req, res) => {
       let data = await Order.find({ orderStatus: 0 }).populate("userID");
       const order = await Order.find({ orderStatus: 0 }).count();
       res.render("layouts/servers/orders/new_orders", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3206,7 +3206,7 @@ app.get("/order_detail/:id", async (req, res) => {
           money += pid.productID.priceOut * pid.quantity;
         });
         res.render("layouts/servers/orders/order_detail", {
-          fullname: req.session.fullname,
+          adminName: req.session.adminName,
           admin_id: req.session.admin_id,
           admin_role: req.session.admin_role,
           danhsach: data,
@@ -3224,7 +3224,7 @@ app.get("/order_detail/:id", async (req, res) => {
           money += pid.productID.priceOut * pid.quantity;
         });
         res.render("layouts/servers/orders/order_detail", {
-          fullname: req.session.fullname,
+          adminName: req.session.adminName,
           admin_id: req.session.admin_id,
           admin_role: req.session.admin_role,
           danhsach: data,
@@ -3249,7 +3249,7 @@ app.get("/accept_orders", async (req, res) => {
       let data = await Order.find({ orderStatus: 1 }).populate("userID");
       const order = await Order.find({ orderStatus: 1 }).count();
       res.render("layouts/servers/orders/accept_orders", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3270,7 +3270,7 @@ app.get("/done_orders", async (req, res) => {
     if (role == 0 || role == 2) {
       let data = await Order.find({ orderStatus: 3 }).populate("userID");
       res.render("layouts/servers/orders/done_orders", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3290,7 +3290,7 @@ app.get("/cancel_orders", async (req, res) => {
     if (role == 0 || role == 2) {
       let data = await Order.find({ orderStatus: 4 }).populate("userID");
       res.render("layouts/servers/orders/cancel_orders", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3402,7 +3402,7 @@ app.get("/revenue", async (req, res) => {
         },
       ]);
       res.render("layouts/servers/sales/revenue", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         VND,
@@ -3519,7 +3519,7 @@ app.get("/sales", async (req, res) => {
       }
 
       res.render("layouts/servers/sales/sales", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: dataNow,
@@ -3579,7 +3579,7 @@ app.get("/sales_daily", async (req, res) => {
         },
       ]);
       res.render("layouts/servers/sales/sales_daily", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3610,7 +3610,7 @@ app.get("/sales_detail/:id", async (req, res) => {
           money += pid.productID.priceOut * pid.quantity;
         });
         res.render("layouts/servers/sales/sales_detail", {
-          fullname: req.session.fullname,
+          adminName: req.session.adminName,
           admin_id: req.session.admin_id,
           admin_role: req.session.admin_role,
           danhsach: data,
@@ -3628,7 +3628,7 @@ app.get("/sales_detail/:id", async (req, res) => {
           money += pid.productID.priceOut * pid.quantity;
         });
         res.render("layouts/servers/sales/sales_detail", {
-          fullname: req.session.fullname,
+          adminName: req.session.adminName,
           admin_id: req.session.admin_id,
           admin_role: req.session.admin_role,
           danhsach: data,
@@ -3646,7 +3646,7 @@ app.get("/sales_detail/:id", async (req, res) => {
   }
 });
 
-//Theo từng ngày trong tuần
+//Trang thống kê theo từng ngày trong tuần
 app.get("/monday", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3686,7 +3686,7 @@ app.get("/monday", async (req, res) => {
         money += data[i].total;
       }
       res.render("layouts/servers/sales/monday", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3742,7 +3742,7 @@ app.get("/tuesday", async (req, res) => {
         money += data[i].total;
       }
       res.render("layouts/servers/sales/tuesday", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3798,7 +3798,7 @@ app.get("/wednesday", async (req, res) => {
         money += data[i].total;
       }
       res.render("layouts/servers/sales/wednesday", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3854,7 +3854,7 @@ app.get("/thursday", async (req, res) => {
         money += data[i].total;
       }
       res.render("layouts/servers/sales/thursday", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3910,7 +3910,7 @@ app.get("/friday", async (req, res) => {
         money += data[i].total;
       }
       res.render("layouts/servers/sales/friday", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -3966,7 +3966,7 @@ app.get("/saturday", async (req, res) => {
         money += data[i].total;
       }
       res.render("layouts/servers/sales/saturday", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -4022,7 +4022,7 @@ app.get("/sunday", async (req, res) => {
         money += data[i].total;
       }
       res.render("layouts/servers/sales/sunday", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -4056,7 +4056,7 @@ app.get("/warehouse", async (req, res) => {
         },
       ]);
       res.render("layouts/servers/warehouse/warehouse", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         VND,
@@ -4079,7 +4079,7 @@ app.get("/list_warehouse/:id", async (req, res) => {
         .populate("productID")
         .populate("created_by");
       res.render("layouts/servers/warehouse/list_warehouse", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         VND,
@@ -4114,7 +4114,7 @@ app.get("/sale_history/:id", async (req, res) => {
         { "items.$": 1 }
       ).populate("items.productID");
       res.render("layouts/servers/warehouse/sale_history", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         danhsach: data,
@@ -4138,7 +4138,7 @@ app.get("/add_warehouse", async (req, res) => {
         .populate("producerID")
         .then((data) => {
           res.render("layouts/servers/warehouse/add_warehouse", {
-            fullname: req.session.fullname,
+            adminName: req.session.adminName,
             admin_id: req.session.admin_id,
             danhsach: data,
             admin_role: req.session.admin_role,
@@ -4182,7 +4182,7 @@ app.get("/coupon", async (req, res) => {
     if (role == 0 || role == 1) {
       let data = await Coupon.find();
       res.render("layouts/servers/coupon/coupon", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         VND,
@@ -4203,7 +4203,7 @@ app.get("/add_coupon", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
       res.render("layouts/servers/coupon/add_coupon", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
       });
@@ -4247,7 +4247,7 @@ app.get("/edit_coupon/:id", async (req, res) => {
     if (role == 0 || role == 1) {
       let data = await Coupon.findById(req.params.id);
       res.render("layouts/servers/coupon/edit_coupon", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         admin_role: req.session.admin_role,
@@ -4298,7 +4298,7 @@ app.get("/cities", async (req, res) => {
     if (role == 0 || role == 1) {
       let data = await City.find();
       res.render("layouts/servers/cities/cities", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         VND,
@@ -4319,7 +4319,7 @@ app.get("/add_cities", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
       res.render("layouts/servers/cities/add_cities", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
       });
@@ -4358,7 +4358,7 @@ app.get("/edit_cities/:id", async (req, res) => {
     if (role == 0 || role == 1) {
       let data = await City.findById(req.params.id);
       res.render("layouts/servers/cities/edit_cities", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         admin_role: req.session.admin_role,
@@ -4405,7 +4405,7 @@ app.get("/admin_news", async (req, res) => {
     if (role == 0 || role == 3) {
       let data = await News.find().populate("newsProduct");
       res.render("layouts/servers/news/news", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         VND,
@@ -4430,7 +4430,7 @@ app.get("/add_news", async (req, res) => {
         .populate("producerID")
         .then((data) => {
           res.render("layouts/servers/news/add_news", {
-            fullname: req.session.fullname,
+            adminName: req.session.adminName,
             admin_id: req.session.admin_id,
             danhsach: data,
             admin_role: req.session.admin_role,
@@ -4468,7 +4468,7 @@ app.post("/news_save", async (req, res) => {
             created_date: moment
               .tz(Date.now(), "Asia/Ho_Chi_Minh")
               .format("DD/MM/YYYY hh:mm a"),
-            created_by: req.session.fullname,
+            created_by: req.session.adminName,
           });
           news.save().then(function () {
             req.flash("success", "Thêm thành công");
@@ -4489,7 +4489,7 @@ app.get("/edit_news/:id", async (req, res) => {
       let data = await News.findById(req.params.id).populate("newsProduct");
       let pro = await Product.find();
       res.render("layouts/servers/news/edit_news", {
-        fullname: req.session.fullname,
+        adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
         sanpham: pro,
@@ -4515,7 +4515,7 @@ app.post("/edit_news_save", async (req, res) => {
             newsContent: req.body.newsContent,
             newsProduct: req.body.newsProduct,
             newsStatus: req.body.newsStatus,
-            updated_by: req.session.fullname,
+            updated_by: req.session.adminName,
             updated_date: moment
               .tz(Date.now(), "Asia/Ho_Chi_Minh")
               .format("DD/MM/YYYY hh:mm a"),
@@ -4539,7 +4539,7 @@ app.post("/edit_news_save", async (req, res) => {
               newsProduct: req.body.newsProduct,
               productImage: req.file.filename,
               newsStatus: req.body.newsStatus,
-              updated_by: req.session.fullname,
+              updated_by: req.session.adminName,
               updated_date: moment
                 .tz(Date.now(), "Asia/Ho_Chi_Minh")
                 .format("DD/MM/YYYY hh:mm a"),
