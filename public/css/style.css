@@ -3511,6 +3511,7 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
 
 .modal-container{
     background-color: #fff;
+    border-radius: 5px;
     width: 350px;
     max-width: calc(100% - 32px);
     min-height: 200px;
