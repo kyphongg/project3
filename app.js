@@ -4162,3 +4162,24 @@ app.get("/delete_news/:id", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+//Danh sách bình luận
+app.get("/comment", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 3) {
+      let data = await News.find().populate("newsProduct");
+      res.render("layouts/servers/comment/comment", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/comment");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
