@@ -1740,7 +1740,12 @@ app.get("/product/:id", async (req, res) => {
     let pname = product.productName;
     let data = await Product.findOne({ _id: req.params.id })
       .populate("categoryID")
-      .populate("producerID")
+      .populate("producerID");
+    let check = await Product.findOne({$and:[{_id: req.params.id},{userID:req.session.userid}]});
+    let random = 0;
+    if(check){
+      random++;
+    }
     res.render("layouts/clients/main/product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1751,6 +1756,7 @@ app.get("/product/:id", async (req, res) => {
       pname,
       comments,
       add: req.flash("add"),
+      random,
     });
   } else {
     let product = await Product.findOne({ _id: req.params.id });
@@ -1771,20 +1777,27 @@ app.get("/product/:id", async (req, res) => {
   }
 });
 
+//Bình luận sản phẩm
 app.post("/comment", async (req, res) => {
   if (req.session.guest) {
-    let id = req.body.productID;
-    var comment = Comment({ 
-      productID: req.body.productID,
-      userID: req.body.userID,
-      commentInfo: req.body.commentInfo,
-      commentStatus: 0,
-      commentDate: moment
-      .tz(Date.now(), "Asia/Ho_Chi_Minh")
-      .format("DD/MM/YYYY hh:mm a"),
-    });
-    comment.save();
-    res.redirect("/product/"+id);
+    let pid = req.body.productID;
+    let uid = req.body.userID;
+    let check = Product.find({$and:[{_id:pid},{userID:uid}]});
+    if(check){
+      var comment = Comment({ 
+        productID: pid,
+        userID: uid,
+        commentInfo: req.body.commentInfo,
+        commentStatus: 0,
+        commentDate: moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .format("DD/MM/YYYY hh:mm a"),
+      });
+      comment.save();
+      res.redirect("/product/"+pid);
+    } else {
+      res.redirect("/product/"+pid);
+    }
   } else {
     res.redirect("/login");
   }
