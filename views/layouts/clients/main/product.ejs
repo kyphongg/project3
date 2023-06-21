@@ -104,37 +104,40 @@
     <% if(fullname == 1){ %>
         <p>Vui lòng đăng nhập để bình luận</p>
         <%}else{%>
-            <% if(random!=0){ %>
-                <div class="container">
-                    <div class="comment">
-                        <h3>Bình luận</h3>
-                        <form action="/comment" method="post" id="commentForm">
-                            <input form="commentForm" name="productID" type="hidden" class="form-control" value="<%= danhsach._id  %>">
-                            <input form="commentForm" name="userID" type="hidden" class="form-control" value="<%= userid  %>">
-                            <input name="username" type="hidden" class="form-control" value="0">
-                            <textarea form="commentForm" name="commentInfo" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
-                            <button form="commentForm" type="submit" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
-                            </button>
-                        </form>
-    
-                        <div class="row style_comment" style="margin-top: 30px;">
-                            <% for(let i=0; i < comments.length; i++) { %>
-                            <div class="col-md-2" style="padding-bottom: 40px;">
-                                <img style="width: 80px;" src="/images/avataricon.png">
-                            </div>
-                            <div class="col-md-10" style="margin-left: -100px;">
-                                <p style="line-height: 0.2;"><b><%= comments[i].userID.fullname %></b></p>
-                                <p style="color: #6B7684;">Bình luận vào lúc: <%= comments[i].commentDate %></p>
-                                <p style="line-height: 0.2;"><%= comments[i].commentInfo %></p>
-                            </div>
-                            <% } %> 
-                        </div>
-                    </div>
-                </div>
-                <%}else{%>
+            <div class="container">
+                <div class="comment">
+                    <h3>Bình luận</h3>
+                    <% if(random!=0){ %>
+                    <form action="/comment" method="post" id="commentForm">
+                        <input form="commentForm" name="productID" type="hidden" class="form-control" value="<%= danhsach._id  %>">
+                        <input form="commentForm" name="userID" type="hidden" class="form-control" value="<%= userid  %>">
+                        <input name="username" type="hidden" class="form-control" value="0">
+                        <textarea form="commentForm" name="commentInfo" class="comment_info" placeholder="Nhập nội dung bình luận"></textarea>
+                        <button form="commentForm" type="submit" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
+                        </button>
+                    </form>
+                    <%}else{%>
                     <p>Vui lòng mua sản phẩm để bình luận</p>
                     <%}%>
+                    <% for(let i=0; i < comments.length; i++) { %>
+                    <div class="row style_comment" style="margin-top: 30px;">
+                        <div class="col-md-2" style="padding-bottom: 40px;">
+                            <% if(!comments[i].userID.avatar){ %>
+                                <img style="width: 80px;" src="/images/avataricon.png">
+                                <%}else{%>
+                                    <img style="width: 80px;" src="/avatars/<%= comments[i].userID.avatar %>">
+                                    <%}%>
+                        </div>
+                        <div class="col-md-10" style="margin-left: -100px;">
+                            <p style="line-height: 0.2;"><b><%= comments[i].userID.fullname %></b></p>
+                            <p style="color: #6B7684;">Bình luận vào lúc: <%= comments[i].commentDate %></p>
+                            <p style="line-height: 0.2;"><%= comments[i].commentInfo %></p>
+                        </div>
+                    </div>
+                    <% } %> 
+                </div>
+            </div>
             <%}%>
-     <%- include('../partials/footer') %>
+<%- include('../partials/footer') %>
 </body>
 </html>
