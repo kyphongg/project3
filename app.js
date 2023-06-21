@@ -116,6 +116,31 @@ var upload = multer({
   },
 }).single("productImage");
 
+var avatarStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/avatars");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+var avatarUpload = multer({
+  storage: avatarStorage,
+  fileFilter: function (req, file, cb) {
+    if (
+      file.mimetype == "image/bmp" ||
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpeg" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/gif"
+    ) {
+      cb(null, true);
+    } else {
+      return cb(new Error("Chỉ được sử dụng hình ảnh cho tính năng này"));
+    }
+  },
+}).single("avatar");
+
 //body-parser
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -147,6 +172,7 @@ app.get("/login", (req, res) => {
       error: req.flash("error"),
       errorEmail: req.flash("errorEmail"),
       errorPassword: req.flash("errorPassword"),
+      avatar: "user (2).png",
     });
   }
 });
@@ -175,6 +201,7 @@ app.get("/signup", (req, res) => {
       errorUsername: req.flash("errorUsername"),
       errorEmail: req.flash("errorEmail"),
       errorPhone: req.flash("errorPhone"),
+      avatar: "user (2).png",
     });
   }
 });
@@ -354,6 +381,7 @@ app.post("/login", async (req, res) => {
             sess.fullname = user.fullname;
             sess.email = user.email;
             sess.userid = user._id;
+            sess.avatar = user.avatar;
             res.redirect("/");
           } else {
             req.flash("errorPassword", "Sai mật khẩu");
@@ -386,6 +414,7 @@ app.get("/forget", (req, res) => {
       errorEmail: req.flash("errorEmail"),
       timeOut: req.flash("timeOut"),
       done: req.flash("done"),
+      avatar: "user (2).png",
     });
   }
 });
@@ -450,6 +479,7 @@ app.get("/doneRequest", (req, res) => {
       userid: 1,
       fullname: 1,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -478,6 +508,7 @@ app.get("/changePassword/:id", async (req, res) => {
         password2ED: req.flash("password2ED"),
         codeError: req.flash("codeError"),
         codeED: req.flash("codeED"),
+        avatar: "user (2).png",
       });
     }
     if (e != 0) {
@@ -556,6 +587,7 @@ app.get("/success-changepwd", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      avatar: "user (2).png",
     });
   } else {
     res.render("layouts/clients/password/success_changepwd", {
@@ -563,6 +595,7 @@ app.get("/success-changepwd", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -612,6 +645,7 @@ app.get("/", async (req, res) => {
       VND,
       cart: req.session.cart,
       tintuc: news,
+      avatar: req.session.avatar,
     });
   } else {
     const news = await News.find({
@@ -630,6 +664,7 @@ app.get("/", async (req, res) => {
       VND,
       cart: 0,
       tintuc: news,
+      avatar: "user (2).png",
     });
   }
 });
@@ -642,6 +677,7 @@ app.get("/about", (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      avatar: req.session.avatar,
     });
   } else {
     res.render("layouts/clients/main/about", {
@@ -649,6 +685,7 @@ app.get("/about", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -660,6 +697,7 @@ app.get("/privacy_policy", (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      avatar: req.session.avatar,
     });
   } else {
     res.render("layouts/clients/main/privacy_policy", {
@@ -667,6 +705,7 @@ app.get("/privacy_policy", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -678,6 +717,7 @@ app.get("/terms_of_service", (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      avatar: req.session.avatar,
     });
   } else {
     res.render("layouts/clients/main/terms_of_service", {
@@ -685,6 +725,7 @@ app.get("/terms_of_service", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -698,6 +739,7 @@ app.get("/news", async (req, res) => {
       sID: req.session.sessionID,
       cart: req.session.cart,
       danhsach: data,
+      avatar: req.session.avatar,
     });
   } else {
     res.render("layouts/clients/news/news", {
@@ -706,6 +748,7 @@ app.get("/news", async (req, res) => {
       sID: req.session.sessionID,
       cart: 0,
       danhsach: data,
+      avatar: "user (2).png",
     });
   }
 });
@@ -719,6 +762,7 @@ app.get("/news/:id", async (req, res) => {
       sID: req.session.sessionID,
       cart: req.session.cart,
       danhsach: data,
+      avatar: req.session.avatar,
     });
   } else {
     res.render("layouts/clients/news/news_detail", {
@@ -727,6 +771,7 @@ app.get("/news/:id", async (req, res) => {
       sID: req.session.sessionID,
       cart: 0,
       danhsach: data,
+      avatar: "user (2).png",
     });
   }
 });
@@ -738,6 +783,7 @@ app.get("/hiring", (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      avatar: req.session.avatar,
     });
   } else {
     res.render("layouts/clients/main/hiring", {
@@ -745,6 +791,7 @@ app.get("/hiring", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -756,6 +803,7 @@ app.get("/support", (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      avatar: req.session.avatar,
     });
   } else {
     res.render("layouts/clients/main/support", {
@@ -763,6 +811,7 @@ app.get("/support", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -774,6 +823,7 @@ app.get("/hotline", (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      avatar: req.session.avatar,
     });
   } else {
     res.render("layouts/clients/main/hotline", {
@@ -781,6 +831,7 @@ app.get("/hotline", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -792,6 +843,7 @@ app.get("/customer_care", (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      avatar: req.session.avatar,
     });
   } else {
     res.render("layouts/clients/main/customer_care", {
@@ -799,6 +851,7 @@ app.get("/customer_care", (req, res) => {
       userid: 1,
       sID: req.session.sessionID,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -812,6 +865,29 @@ app.get("/profile/:id", (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      avatar: req.session.avatar,
+    });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.post("/saveAvatar", async (req, res) => {
+  if (req.session.guest) {
+    let userid = req.session.userid;
+    avatarUpload(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        req.flash("error", "Lỗi Multer khi upload ảnh");
+      } else if (err) {
+        req.flash("error", "Lỗi bất ngờ xảy ra");
+      } else {
+        let user = await User.findOne({_id:userid});
+        await User.updateOne({_id:userid},{$set:{avatar:req.file.filename}});
+        req.flash("success", "Thêm thành công");
+        var sess = req.session;
+        sess.avatar = user.avatar;
+        res.redirect("/profile/"+userid);
+      }
     });
   } else {
     res.redirect("/login");
@@ -829,6 +905,7 @@ app.get("/orders/:id", async (req, res) => {
       cart: req.session.cart,
       danhsach: data,
       VND,
+      avatar: req.session.avatar,
     });
   } else {
     res.redirect("/login");
@@ -847,6 +924,7 @@ app.get("/password/:id", (req, res) => {
       password1Error: req.flash("password1Error"),
       passwordED: req.flash("passwordED"),
       password1ED: req.flash("password1ED"),
+      avatar: req.session.avatar,
     });
   } else {
     res.redirect("/login");
@@ -940,6 +1018,7 @@ app.get("/orders_detail/:id", async (req, res) => {
         money,
         couponValue,
         couponType,
+        avatar: req.session.avatar,
       });
     } else if (code != "Không") {
       let coupon = await Coupon.findOne({ couponCode: code });
@@ -961,6 +1040,7 @@ app.get("/orders_detail/:id", async (req, res) => {
         money,
         couponValue,
         couponType,
+        avatar: req.session.avatar,
       });
     }
   } else {
@@ -1011,6 +1091,7 @@ app.get("/cart/:id", async (req, res) => {
       cart: req.session.cart,
       carti,
       money,
+      avatar: req.session.avatar,
     });
   } else {
     res.redirect("/login");
@@ -1236,6 +1317,7 @@ app.get("/checkout/:id", async (req, res) => {
           districtED: req.flash("districtED"),
           addressED: req.flash("addressED"),
           noteED: req.flash("noteED"),
+          avatar: req.session.avatar,
         });
       });
   } else {
@@ -1519,6 +1601,7 @@ app.get("/success", async (req, res) => {
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
+      avatar: req.session.avatar,
     });
   } else {
     res.redirect("/login");
@@ -1628,6 +1711,7 @@ app.get("/search", async (req, res) => {
       danhsach: data,
       VND,
       cart: req.session.cart,
+      avatar: req.session.avatar,
     });
   } else {
     let data = await Product.find({
@@ -1640,6 +1724,7 @@ app.get("/search", async (req, res) => {
       danhsach: data,
       VND,
       cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
@@ -1680,7 +1765,8 @@ app.get("/all_product", async (req, res) => {
       totalPages: Math.ceil(count/limit),
       currentPage: page,
       prevPage: page - 1,
-      nextPage: page + 1
+      nextPage: page + 1,
+      avatar: req.session.avatar,
     });
   } else {
     let data = await Product.find({
@@ -1706,7 +1792,8 @@ app.get("/all_product", async (req, res) => {
       totalPages: Math.ceil(count/limit),
       currentPage: page,
       prevPage: page - 1,
-      nextPage: page + 1
+      nextPage: page + 1,
+      avatar: "user (2).png",
     });
   }
 });
@@ -1757,6 +1844,7 @@ app.get("/product/:id", async (req, res) => {
       comments,
       add: req.flash("add"),
       random,
+      avatar: req.session.avatar,
     });
   } else {
     let product = await Product.findOne({ _id: req.params.id });
@@ -1773,6 +1861,7 @@ app.get("/product/:id", async (req, res) => {
       cart: 0,
       pname,
       add: req.flash("add"),
+      avatar: "user (2).png",
     });
   }
 });
@@ -1821,6 +1910,7 @@ app.get("/producer/:id", async (req, res) => {
       VND,
       title,
       id,
+      avatar: req.session.avatar,
     });
   } else {
     let data = await Product.find({
@@ -1838,6 +1928,7 @@ app.get("/producer/:id", async (req, res) => {
       VND,
       title,
       id,
+      avatar: "user (2).png",
     });
   }
 });
@@ -1860,6 +1951,7 @@ app.get("/category/:id", async (req, res) => {
       VND,
       title,
       id,
+      avatar: req.session.avatar,
     });
   } else {
     let data = await Product.find({
@@ -1877,6 +1969,7 @@ app.get("/category/:id", async (req, res) => {
       VND,
       title,
       id,
+      avatar: "user (2).png",
     });
   }
 });

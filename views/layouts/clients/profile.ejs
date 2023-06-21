@@ -41,6 +41,17 @@
                                 <p>Địa chỉ email</p>
                                 <p style="font-weight: 600;"><%= email %></p>
                             </div>
+                            <div class="col-4">
+                                <p>Avatar</p>
+                                <img src="/avatars/<%= avatar %>" alt="">
+                            </div>
+                            <form action="/saveAvatar" method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label >Avatar tài khoản</label>
+                                    <input type="file" name="avatar">
+                                </div>
+                                <button type="submit">Lưu</button>
+                            </form>
                         </div>
                     </div>
                 </div>

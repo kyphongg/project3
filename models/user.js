@@ -17,6 +17,9 @@ var User = new Schema({
     phone: {
         type: String
     },
+    avatar: {
+        type: String
+    },
 })
   
 User.plugin(passportLocalMongoose);

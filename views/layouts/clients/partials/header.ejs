@@ -10,7 +10,11 @@
             </button>
         </form>
         <div class="icon">
-            <img src="/images/user (2).png" alt="UserImage" onclick="toggleMenu()">
+            <% if(userid == 1) {%>
+            <img src="/images/<%= avatar %>" alt="UserImage" onclick="toggleMenu()">
+                <% }else { %>
+                    <img src="/avatar/<%= avatar %>" alt="UserImage" onclick="toggleMenu()">
+                    <% } %>
             <% if(userid == 1) {%>
                 <a href="/login"> Đăng nhập </a>
                 <% }else { %>
