@@ -346,7 +346,29 @@ app.post("/save", async (req, res) => {
       req.flash("usernameED", "");
       req.flash("passwordED", "");
       req.flash("password2ED", "");
-      res.redirect("/");
+      res.redirect("/success-signup");
+    });
+  }
+});
+
+// Trang đăng ký thành công
+app.get("/success-signup", (req, res) => {
+  if (req.session.guest) {
+    req.session.destroy();
+    res.render("layouts/clients/form/success_signup", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      cart: 0,
+      avatar: "user (2).png",
+    });
+  } else {
+    res.render("layouts/clients/form/success_signup", {
+      fullname: 1,
+      userid: 1,
+      sID: req.session.sessionID,
+      cart: 0,
+      avatar: "user (2).png",
     });
   }
 });
