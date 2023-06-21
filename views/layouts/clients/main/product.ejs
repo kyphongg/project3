@@ -26,13 +26,23 @@
             </div>
             <%if(add.length > 0){%>
                 <p style="font-size: 14px; font-weight:600; color: green; margin: 2.5px 0px 0px 5px;"><%= add %></p>
-                <div class="popupp" id="pop-up">
-                    <img src="/images/404-tick.png" alt="">
-                    <h2>Thành công</h2>
-                    <p>Bạn đã thêm <%= pname %> vào giỏ hàng thành công<br> Cảm ơn bạn!</p>
-                    <button type="button"><a href="/">Tiếp tục mua hàng!</a></button>
-                    <button type="button"><a href="/cart/<%= userid %>">Tới giỏ hàng!</a></button>
-                </div>
+            
+                <div class="modal-poppup" id="pop-up">
+                    <div class="poppup-container">
+                        <img src="/images/404-tick.png" alt="">
+                        <h2>Thành công</h2>
+                        <p>Bạn đã thêm <%= pname %> vào giỏ hàng thành công<br> Cảm ơn bạn!</p>
+                        <a href="/"><button type="button" class="btn btn-outline-dark">Tiếp tục mua hàng!</button></a>
+                        <a href="/cart/<%= userid %>"><button type="button" class="btn btn-success">Tới giỏ hàng!</button></a>
+                    </div>
+                </div>    
+                <!-- <div class="popupp" id="pop-up">
+                        <img src="/images/404-tick.png" alt="">
+                        <h2>Thành công</h2>
+                        <p>Bạn đã thêm <%= pname %> vào giỏ hàng thành công<br> Cảm ơn bạn!</p>
+                        <button type="button"><a href="/">Tiếp tục mua hàng!</a></button>
+                        <button type="button"><a href="/cart/<%= userid %>">Tới giỏ hàng!</a></button>
+                    </div> -->
             <%}%>
             <div class="pname" name="name"> 
                 <%= danhsach.productName %>
