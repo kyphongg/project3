@@ -1541,6 +1541,25 @@ app.post("/get_order/:id", async (req, res) => {
         },
       }
     );
+    let data = await Order.findOne({_id: req.params.id});
+    let array = [];
+    data.items.forEach(function(id){
+      array.push(id.productID);
+    });
+    let length = array.length;
+    if(length == 1){
+      await Product.updateOne(
+        { _id: array },
+        { $addToSet: { userID: uid } }
+      );
+    } else {
+      for (let i = 0; i < array.length; i++) {
+        await Product.updateMany(
+          { _id: array[i] },
+          { $addToSet: { userID: uid } }
+        );
+      }
+    }
     res.redirect("/orders/" + uid);
   } else {
     res.redirect("/login");

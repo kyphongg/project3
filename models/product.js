@@ -45,6 +45,10 @@ var Product = new Schema({
     updated_by:{
         type: String
     },
+    userID:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     username:{
         type: Number
     },
