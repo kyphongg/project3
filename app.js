@@ -3397,6 +3397,33 @@ app.get("/revenue", async (req, res) => {
   }
 });
 
+app.get("/monthlySale/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0) {
+      let month = req.params.id;
+      let data = await Order.find({ month: month }).populate("items.productID");
+      let convert = parseInt(month);
+      let money = 0;
+      for (let i = 0; i < data.length; i++) {
+        money += data[i].total;
+      }
+      res.render("layouts/servers/sales/monthlySale", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        convert,
+        VND,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
 //Trang tổng doanh thu theo tuần
 app.get("/sales", async (req, res) => {
   if (req.session.daDangNhap) {

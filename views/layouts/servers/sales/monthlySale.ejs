@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Doanh thu</title>
+    <%- include('../partials/head') %>
+  </head>
+  <body>
+    <!--sidebar start-->
+    <%- include('../partials/sidebar') %>
+    <!-- sidebar end -->
+
+    <!--main content start-->
+    <section id="main-content">
+      <section class="wrapper">
+        <div class="table-agile-info">
+          <h3>Chi tiết doanh thu tháng <%= convert + 1 %> </h3>
+          <br>
+          <div class="panel panel-default">
+            <div class="table-responsive">
+              <table id="myTable" class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th style="text-align: center; width: 20px">STT</th>
+                    <th style="text-align: center; width: 200px">Mã đơn hàng</th>
+                    <th style="text-align: center; width: 200px">Thời gian</th>
+                    <th style="text-align: center; width: 120px">Tổng tiền đơn hàng</th>
+                    <th style="text-align: center; width: 120px">Doanh thu</th>
+                    <th style="display: none">0</th>
+                    <th style="text-align: center; width: 190px">Chi tiết</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i < danhsach.length; i++) { %>
+                        <% danhsach[i].items.forEach(function(id){ %>
+                    <tr>
+                        <td style="text-align: center;"><%= i+1 %></td>
+                        <td style="text-align: center;"><%= danhsach[i]._id %></td>
+                        <td style="text-align: center;"><%= danhsach[i].timeOut %></td>
+                        <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
+                        <td style="text-align: center;"><%= VND.format(id.quantity * (id.productID.priceOut - id.productID.priceIn) + danhsach[i].shippingFee) %></td>
+                        <td style="display: none" id="revenue"><%= (id.quantity * (id.productID.priceOut - id.productID.priceIn) + danhsach[i].shippingFee) %></td>
+                        <td style="text-align: center;">
+                            <a href="/sales_detail/<%= danhsach[i]._id %>" class="active" ui-toggle-class="">
+                            <i class="fa-solid fa-eye" style="font-size: 25px; color: #5cb85c"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    <%}%>
+                </tbody>
+              </table>
+              <br>
+              <div class="sales-price">
+                <b style="margin-right: 15px">Tổng doanh thu:</b>
+                <p id="all" style="color: #dc3545; font-weight: 500">
+                </p>
+              </div>
+              <div>
+                <a href="/revenue">Quay lại</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--main content end-->
+    </section>
+    <%- include('../partials/footer') %>
+    <script>
+        const VND = new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        });
+        const tb = document.getElementById('myTable');
+        const trs = document.getElementsByTagName('tr');
+        var all = 0;
+        for(var i=0; i<trs.length; i++){
+            const revenue = document.getElementById("myTable").rows[i].cells[5].innerHTML;
+            const convert = parseInt(revenue);
+            all += convert;
+        }
+        document.getElementById("all").innerHTML = VND.format(all);      
+    </script>
+  </body>
+</html>

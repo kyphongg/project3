@@ -70,41 +70,9 @@
                             </tr>
                         </table>
                     </div>
-                    <% if(danhsach.day == 1){ %>
-                        <a href="/monday">
-                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
-                        </a>
-                    <% } %>
-                    <% if(danhsach.day == 2){ %>
-                        <a href="/tuesday">
-                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
-                        </a>
-                    <% } %>
-                    <% if(danhsach.day == 3){ %>
-                        <a href="/wednesday">
-                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
-                        </a>
-                    <% } %>
-                    <% if(danhsach.day == 4){ %>
-                        <a href="/thursday">
-                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
-                        </a>
-                    <% } %>
-                    <% if(danhsach.day == 5){ %>
-                        <a href="/friday">
-                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
-                        </a>
-                    <% } %>
-                    <% if(danhsach.day == 6){ %>
-                        <a href="/saturday">
-                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
-                        </a>
-                    <% } %>
-                    <% if(danhsach.day == 7){ %>
-                        <a href="/sunday">
-                            <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
-                        </a>
-                    <% } %>
+                    <a href="/monthlySale/<%= danhsach.month %>">
+                        <button type="button" class="btn btn-info"><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button>
+                    </a>
                 </div>
             </div>
         </section>
