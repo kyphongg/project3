@@ -381,7 +381,6 @@ app.post("/login", async (req, res) => {
             sess.fullname = user.fullname;
             sess.email = user.email;
             sess.userid = user._id;
-            sess.avatar = user.avatar;
             res.redirect("/");
           } else {
             req.flash("errorPassword", "Sai mật khẩu");
@@ -632,6 +631,11 @@ app.get("/", async (req, res) => {
     ]);
     var sess = req.session;
     sess.cart = cart;
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     let data = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
@@ -645,7 +649,7 @@ app.get("/", async (req, res) => {
       VND,
       cart: req.session.cart,
       tintuc: news,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     const news = await News.find({
@@ -670,14 +674,19 @@ app.get("/", async (req, res) => {
 });
 
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
-app.get("/about", (req, res) => {
+app.get("/about", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/main/about", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.render("layouts/clients/main/about", {
@@ -690,14 +699,19 @@ app.get("/about", (req, res) => {
   }
 });
 
-app.get("/privacy_policy", (req, res) => {
+app.get("/privacy_policy", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/main/privacy_policy", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.render("layouts/clients/main/privacy_policy", {
@@ -710,14 +724,19 @@ app.get("/privacy_policy", (req, res) => {
   }
 });
 
-app.get("/terms_of_service", (req, res) => {
+app.get("/terms_of_service", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/main/terms_of_service", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.render("layouts/clients/main/terms_of_service", {
@@ -733,13 +752,18 @@ app.get("/terms_of_service", (req, res) => {
 app.get("/news", async (req, res) => {
   let data = await News.find().populate("newsProduct");
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/news/news", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
       danhsach: data,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.render("layouts/clients/news/news", {
@@ -756,13 +780,18 @@ app.get("/news", async (req, res) => {
 app.get("/news/:id", async (req, res) => {
   let data = await News.find({ _id: req.params.id }).populate("newsProduct");
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/news/news_detail", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
       danhsach: data,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.render("layouts/clients/news/news_detail", {
@@ -776,14 +805,19 @@ app.get("/news/:id", async (req, res) => {
   }
 });
 
-app.get("/hiring", (req, res) => {
+app.get("/hiring", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/main/hiring", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.render("layouts/clients/main/hiring", {
@@ -796,14 +830,19 @@ app.get("/hiring", (req, res) => {
   }
 });
 
-app.get("/support", (req, res) => {
+app.get("/support", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/main/support", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.render("layouts/clients/main/support", {
@@ -816,14 +855,19 @@ app.get("/support", (req, res) => {
   }
 });
 
-app.get("/hotline", (req, res) => {
+app.get("/hotline", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/main/hotline", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.render("layouts/clients/main/hotline", {
@@ -836,14 +880,19 @@ app.get("/hotline", (req, res) => {
   }
 });
 
-app.get("/customer_care", (req, res) => {
+app.get("/customer_care", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/main/customer_care", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.render("layouts/clients/main/customer_care", {
@@ -857,15 +906,20 @@ app.get("/customer_care", (req, res) => {
 });
 
 //Trang profile, lịch sử đơn hàng, mật khẩu
-app.get("/profile/:id", (req, res) => {
+app.get("/profile/:id", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/profile", {
       fullname: req.session.fullname,
       email: req.session.email,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.redirect("/login");
@@ -881,11 +935,8 @@ app.post("/saveAvatar", async (req, res) => {
       } else if (err) {
         req.flash("error", "Lỗi bất ngờ xảy ra");
       } else {
-        let user = await User.findOne({_id:userid});
         await User.updateOne({_id:userid},{$set:{avatar:req.file.filename}});
         req.flash("success", "Thêm thành công");
-        var sess = req.session;
-        sess.avatar = user.avatar;
         res.redirect("/profile/"+userid);
       }
     });
@@ -897,6 +948,11 @@ app.post("/saveAvatar", async (req, res) => {
 app.get("/orders/:id", async (req, res) => {
   if (req.session.guest) {
     let data = await Order.find({ userID: req.session.userid });
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/order/orders", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -905,15 +961,20 @@ app.get("/orders/:id", async (req, res) => {
       cart: req.session.cart,
       danhsach: data,
       VND,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.redirect("/login");
   }
 });
 
-app.get("/password/:id", (req, res) => {
+app.get("/password/:id", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/password/password", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -924,7 +985,7 @@ app.get("/password/:id", (req, res) => {
       password1Error: req.flash("password1Error"),
       passwordED: req.flash("passwordED"),
       password1ED: req.flash("password1ED"),
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.redirect("/login");
@@ -995,10 +1056,14 @@ app.post("/changePasswordNew", async (req, res) => {
 //Trang chi tiết lịch sử đơn hàng
 app.get("/orders_detail/:id", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     let data = await Order.findOne({ _id: req.params.id }).populate(
       "items.productID"
     );
-
     let code = data.couponCode;
     if (code == "Không") {
       let money = 0;
@@ -1018,7 +1083,7 @@ app.get("/orders_detail/:id", async (req, res) => {
         money,
         couponValue,
         couponType,
-        avatar: req.session.avatar,
+        avatar: avatar,
       });
     } else if (code != "Không") {
       let coupon = await Coupon.findOne({ couponCode: code });
@@ -1040,7 +1105,7 @@ app.get("/orders_detail/:id", async (req, res) => {
         money,
         couponValue,
         couponType,
-        avatar: req.session.avatar,
+        avatar: avatar,
       });
     }
   } else {
@@ -1051,6 +1116,11 @@ app.get("/orders_detail/:id", async (req, res) => {
 //Trang giỏ hàng và thanh toán và trang thông báo đặt hàng thành công
 app.get("/cart/:id", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     const cart = await Cart.aggregate([
       { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
       {
@@ -1091,7 +1161,7 @@ app.get("/cart/:id", async (req, res) => {
       cart: req.session.cart,
       carti,
       money,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.redirect("/login");
@@ -1272,6 +1342,11 @@ app.get("/delete_cart_items/:id", async (req, res) => {
 
 app.get("/checkout/:id", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     let carti = await Cart.find({
       userID: new mongoose.Types.ObjectId(req.session.userid),
     });
@@ -1317,7 +1392,7 @@ app.get("/checkout/:id", async (req, res) => {
           districtED: req.flash("districtED"),
           addressED: req.flash("addressED"),
           noteED: req.flash("noteED"),
-          avatar: req.session.avatar,
+          avatar: avatar,
         });
       });
   } else {
@@ -1596,12 +1671,17 @@ app.get("/success", async (req, res) => {
     ]);
     var sess = req.session;
     sess.cart = cart;
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/cart/success", {
       fullname: req.session.fullname,
       userid: req.session.userid,
       sID: req.session.sessionID,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     res.redirect("/login");
@@ -1704,6 +1784,11 @@ app.get("/search", async (req, res) => {
     let data = await Product.find({
       productName: { $regex: ".*" + kw + ".*", $options: "i" },
     });
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/main/search", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1711,7 +1796,7 @@ app.get("/search", async (req, res) => {
       danhsach: data,
       VND,
       cart: req.session.cart,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     let data = await Product.find({
@@ -1742,6 +1827,11 @@ app.get("/all_product", async (req, res) => {
   const limit = 4;
   
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     let data = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
@@ -1766,7 +1856,7 @@ app.get("/all_product", async (req, res) => {
       currentPage: page,
       prevPage: page - 1,
       nextPage: page + 1,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     let data = await Product.find({
@@ -1833,6 +1923,11 @@ app.get("/product/:id", async (req, res) => {
     if(check){
       random++;
     }
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     res.render("layouts/clients/main/product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1844,7 +1939,7 @@ app.get("/product/:id", async (req, res) => {
       comments,
       add: req.flash("add"),
       random,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     let product = await Product.findOne({ _id: req.params.id });
@@ -1895,6 +1990,11 @@ app.post("/comment", async (req, res) => {
 //Trang danh mục theo NSX
 app.get("/producer/:id", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     let data = await Product.find({
       producerID: new mongoose.Types.ObjectId(req.params.id)
     });
@@ -1910,7 +2010,7 @@ app.get("/producer/:id", async (req, res) => {
       VND,
       title,
       id,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     let data = await Product.find({
@@ -1936,6 +2036,11 @@ app.get("/producer/:id", async (req, res) => {
 //Trang category
 app.get("/category/:id", async (req, res) => {
   if (req.session.guest) {
+    let user = await User.findOne({_id:req.session.userid});
+    let avatar = "user (2).png";
+    if(user.avatar){
+      avatar = user.avatar;
+    };
     let data = await Product.find({
       categoryID: new mongoose.Types.ObjectId(req.params.id)
     });
@@ -1951,7 +2056,7 @@ app.get("/category/:id", async (req, res) => {
       VND,
       title,
       id,
-      avatar: req.session.avatar,
+      avatar: avatar,
     });
   } else {
     let data = await Product.find({
