@@ -33,25 +33,30 @@
                     <div class="account">
                         <h3>Tổng quan</h3>
                         <div class="row user-detail">
-                            <div class="col-2">
-                                <p>Họ và tên</p>
-                                <p style="font-weight: 600;"><%= fullname %></p>
+                            <div class="col-3">
+                                <p style="text-align: center;">Họ và tên</p>
+                                <p style="font-weight: 600; text-align: center;"><%= fullname %></p>
                             </div>
                             <div class="col-4">
-                                <p>Địa chỉ email</p>
-                                <p style="font-weight: 600;"><%= email %></p>
+                                <p style="text-align: center;">Địa chỉ email</p>
+                                <p style="font-weight: 600; text-align: center;"><%= email %></p>
                             </div>
-                            <div class="col-4">
-                                <p>Avatar</p>
-                                <img src="/avatars/<%= avatar %>" alt="">
-                            </div>
-                            <form action="/saveAvatar" method="post" enctype="multipart/form-data">
-                                <div class="form-group">
-                                    <label >Avatar tài khoản</label>
-                                    <input type="file" name="avatar">
+                            <div class="col-4 avatar">
+                                <div class="avatar-style">
+                                    <img src="/avatars/<%= avatar %>" alt="" width="120" height="120" style="border-radius: 50%;">
+                                    <form action="/saveAvatar" method="post" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <div class="header">
+                                                <label style="margin-top: 15px; font-weight: 500;">Avatar tài khoản</label>
+                                            </div>
+                                            <span class="btn btn-primary btn-file">
+                                                Chọn ảnh <input type="file" name="avatar">
+                                            </span>
+                                        </div>
+                                        <button class="save-img" type="submit">Lưu ảnh</button>
+                                    </form>
                                 </div>
-                                <button type="submit">Lưu</button>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>

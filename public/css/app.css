@@ -1171,6 +1171,51 @@ input:focus{
 
 .account .user-detail{
     padding-left: 20px;
+    padding-bottom: 30px;
+}
+
+.account .avatar{
+    border-left: 2px solid #EFEFEF;
+}
+
+.account .avatar-style{
+    margin-left: 50px;
+    text-align: center;
+}
+
+.btn-file {
+    margin-top: 15px;
+    position: relative;
+    overflow: hidden;
+  }
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.save-img{
+    width: 95px;
+    height: 35px;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid #e2e2e2;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.save-img:hover{
+    background-color: #F6F6F6;
 }
 
 .user-infomation{

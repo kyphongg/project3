@@ -121,11 +121,11 @@
                     <%}%>
                     <% for(let i=0; i < comments.length; i++) { %>
                     <div class="row style_comment" style="margin-top: 30px;">
-                        <div class="col-md-2" style="padding-bottom: 40px;">
+                        <div class="col-md-2" style="padding-bottom: 10px;">
                             <% if(!comments[i].userID.avatar){ %>
                                 <img style="width: 80px;" src="/images/avataricon.png">
                                 <%}else{%>
-                                    <img style="width: 80px;" src="/avatars/<%= comments[i].userID.avatar %>">
+                                    <img style="width: 80px; border-radius: 50%;" src="/avatars/<%= comments[i].userID.avatar %>">
                                     <%}%>
                         </div>
                         <div class="col-md-10" style="margin-left: -100px;">

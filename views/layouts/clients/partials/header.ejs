@@ -13,7 +13,7 @@
             <% if(userid == 1) {%>
             <img src="/images/<%= avatar %>" alt="UserImage" onclick="toggleMenu()">
                 <% }else { %>
-                    <img src="/avatars/<%= avatar %>" alt="UserImage" onclick="toggleMenu()">
+                    <img src="/avatars/<%= avatar %>" alt="UserImage" style="border-radius: 50%;" onclick="toggleMenu()">
                     <% } %>
             <% if(userid == 1) {%>
                 <a href="/login"> Đăng nhập </a>
