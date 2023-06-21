@@ -2889,7 +2889,7 @@ app.post("/admin_save", async (req, res) => {
       res.redirect("/add_employee");
     } else {
       await Admin({
-        adminName: req.body.fullname,
+        fullname: req.body.fullname,
         email: req.body.email,
         password: req.body.password,
         username: req.body.username,
@@ -2938,7 +2938,7 @@ app.post("/edit_save", async (req, res) => {
     var vnn_regex =
       /^[a-zA-Z'-'\saAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]*$/g;
     let errorForm = 0;
-    var name = req.body.adminName;
+    var name = req.body.fullname;
     var email = req.body.email;
     var username = req.body.username;
     if (name == "") {
@@ -2996,7 +2996,7 @@ app.post("/edit_save", async (req, res) => {
       await Admin.updateOne(
         { _id: req.body.id },
         {
-          adminName: req.body.adminName,
+          fullname: req.body.fullname,
           email: req.body.email,
           username: req.body.username,
           role: req.body.role,
