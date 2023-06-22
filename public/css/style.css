@@ -3657,3 +3657,15 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     font-size: 18px;
     font-weight: 500;
 }
+
+.monthlySale{
+    margin-bottom: 15px;
+}
+
+.monthlyy{
+    margin-top: 15px;
+}
+
+.monthlyy a{
+    margin-left: 10px;
+}
