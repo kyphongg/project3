@@ -3134,17 +3134,29 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
 
 .order-status{
     margin-bottom: 25px;
+    margin-left: 35px;
 }
 
 .order-status a{
-    color: #337AB7;
     font-weight: 500;
-    font-size: 18px;
+    font-size: 17px;
     cursor: pointer;
 }
 
-.order-status a:hover{
-    color: blue;
+.btn-newOrder{
+    background-color: #f8c837; 
+    border: 1px solid#f8c837;
+    cursor: pointer;
+}
+
+.btn-newOrder:hover{
+    background-color: #d1ad43; 
+    border: 1px solid#d1ad43;
+}
+
+.btn-acceptOrder{
+    background-color: #faa200; 
+    border: 1px solid#faa200;
 }
 
 .graphBox{
