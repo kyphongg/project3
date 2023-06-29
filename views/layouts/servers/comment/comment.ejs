@@ -35,9 +35,20 @@
                         <tbody>
                           <% for(let i=0; i < comments.length; i++) { %>
                             <tr>
+                              <% if(comments[i].commentStatus == 0){ %>
                                 <td style="text-align: center;">
-                                    <input type="button" id="" class="btn btn-primary" value="Duyệt">
+                                  <form action="/update_commentStatus/<%= comments[i]._id %>" method="post">
+                                    <button class="btn btn-primary"><b>Duyệt</b></button>
+                                  </form>
                                 </td>
+                              <% }else if(comments[i].commentStatus == 1){ %>  
+                                <td style="text-align: center;">
+                                  <form action="/update_commentStatus_1/<%= comments[i]._id %>" method="post">
+                                    <button class="btn btn-danger"><b>Hủy Duyệt</b></button>
+                                  </form>
+                                </td>
+                              <%}%>
+
                                 <td><%= comments[i].userID.fullname %></td>
                                 <td>
                                   <%= comments[i].commentInfo %>

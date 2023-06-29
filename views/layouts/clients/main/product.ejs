@@ -130,6 +130,7 @@
                     <p>Vui lòng mua sản phẩm để bình luận</p>
                     <%}%>
                     <% for(let i=0; i < comments.length; i++) { %>
+                        <% if(comments[i].commentStatus == 1){ %>
                     <div class="row style_comment" style="margin-top: 30px;">
                         <div class="col-md-2" style="padding-bottom: 10px;">
                             <% if(!comments[i].userID.avatar){ %>
@@ -144,6 +145,7 @@
                             <p style="line-height: 0.2;"><%= comments[i].commentInfo %></p>
                         </div>
                     </div>
+                        <%}%>
                     <% } %> 
                 </div>
             </div>

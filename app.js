@@ -1994,7 +1994,7 @@ app.post("/comment", async (req, res) => {
         productID: pid,
         userID: uid,
         commentInfo: req.body.commentInfo,
-        commentStatus: 0,
+        commentStatus: 1,
         commentDate: moment
         .tz(Date.now(), "Asia/Ho_Chi_Minh")
         .format("DD/MM/YYYY hh:mm a"),
@@ -4171,12 +4171,16 @@ app.get("/comment", async (req, res) => {
       let comments = await Comment.find()
       .populate("userID")
       .populate("productID");
+      const notAcceptComment = await Comment.find({ commentStatus: 0 }).count();
+      const acceptComment = await Comment.find({ CommentStatus:1 }).count();
       res.render("layouts/servers/comment/comment", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         VND,
         admin_role: req.session.admin_role,
         comments,
+        notAcceptComment,
+        acceptComment,
       });
     } else {
       res.redirect("/comment");
@@ -4185,3 +4189,33 @@ app.get("/comment", async (req, res) => {
     res.redirect("/admin_login");
   }
 });
+
+app.post("/update_commentStatus/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 3) {
+      await Comment.updateOne({ _id: req.params.id }, { commentStatus: 1 });
+      res.redirect("/comment");
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+
+app.post("/update_commentStatus_1/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 3) {
+      await Comment.updateOne({ _id: req.params.id }, { commentStatus: 0 });
+      res.redirect("/comment");
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
