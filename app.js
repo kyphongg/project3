@@ -4168,13 +4168,15 @@ app.get("/comment", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 3) {
-      let data = await News.find().populate("newsProduct");
+      let comments = await Comment.find()
+      .populate("userID")
+      .populate("productID");
       res.render("layouts/servers/comment/comment", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
-        danhsach: data,
         VND,
         admin_role: req.session.admin_role,
+        comments,
       });
     } else {
       res.redirect("/comment");
