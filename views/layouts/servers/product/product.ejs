@@ -46,7 +46,6 @@
                     <th style="text-align: center; width: 20px" data-orderable="false">Hình ảnh</th>
                     <th style="text-align: center; width: 190px" data-orderable="false">Thể loại</th>
                     <th style="text-align: center; width: 200px" data-orderable="false">Nhà sản xuất</th>
-                    <th style="text-align: center; width: 220px" data-orderable="false">Mô tả</th>
                     <th style="text-align: center; width: 150px" data-orderable="false">Giá nhập</th>
                     <th style="text-align: center; width: 150px" data-orderable="false">Giá bán</th>
                     <th style="text-align: center; width: 180px" data-orderable="false">Trạng thái</th>
@@ -72,21 +71,6 @@
                       <% }); %>
                     </td>
                     <td style="text-align: center"><%= danhsach[i].producerID.producerName %></td>
-                    <td
-                      style="
-                        width: 220px;
-                        line-height: 100px;
-                        height: 100px;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        display: -webkit-box;
-                        -webkit-line-clamp: 2;
-                        -webkit-box-orient: vertical;
-                        vertical-align: middle;
-                      "
-                    >
-                      <p><%- danhsach[i].productDescription %></p>
-                    </td>
 
                     <td style="text-align: center">
                       <%= VND.format(danhsach[i].priceIn) %>
@@ -101,6 +85,12 @@
                       } %>
                     </td>
                     <td style="text-align: center">
+                      <a href="/admin_product/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
+                        <i class="fa-regular fa-eye btn btn-primary"
+                        style="width: 21px; height: 21px; padding: 0px;
+                        margin-bottom: 10px; color: #fff"
+                        ></i>
+                      </a>
                       <a href="/edit_product/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
                         <i
                           class="fa-solid fa-square-pen"

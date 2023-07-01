@@ -2571,6 +2571,31 @@ app.get("/admin_product", async (req, res) => {
   }
 });
 
+app.get("/admin_product/:id", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      let product = await Product.findOne({ _id: req.params.id });
+      let prname = product.productName;
+      let data = await Product.findOne({ _id: req.params.id })
+        .populate("categoryID")
+        .populate("producerID");
+      res.render("layouts/servers/product/product_detail", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        VND,
+        prname,
+        admin_role: req.session.admin_role,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
 app.get("/add_product", (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;

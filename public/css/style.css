@@ -3681,3 +3681,22 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
 .monthlyy a{
     margin-left: 10px;
 }
+
+.pr-body{
+    line-height: 30px;
+    margin-top: 20px;
+    margin-left: 5px;
+}
+
+.pr-name, 
+.pr-img,
+.pr-category,
+.pr-producer,
+.pr-nhap,
+.pr-ban,
+.pr-status,
+.pr-detail {
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
