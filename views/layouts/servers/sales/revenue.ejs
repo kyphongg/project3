@@ -20,8 +20,7 @@
       <section class="wrapper">
         <div class="table-agile-info">
           <div class="monthlySale">
-            <h3>Thống kê doanh thu từng tháng</h3>
-            <div class="monthlyy">
+            <!-- <div class="monthlyy">
               <a href="/monthlySale/0" style="margin-left: 0px;">Tháng 1</a>
               <a href="/monthlySale/1">Tháng 2</a>
               <a href="/monthlySale/2">Tháng 3</a>
@@ -35,25 +34,25 @@
               <a href="/monthlySale/10">Tháng 11</a>
               <a href="/monthlySale/11">Tháng 12</a>
             </div>
-          </div>
+          </div> -->
 
           <h3>Thống kê doanh thu từng sản phẩm</h3>
           <br>
           <div class="panel panel-default">
-            <div class="table-responsive">
+            <div class="table-responsive" style="overflow-x: hidden;">
               <table id="myTable" class="table table-striped table-bordered">
                 <thead>
                   <tr>
-                    <th style="width: 20px">STT</th>
-                    <th style="text-align: center; width: 200px">Tên sản phẩm</th>
-                    <th style="text-align: center; width: 120px">Giá nhập</th>
-                    <th style="text-align: center; width: 120px">Giá bán</th>
-                    <th style="text-align: center; width: 200px">Số lượng nhập</th>
-                    <th style="text-align: center; width: 220px">Số lượng bán</th>
-                    <th style="text-align: center; width: 180px">Số lượng kho</th>
-                    <th style="text-align: center; width: 150px">Tổng nhập</th>
-                    <th style="text-align: center; width: 180px">Tổng bán</th>
-                    <th style="text-align: center; width: 170px">Doanh thu</th>
+                    <th style="width: 55px">STT</th>
+                    <th style="text-align: center; width: 200px" data-orderable="false">Tên sản phẩm</th>
+                    <th style="text-align: center; width: 120px" data-orderable="false">Giá nhập</th>
+                    <th style="text-align: center; width: 120px" data-orderable="false">Giá bán</th>
+                    <th style="text-align: center; width: 200px" data-orderable="false">Số lượng nhập</th>
+                    <th style="text-align: center; width: 150px" data-orderable="false">Số lượng bán</th>
+                    <th style="text-align: center; width: 150px" data-orderable="false">Số lượng kho</th>
+                    <th style="text-align: center; width: 150px" data-orderable="false">Tổng nhập</th>
+                    <th style="text-align: center; width: 120px" data-orderable="false">Tổng bán</th>
+                    <th style="text-align: center; width: 120px" data-orderable="false">Doanh thu</th>
                     <th style="display: none">0</th>
                   </tr>
                 </thead>
