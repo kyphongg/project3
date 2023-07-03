@@ -40,6 +40,36 @@
                         </form>
                     </div>
                 </div>
+
+                <div class="panel panel-default">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>    
+                                    <th style="text-align: center; width: 55px;">#</th>
+                                    <th style="text-align: center; width: 450px;">Game</th>
+                                    <th style="text-align: center;">Số lượng nhập</th>
+                                    <th style="text-align: center;">Tùy biến</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="TBody">
+                                <tr id="TRow">
+                                    <td style="text-align: center;">1</td>
+                                    <td>
+                                        <select class="form-control m-bot15">
+                                            <option value="">ABC</option>
+                                            <option value="">BCD</option>
+                                        </select>
+                                    </td>
+                                    <td><input name="quantityIn" type="text" class="form-control" placeholder="Nhập số lượng"></td>
+                                    <td style="text-align: center;"><button class="btn btn-danger" onclick="btnDEL(this)">Xóa dòng</button></td>    
+                                </tr>
+                            </tbody>
+                        </table>
+                        <input type="button" class="btn btn-success" value="Thêm dòng" onclick="btnADD()">
+                    </div>
+                </div>
             </div>
         </section>
     <!--main content end-->
@@ -47,5 +77,16 @@
 </section>
     <%- include('../partials/footer') %>
 </body>
-</html>
+
+<script>
+    function btnADD() {
+        var v = $("#TRow").clone().appendTo("TBody");
+        $(v).find("input").val('');
+    }
+
+    function btnDEL(v) {
+        $(v).parent().parent().remove();
+    }
+</script>
+</html>  
 
