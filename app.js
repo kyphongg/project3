@@ -45,10 +45,11 @@ let transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "lam3531xyz@gmail.com",
-    pass: "bwlzpnogtfovacqx",
+    user: "gamingshoplvp@gmail.com",
+    pass: "zsxwxpkplctjwyxz",
   },
 });
+
 
 //Money format
 const VND = new Intl.NumberFormat("vi-VN", {
@@ -465,7 +466,7 @@ app.post("/requestPasswordReset", async (req, res) => {
         let resetString = makeid(10);
         await Password.deleteMany({ userID: user._id });
         await transporter.sendMail({
-          from: "lam3531xyz@gmail.com",
+          from: "Gaming Shop",
           to: errorEmail,
           subject: "Khôi phục mật khẩu tài khoản website GAMING STORE",
           html: `<p>Nhấn vào <a href=${
