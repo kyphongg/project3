@@ -3150,6 +3150,7 @@ app.get("/all_orders", async (req, res) => {
       let data = await Order.find().populate("userID").sort({"orderStatus":1,"timeIn":-1});
       const orderNew = await Order.find({ orderStatus: 0 }).count();
       const orderAccept = await Order.find({ orderStatus: 1 }).count();
+      const orderVroom = await Order.find({ orderStatus: 2 }).count();
       const orderDone = await Order.find({ orderStatus: 3 }).count();
       const orderCancel = await Order.find({ orderStatus: 4 }).count();
       res.render("layouts/servers/orders/all_orders", {
@@ -3160,6 +3161,7 @@ app.get("/all_orders", async (req, res) => {
         VND,
         orderNew: orderNew,
         orderAccept: orderAccept,
+        orderVroom: orderVroom,
         orderDone: orderDone,
         orderCancel: orderCancel,
       });
