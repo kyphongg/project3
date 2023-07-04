@@ -402,6 +402,7 @@ app.post("/login", async (req, res) => {
             var sess = req.session;
             sess.guest = true;
             sess.fullname = user.fullname;
+            sess.phone = user.phone;
             sess.email = user.email;
             sess.userid = user._id;
             res.redirect("/");
@@ -1364,6 +1365,7 @@ app.get("/checkout/:id", async (req, res) => {
         let convert = parseInt(money);
         res.render("layouts/clients/cart/checkout", {
           fullname: req.session.fullname,
+          phone: req.session.phone,
           email: req.session.email,
           userid: req.session.userid,
           sID: req.session.sessionID,

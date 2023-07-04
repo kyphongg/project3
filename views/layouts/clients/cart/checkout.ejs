@@ -140,14 +140,14 @@
                                 <%if(nameError.length > 0){%><p style="font-size: 14px;color: red;"><%= nameError %></p><%}%>
                                 <p>Họ và tên người nhận</p>
                                 <%if(nameED.length > 0){%><input form="main-form" id="myInputName" type="text" name="shippingName" value="<%= nameED %>" oninput="myNameFunction()"><%}else{%>
-                                <input form="main-form" type="text" id="myInputName" name="shippingName" value="<%= nameED %>" oninput="myNameFunction()"><%}%>
-                                <input form="sub-form" id="myInputNameHidden" type="hidden" name="shippingName" value="<%= nameED %>">
+                                <input form="main-form" type="text" id="myInputName" name="shippingName" value="<%= fullname %>" oninput="myNameFunction()"><%}%>
+                                <input form="sub-form" id="myInputNameHidden" type="hidden" name="shippingName" value="<%= fullname %>">
 
                                 <%if(mobileError.length > 0){%><p style="font-size: 14px;color: red;"><%= mobileError %></p><%}%>
                                 <p>Số điện thoại người nhận</p>
                                 <%if(mobileED.length > 0){%><input form="main-form" type="text" name="shippingPhone" value="<%= mobileED %>" oninput="myMobileFunction()"><%}else{%>
-                                <input form="main-form" id="myInputMobile" type="text" name="shippingPhone" value="<%= mobileED %>" oninput="myMobileFunction()"><%}%>
-                                <input form="sub-form" id="myInputMobileHidden" type="hidden" name="shippingPhone" value="<%= mobileED %>">
+                                <input form="main-form" id="myInputMobile" type="text" name="shippingPhone" value="<%= phone %>" oninput="myMobileFunction()"><%}%>
+                                <input form="sub-form" id="myInputMobileHidden" type="hidden" name="shippingPhone" value="<%= phone %>">
                             </div>
                             <div class="payment-form">
                                 <label >Địa chỉ giao hàng</label>
