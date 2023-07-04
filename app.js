@@ -2201,84 +2201,84 @@ app.get("/admin_home", async (req, res) => {
       { $limit : 5 },
     ]).sort({"totalCount":-1});
 
-    let data1 = await Order.find({ month: 0 }).populate("items.productID"); let money1 = 0;
-    let data2 = await Order.find({ month: 1 }).populate("items.productID"); let money2 = 0;
-    let data3 = await Order.find({ month: 2 }).populate("items.productID"); let money3 = 0;
-    let data4 = await Order.find({ month: 3 }).populate("items.productID"); let money4 = 0;
-    let data5 = await Order.find({ month: 4 }).populate("items.productID"); let money5 = 0;
-    let data6 = await Order.find({ month: 5 }).populate("items.productID"); let money6 = 0;
-    let data7 = await Order.find({ month: 6 }).populate("items.productID"); let money7 = 0;
-    let data8 = await Order.find({ month: 7 }).populate("items.productID"); let money8 = 0;
-    let data9 = await Order.find({ month: 8 }).populate("items.productID"); let money9 = 0;
-    let data10 = await Order.find({ month: 9 }).populate("items.productID");  let money10 = 0;
-    let data11 = await Order.find({ month: 10 }).populate("items.productID"); let money11 = 0;
-    let data12 = await Order.find({ month: 11 }).populate("items.productID"); let money12 = 0;
+    // let data1 = await Order.find({ month: 0 }).populate("items.productID"); let money1 = 0;
+    // let data2 = await Order.find({ month: 1 }).populate("items.productID"); let money2 = 0;
+    // let data3 = await Order.find({ month: 2 }).populate("items.productID"); let money3 = 0;
+    // let data4 = await Order.find({ month: 3 }).populate("items.productID"); let money4 = 0;
+    // let data5 = await Order.find({ month: 4 }).populate("items.productID"); let money5 = 0;
+    // let data6 = await Order.find({ month: 5 }).populate("items.productID"); let money6 = 0;
+    // let data7 = await Order.find({ month: 6 }).populate("items.productID"); let money7 = 0;
+    // let data8 = await Order.find({ month: 7 }).populate("items.productID"); let money8 = 0;
+    // let data9 = await Order.find({ month: 8 }).populate("items.productID"); let money9 = 0;
+    // let data10 = await Order.find({ month: 9 }).populate("items.productID");  let money10 = 0;
+    // let data11 = await Order.find({ month: 10 }).populate("items.productID"); let money11 = 0;
+    // let data12 = await Order.find({ month: 11 }).populate("items.productID"); let money12 = 0;
 
-    for(let i = 0; i < data1.length; i++){
-      data1[i].items.forEach(function(id){
-        money1 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data1[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data2.length; i++){
-      data2[i].items.forEach(function(id){
-        money2 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data2[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data3.length; i++){
-      data3[i].items.forEach(function(id){
-        money3 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data3[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data4.length; i++){
-      data4[i].items.forEach(function(id){
-        money4 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data4[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data5.length; i++){
-      data5[i].items.forEach(function(id){
-        money5 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data5[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data6.length; i++){
-      data6[i].items.forEach(function(id){
-        money6 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data6[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data7.length; i++){
-      data7[i].items.forEach(function(id){
-        money7 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data7[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data8.length; i++){
-      data8[i].items.forEach(function(id){
-        money8 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data8[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data9.length; i++){
-      data9[i].items.forEach(function(id){
-        money9 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data9[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data9.length; i++){
-      data9[i].items.forEach(function(id){
-        money9 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data9[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data10.length; i++){
-      data10[i].items.forEach(function(id){
-        money10 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data10[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data11.length; i++){
-      data11[i].items.forEach(function(id){
-        money11 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data11[i].shippingFee);
-      });
-    };
-    for(let i = 0; i < data12.length; i++){
-      data12[i].items.forEach(function(id){
-        money12 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data12[i].shippingFee);
-      });
-    };
+    // for(let i = 0; i < data1.length; i++){
+    //   data1[i].items.forEach(function(id){
+    //     money1 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data1[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data2.length; i++){
+    //   data2[i].items.forEach(function(id){
+    //     money2 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data2[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data3.length; i++){
+    //   data3[i].items.forEach(function(id){
+    //     money3 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data3[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data4.length; i++){
+    //   data4[i].items.forEach(function(id){
+    //     money4 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data4[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data5.length; i++){
+    //   data5[i].items.forEach(function(id){
+    //     money5 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data5[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data6.length; i++){
+    //   data6[i].items.forEach(function(id){
+    //     money6 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data6[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data7.length; i++){
+    //   data7[i].items.forEach(function(id){
+    //     money7 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data7[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data8.length; i++){
+    //   data8[i].items.forEach(function(id){
+    //     money8 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data8[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data9.length; i++){
+    //   data9[i].items.forEach(function(id){
+    //     money9 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data9[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data9.length; i++){
+    //   data9[i].items.forEach(function(id){
+    //     money9 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data9[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data10.length; i++){
+    //   data10[i].items.forEach(function(id){
+    //     money10 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data10[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data11.length; i++){
+    //   data11[i].items.forEach(function(id){
+    //     money11 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data11[i].shippingFee);
+    //   });
+    // };
+    // for(let i = 0; i < data12.length; i++){
+    //   data12[i].items.forEach(function(id){
+    //     money12 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data12[i].shippingFee);
+    //   });
+    // };
 
     res.render("layouts/servers/home", {
       adminName: req.session.adminName,
@@ -2288,18 +2288,18 @@ app.get("/admin_home", async (req, res) => {
       admin_id: req.session.admin_id,
       admin_role: req.session.admin_role,
       VND,
-      money1,
-      money2,
-      money3,
-      money4,
-      money5,
-      money6,
-      money7,
-      money8,
-      money9,
-      money10,
-      money11,
-      money12,
+      // money1,
+      // money2,
+      // money3,
+      // money4,
+      // money5,
+      // money6,
+      // money7,
+      // money8,
+      // money9,
+      // money10,
+      // money11,
+      // money12,
       bestSale,
       outOfStock,
     });
@@ -3595,16 +3595,17 @@ app.get("/add_warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      await Product.find()
+      let data = await Product.find()
         .populate("categoryID")
-        .populate("producerID")
-        .then((data) => {
-          res.render("layouts/servers/warehouse/add_warehouse", {
-            adminName: req.session.adminName,
-            admin_id: req.session.admin_id,
-            danhsach: data,
-            admin_role: req.session.admin_role,
-          });
+        .populate("producerID");
+        res.render("layouts/servers/warehouse/add_warehouse", {
+          adminName: req.session.adminName,
+          admin_id: req.session.admin_id,
+          danhsach: data,
+          admin_role: req.session.admin_role,
+          emptyError: req.flash("emptyError"),
+          quantityError: req.flash("quantityError"),
+          quantityED: req.flash("quantityED"),
         });
     } else {
       res.redirect("/admin_home");
@@ -3616,22 +3617,81 @@ app.get("/add_warehouse", async (req, res) => {
 
 app.post("/save_warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
-    var warehouse = Warehouse({
-      productID: req.body.productID,
-      quantityIn: req.body.quantityIn,
-      created_by: req.session.admin_id,
-      created_date: moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .format("DD/MM/YYYY hh:mm a"),
-    });
-    await Product.updateOne(
-      { _id: req.body.productID },
-      { $inc: { productQuantity: req.body.quantityIn } }
-    );
-    warehouse.save().then(function () {
-      req.flash("success", "Thêm thành công");
-      res.redirect("/warehouse");
-    });
+    var productId = req.body.productID;
+    var quantity = req.body.quantityIn;
+    const data = collect(productId);
+    const total = data.count();
+    if(total == 1){
+      let error = 0;
+      if(quantity == ""){
+        req.flash("emptyError", "Vui lòng nhập số lượng!");
+        error++;
+      }
+      if(quantity != ""){
+        if(quantity <=0 || quantity > 100){
+          req.flash("quantityError", "Số lượng lỗi!");
+          let quantityED = quantity;
+          req.flash("quantityED", quantityED);
+          error++;
+        }
+      }
+      if(error==0){
+        var warehouse = Warehouse({
+          productID: productId,
+          quantityIn: quantity,
+          created_by: req.session.admin_id,
+          created_date: moment
+            .tz(Date.now(), "Asia/Ho_Chi_Minh")
+            .format("DD/MM/YYYY hh:mm a"),
+        });
+        await Product.updateOne(
+          { _id: req.body.productID },
+          { $inc: { productQuantity: req.body.quantityIn } }
+        );
+        await warehouse.save();
+        req.flash("success", "Thêm thành công");
+        res.redirect("/warehouse");
+      } else {
+        res.redirect("/add_warehouse");
+      }
+    } else {
+      let error = 0;
+      for (let i = 0; i < productId.length; i++) {
+        if(quantity[i] == ""){
+          req.flash("emptyError", "Vui lòng nhập số lượng!");
+          error++;
+        }
+        if(quantity[i] != ""){
+          if(quantity[i] <=0 || quantity[i] > 100){
+            req.flash("quantityError", "Số lượng lỗi!");
+            let quantityED = quantity[i];
+            req.flash("quantityED", quantityED);
+            error++;
+          }
+        }
+        if(error==0){
+          var warehouse = Warehouse({
+            productID: productId[i],
+            quantityIn: quantity[i],
+            created_by: req.session.admin_id,
+            created_date: moment
+              .tz(Date.now(), "Asia/Ho_Chi_Minh")
+              .format("DD/MM/YYYY hh:mm a"),
+          });
+          await Product.updateMany(
+            { _id: productId[i] },
+            { $inc: { productQuantity: quantity[i] } }
+          );
+        }
+      }
+      if(error!=0){
+        res.redirect("/add_warehouse");
+      } else {
+        await warehouse.save();
+        req.flash("success", "Thêm thành công");
+        res.redirect("/warehouse");
+      }
+    }
   } else {
     res.redirect("/admin_login");
   }

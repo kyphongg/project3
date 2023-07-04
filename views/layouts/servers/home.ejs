@@ -128,22 +128,7 @@
                     </div>
                   </div>
                   
-                    <div class="box">
-                        <h3 style="text-align: center;">Doanh thu năm 2023</h3>
-                        <input type="hidden" id="value1" value="<%= money1 %>" />
-                        <input type="hidden" id="value2" value="<%= money2 %>" />
-                        <input type="hidden" id="value3" value="<%= money3 %>" />
-                        <input type="hidden" id="value4" value="<%= money4 %>" />
-                        <input type="hidden" id="value5" value="<%= money5 %>" />
-                        <input type="hidden" id="value6" value="<%= money6 %>" />
-                        <input type="hidden" id="value7" value="<%= money7 %>" />
-                        <input type="hidden" id="value8" value="<%= money8 %>" />
-                        <input type="hidden" id="value9" value="<%= money9 %>" />
-                        <input type="hidden" id="value10" value="<%= money10 %>" />
-                        <input type="hidden" id="value11" value="<%= money11 %>" />
-                        <input type="hidden" id="value12" value="<%= money12 %>" />
-                        <canvas id="myChart" style="margin-top: 15px;"></canvas>
-                    </div>
+                    
                 </div>
                 <%}%>
 
@@ -183,62 +168,7 @@
 
     <!-- Biểu đồ cột -->
     <script>
-        let value1 = document.getElementById("value1").value;
-        let value2 = document.getElementById("value2").value;
-        let value3 = document.getElementById("value3").value;
-        let value4 = document.getElementById("value4").value;
-        let value5 = document.getElementById("value5").value;
-        let value6 = document.getElementById("value6").value;
-        let value7 = document.getElementById("value7").value;
-        let value8 = document.getElementById("value8").value;
-        let value9 = document.getElementById("value9").value;
-        let value10 = document.getElementById("value10").value;
-        let value11 = document.getElementById("value11").value;
-        let value12 = document.getElementById("value12").value;
-
-        var startOfYear = moment().month(0);
-        var endOfYear = moment().month(11);
-    
-        var months = [];
-        var month = startOfYear;
-
-        while (month <= endOfYear) {
-          months.push(month.format("YYYY-MM"));
-          month = month.clone().add(1, "M");
-        }
-        const data = {
-          labels: months,
-          datasets: [
-            {
-              label: ["Doanh thu"],
-              data: [value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11, value12],
-              backgroundColor: ["rgba(46, 204, 113, 0.5)"],
-              borderColor: ["rgba(0,0,0)"],
-              borderWidth: 1,
-            },
-          ],
-        };
-        // config
-        const config = {
-          type: "bar",
-          data,
-          options: {
-            scales: {
-              x: {
-                type: "time",
-              },
-              y: {
-                beginAtZero: true,
-              },
-            },
-          },
-        };
-    
-        // render init block
-        const myChart = new Chart(document.getElementById("myChart"), config);
-        // Instantly assign Chart.js version
-        const chartVersion = document.getElementById("chartVersion");
-        chartVersion.innerText = Chart.version;
+        
     </script>
     <!--main content end-->
     <%- include('partials/footer') %>
