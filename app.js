@@ -3147,7 +3147,7 @@ app.get("/all_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let data = await Order.find().populate("userID");
+      let data = await Order.find().populate("userID").sort({"orderStatus":1,"timeIn":-1});
       const orderNew = await Order.find({ orderStatus: 0 }).count();
       const orderAccept = await Order.find({ orderStatus: 1 }).count();
       const orderDone = await Order.find({ orderStatus: 3 }).count();
