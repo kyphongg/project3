@@ -38,8 +38,8 @@
                                 <th style="text-align: center;width: 90px;" data-orderable="false">SĐT</th>
                                 <th style="text-align: center;" data-orderable="false">Lý do</th>
                                 <th style="text-align: center;" data-orderable="false">Tổng tiền</th>
-                                <th style="text-align: center;" data-orderable="false">Ngày đặt</th>
-                                <th style="text-align: center;" data-orderable="false">Trạng thái</th>
+                                <th style="text-align: center; width: 165px;" data-orderable="false">Ngày đặt</th>
+                                <th style="text-align: center; width: 85px;" data-orderable="false">Trạng thái</th>
                                 <th style="text-align: center;" data-orderable="false">Chi tiết</th>
                             </tr>
                             </thead>
@@ -53,7 +53,7 @@
                                         <td style="text-align: center;"><%= danhsach[i].cancelReason %></td>
                                         <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
                                         <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
-                                        <td style="text-align: center;">Đã huỷ</td>
+                                        <td style="text-align: center; color: #D9534F; font-weight: 600;">Đã huỷ</td>
                                         <td style="text-align: center;">
                                             <a class="btn btn-primary" style="text-align: center;" href="/order_detail/<%= danhsach[i]._id %>">
                                                 Xem chi tiết

@@ -3159,6 +3159,17 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     border: 1px solid#faa200;
 }
 
+.btn-delivery{
+    background-color: #0d99fd;
+    color: #Fff;
+    border: 1px solid #0d99fd;
+}
+
+.btn-delivery:hover{
+    background-color: #147fcc;
+    color: #Fff;
+}
+
 .graphBox{
     position: relative;
     width: 100%;

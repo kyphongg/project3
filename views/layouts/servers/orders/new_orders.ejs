@@ -60,7 +60,7 @@
                                     <td style="text-align: center;"><%= danhsach[i].shippingPhone %></td>
                                     <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
                                     <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
-                                    <td style="text-align: center;">Đang chờ xác nhận</td>
+                                    <td style="text-align: center; color: #fbc216; font-weight: 600;">Đang chờ xác nhận</td>
                                     <td>
                                         <form action="/update_status/<%= danhsach[i]._id %>" method="post">
                                             <button class="btn btn-success" style="width: 80px;"><b>Xác nhận</b></button>
