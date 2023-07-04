@@ -970,7 +970,7 @@ app.post("/saveAvatar", async (req, res) => {
 
 app.get("/orders/:id", async (req, res) => {
   if (req.session.guest) {
-    let data = await Order.find({ userID: req.session.userid });
+    let data = await Order.find({ userID: req.session.userid }).sort({orderStatus:1,timeIn:1});
     let user = await User.findOne({_id:req.session.userid});
     let avatar = "user (2).png";
     if(user.avatar){
@@ -1488,6 +1488,7 @@ app.post("/add_coupon_checkout", async (req, res) => {
 });
 
 app.post("/creat_new_order", async (req, res) => {
+  const productName = req.body.product_name_hidden;
   const productId = req.body.product_id_hidden;
   const quantity = req.body.quantity_hidden;
   const uid = req.body.user_id_hidden;
@@ -1604,6 +1605,21 @@ app.post("/creat_new_order", async (req, res) => {
       await Cart.deleteOne({
         userID: new mongoose.Types.ObjectId(req.session.userid),
       });
+      await transporter.sendMail({
+        from: "Gaming Shop",
+        to: req.session.email,
+        subject: "Đặt hàng thành công",
+        html: `<p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi<br>
+        Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn<br>
+        Chi tiết đơn hàng:<br>
+        Sản phẩm:&nbsp;${productName},&nbsp;số lượng:&nbsp;${quantity}<br>
+        Tổng giá sản phẩm:&nbsp;${VND.format(req.body.provisional)}<br>
+        Phí vận chuyển:&nbsp;${VND.format(req.body.shippingFee)}<br>
+        Mã khuyến mại:&nbsp;${req.body.couponCode}<br>
+        Tổng:&nbsp;${VND.format(req.body.total)}<br>
+        Hình thức thanh toán:&nbsp;${method}<br>
+        </p>`,
+      });
     } else {
       let obj = productId.map((id, index_value) => {
         return {
@@ -1643,6 +1659,30 @@ app.post("/creat_new_order", async (req, res) => {
       await Cart.deleteOne({
         userID: new mongoose.Types.ObjectId(req.session.userid),
       });
+      const emailData = {
+        from: "Gaming Shop",
+        to: req.session.email,
+        subject: "Đặt hàng thành công",
+        html: `<p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi<br>
+          Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn<br>
+          Chi tiết đơn hàng:<br>`,
+      };
+      
+      for (let i = 0; i < productId.length; i++) {
+        const pName = productName[i];
+        const pQuantity = quantity[i];
+      
+        emailData.html += `Sản phẩm:&nbsp;${pName},&nbsp;số lượng:&nbsp;${pQuantity}<br>`;
+      }
+      
+      emailData.html += `
+          Tổng giá sản phẩm:&nbsp;${VND.format(req.body.provisional)}<br>
+          Phí vận chuyển:&nbsp;${VND.format(req.body.shippingFee)}<br>
+          Mã khuyến mại:&nbsp;${req.body.couponCode}<br>
+          Tổng:&nbsp;${VND.format(req.body.total)}<br>
+          Hình thức thanh toán:&nbsp;${method}<br>
+          </p>`;
+      await transporter.sendMail(emailData);
     }
     res.redirect("/success");
   }
@@ -3255,6 +3295,28 @@ app.get("/accept_orders", async (req, res) => {
       let data = await Order.find({ orderStatus: 1 }).populate("userID");
       const order = await Order.find({ orderStatus: 1 }).count();
       res.render("layouts/servers/orders/accept_orders", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        order,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/vroom_orders", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let data = await Order.find({ orderStatus: 2 }).populate("userID");
+      const order = await Order.find({ orderStatus: 2 }).count();
+      res.render("layouts/servers/orders/vroom_orders", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,

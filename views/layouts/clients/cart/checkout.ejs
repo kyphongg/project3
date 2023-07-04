@@ -54,6 +54,7 @@
                                 <tr>
                                     <input form="main-form" name="product_id_hidden" type="hidden" value="<%= pid._id %>"/>
                                     <input form="main-form" name="quantity_hidden" type="hidden" value="<%= pid.quantity %>" />
+                                    <input form="main-form" name="product_name_hidden" type="hidden" value="<%= pid.productID.productName %>"/>
                                     <td form="main-form" style="width: 220px;"><%= pid.productID.productName %></td>
                                     <td form="main-form"><img style="width:60px; height:80px" src="/images/<%= pid.productID.productImage %>"></td>
                                     <td form="main-form" style="color:#DC3545;"><%= VND.format(pid.productID.priceOut) %></td>
@@ -102,6 +103,7 @@
                                         <td style="width: 100%;">Tạm tính:</td>
                                         <td style="text-align: right; width: 100%;"><%= VND.format(convert) %></td>
                                         <td form="main-form" style="visibility: hidden; text-align: right;" id="cost"><%= convert %></td>
+                                        <input form="main-form" type="hidden" name="provisional" value="<%= convert %>">
                                     </tr>
                                     <tr style="border: white;">
                                         <td style="width: 100%;">Phí vận chuyển:</td>
