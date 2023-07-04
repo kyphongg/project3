@@ -101,9 +101,6 @@
                 </tbody>
               </table>
             </div>
-            <form action="/update_quantity_cart" method="post" id="form">
-            <input type="submit" value="Cập nhật" name="update_quantity" class="btn btn-primary update-quantity" style="margin-bottom: 5px; margin-left: 5px"/>
-            </form>
           <div class="row">
             <div class="col-8"></div>
             <div class="col-4">
@@ -113,7 +110,13 @@
                       <p>Tạm tính:</p>
                       <p style="color:#DC3545; margin-left: 8px;"><%= VND.format(money) %></p>
                     </div>
-            
+                    
+                    <div class="update-cart">
+                      <form action="/update_quantity_cart" method="post" id="form">
+                        <button type="submit" name="update_quantity" class="btn btn-primary update-quantity btn-updatee">CẬP NHẬT GIỎ HÀNG</button>
+                      </form>
+                    </div>
+
                     <div class="pay">
                     <a href="/checkout/<%= userid %>">
                         <button class="btn btn-secondary btn-pay">THANH TOÁN</button>

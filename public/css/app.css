@@ -901,7 +901,8 @@ input:focus{
 }
 
 .btn-pay, 
-.btn-back-home{
+.btn-back-home,
+.btn-updatee{
     width: 100%;
     font-size: 18px;
     font-weight: 500;
@@ -1014,7 +1015,6 @@ input:focus{
     height: 38px;
     padding: 5px;
     margin-bottom: 2px;
-    background-color: #F1F1F1;
     border: 1px solid #CECDCD;
     border-radius: 10px;
 }
