@@ -20,12 +20,13 @@
                 <h3>Nhập kho</h3>
                 <div class="panel panel-default">
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <input form="form" type="button" class="btn btn-primary" value="Thêm dòng" onclick="btnADD()" style="margin-top: 15px; margin-bottom: 15px;">
+                        <table class="table table-bordered" style="border: 1px solid #DDDDDD;">
                             <thead>
                                 <tr>    
                                     <th style="text-align: center; width: 450px;">Game</th>
                                     <th style="text-align: center;">Số lượng nhập</th>
-                                    <th style="text-align: center;">Tùy biến</th>
+                                    <th style="text-align: center; width: 100px;">Tùy biến</th>
                                 </tr>
                             </thead>
                             <%if(emptyError.length > 0){%><p style="font-size: 14px;color: red;"><%= emptyError %></p><%}%>
@@ -44,7 +45,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <input form="form" type="button" class="btn btn-success" value="Thêm dòng" onclick="btnADD()">
                     </div>
                     <a href="/warehouse"><button type="button" class="btn btn-info" ><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button></a>
                     <button form="form" type="submit" class="btn btn-success"><i class="fa-solid fa-plus"></i> Nhập mới</button>
