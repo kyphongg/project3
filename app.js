@@ -1665,23 +1665,22 @@ app.post("/creat_new_order", async (req, res) => {
         subject: "Đặt hàng thành công",
         html: `<p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi<br>
           Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn<br>
-          Chi tiết đơn hàng:<br>`,
+          Chi tiết đơn hàng:</p>`,
       };
       
       for (let i = 0; i < productId.length; i++) {
         const pName = productName[i];
         const pQuantity = quantity[i];
       
-        emailData.html += `Sản phẩm:&nbsp;${pName},&nbsp;số lượng:&nbsp;${pQuantity}<br>`;
+        emailData.html += `<p>Sản phẩm:&nbsp;${pName},&nbsp;số lượng:&nbsp;${pQuantity}<br></p>`;
       }
       
-      emailData.html += `
+      emailData.html += `<p>
           Tổng giá sản phẩm:&nbsp;${VND.format(req.body.provisional)}<br>
           Phí vận chuyển:&nbsp;${VND.format(req.body.shippingFee)}<br>
           Mã khuyến mại:&nbsp;${req.body.couponCode}<br>
           Tổng:&nbsp;${VND.format(req.body.total)}<br>
-          Hình thức thanh toán:&nbsp;${method}<br>
-          </p>`;
+          Hình thức thanh toán:&nbsp;${method}</p>`;
       await transporter.sendMail(emailData);
     }
     res.redirect("/success");
