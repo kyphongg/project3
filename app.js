@@ -2188,6 +2188,7 @@ app.get("/admin_home", async (req, res) => {
     const order = await Order.find({ orderStatus: 0 }).count();
     const customer = await User.find().count();
     const employee = await Admin.find().count();
+    const comment = await Comment.find().count();
 
     let outOfStock = await Product.find({productQuantity:{$lte:20}});
     
@@ -2342,6 +2343,7 @@ app.get("/admin_home", async (req, res) => {
       // money12,
       bestSale,
       outOfStock,
+      comment,
     });
   } else {
     res.redirect("/admin_login");

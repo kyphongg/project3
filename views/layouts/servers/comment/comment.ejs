@@ -25,16 +25,28 @@
                     <table id="myTable" class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            <th style="width: 30px;">Duyệt</th>
+                            <th style="width: 30px;">STT</th>
                             <th style="width: 110px;">Tên khách hàng</th>
                             <th style="width: 300px;">Bình luận</th>
                             <th style="width: 100px;">Ngày bình luận</th>
                             <th style="width: 150px;">Sản phẩm</th>
+                            <th style="width: 150px;">Trạng thái</th>
+                            <th style="width: 150px;">Hành động</th>
                         </tr>
                         </thead>
                         <tbody>
                           <% for(let i=0; i < comments.length; i++) { %>
                             <tr>
+                              <td><%= i+1 %></td>
+                              <td><%= comments[i].userID.fullname %></td>
+                              <td><%= comments[i].commentInfo %></td>
+                              <td style="text-align: center;"><%= comments[i].commentDate %></td>
+                              <td><%= comments[i].productID.productName %></td>
+                              <% if(comments[i].commentStatus == 0){ %>
+                                <td>Ẩn</td>
+                              <% }else if(comments[i].commentStatus == 1){ %>
+                                <td>Hiển thị</td>
+                              <%}%>
                               <% if(comments[i].commentStatus == 0){ %>
                                 <td style="text-align: center;">
                                   <form action="/update_commentStatus/<%= comments[i]._id %>" method="post">
@@ -48,13 +60,6 @@
                                   </form>
                                 </td>
                               <%}%>
-
-                                <td><%= comments[i].userID.fullname %></td>
-                                <td>
-                                  <%= comments[i].commentInfo %>
-                                </td>
-                                <td style="text-align: center;"><%= comments[i].commentDate %></td>
-                                <td><%= comments[i].productID.productName %></td>
                             </tr>
                           <% } %> 
                         </tbody>
