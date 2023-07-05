@@ -184,6 +184,31 @@ function makeid(length) {
   return result;
 }
 
+//Order code
+let previousDate = moment().format('DD-MM-YYYY');
+let counter = 1;
+
+function generateOrderCode() {
+  const currentDate = moment().format('DD-MM-YYYY');
+
+  if (currentDate !== previousDate) {
+    counter = 1;
+    previousDate = currentDate;
+  }
+
+  const uniqueId = counter.toString().padStart(2, '0');
+
+  // Combine timestamp and unique ID to form the order code
+  const orderCode = `GSLP-${currentDate}-${uniqueId}`;
+
+  counter++;
+  if (counter === 100) {
+    counter = 1;
+  }
+
+  return orderCode;
+}
+
 //Client
 //Đăng nhập đăng ký tài khoản
 app.get("/login", (req, res) => {
@@ -1519,6 +1544,7 @@ app.post("/creat_new_order", async (req, res) => {
   const quantity = req.body.quantity_hidden;
   const uid = req.body.user_id_hidden;
   const code = req.body.couponCode;
+  var orderCode = generateOrderCode();
 
   let errorForm = 0;
 
@@ -1597,6 +1623,7 @@ app.post("/creat_new_order", async (req, res) => {
     const total = data.count();
     if (total == 1) {
       await Order.insertMany({
+        orderCode: orderCode,
         items: [
           {
             quantity: quantity,
@@ -1646,6 +1673,8 @@ app.post("/creat_new_order", async (req, res) => {
               <p style="color: #333333; font-size: 16px; margin-bottom: 15px;">
                 <strong>Chi tiết đơn hàng:</strong>
               </p>
+              <p> Mã đơn hàng:${orderCode} </p>
+
               <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
                 <span style="font-weight: bold;">Sản phẩm:</span> ${productName}<br>
                 <span style="font-weight: bold;">Số lượng:</span> ${quantity}
@@ -1681,6 +1710,7 @@ app.post("/creat_new_order", async (req, res) => {
         };
       });
       await Order.insertMany({
+        orderCode: orderCode,
         items: obj,
         userID: uid,
         paymentMethod: method,
@@ -1719,6 +1749,7 @@ app.post("/creat_new_order", async (req, res) => {
             <p style="color: #333333; font-size: 18px; margin-bottom: 10px;">Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi</p>
             <p style="color: #333333; font-size: 16px; margin-bottom: 15px;">Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn</p>
             <p style="color: #555555; font-size: 16px; margin-bottom: 10px; font-weight: bold;">Chi tiết đơn hàng:</p>
+            <p> Mã đơn hàng:${orderCode} </p>
             ${productId
               .map(
                 (productId, index) => `

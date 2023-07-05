@@ -39,7 +39,7 @@
                                 <thead>
                                 <tr>
                                     <th style="text-align: center;width: 75px;">Thứ tự</th>
-                                    <th style="text-align: center;width: 120px;">Mã đơn hàng</th>
+                                    <th style="text-align: center;width: 200px;">Mã đơn hàng</th>
                                     <th style="text-align: center;">Ngày đặt hàng</th>
                                     <th style="text-align: center;">TT thanh toán</th>
                                     <th style="text-align: center;">Trạng thái</th>
@@ -50,7 +50,7 @@
                                 <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
                                     <td style="text-align: center;"><%= i+1 %></td>
-                                    <td style="text-align: center;width: 120px;"><%= danhsach[i]._id %></td>
+                                    <td style="text-align: center;width: 120px;"><%= danhsach[i].orderCode %></td>
                                     <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
                                     <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
                                     <td style="text-align: center;"><% if(danhsach[i].orderStatus == 0){ %> Đang chờ xác nhận <% }else

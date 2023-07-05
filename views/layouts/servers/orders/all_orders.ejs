@@ -39,7 +39,7 @@
                             <thead>
                             <tr>
                                 <th style="width: 45px;">STT</th>
-                                <th style="text-align: center;width: 70px;" data-orderable="false">Mã đơn</th>
+                                <th style="text-align: center;width: 150px;" data-orderable="false">Mã đơn</th>
                                 <th style="width: 145px; text-align: center;" data-orderable="false">Người nhận</th>
                                 <th style="text-align: center;width: 90px;" data-orderable="false">SĐT</th>
                                 <th style="text-align: center;" data-orderable="false">Tổng tiền</th>
@@ -52,7 +52,7 @@
                                 <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
                                     <td style="text-align: center;"><%= i+1 %></td>
-                                    <td style="text-align: center;"><%= danhsach[i]._id %></td>
+                                    <td style="text-align: center;"><%= danhsach[i].orderCode %></td>
                                     <td style="text-align: center;"><%= danhsach[i].shippingName %></td>
                                     <td style="text-align: center;"><%= danhsach[i].shippingPhone %></td>
                                     <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>

@@ -19,6 +19,9 @@ var Order = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  orderCode:{
+    type: String,
+  },
   adminID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Admin",
