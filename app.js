@@ -1611,16 +1611,42 @@ app.post("/creat_new_order", async (req, res) => {
         from: "Gaming Shop",
         to: req.session.email,
         subject: "Đặt hàng thành công",
-        html: `<p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi<br>
-        Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn<br>
-        Chi tiết đơn hàng:<br>
-        Sản phẩm:&nbsp;${productName},&nbsp;số lượng:&nbsp;${quantity}<br>
-        Tổng giá sản phẩm:&nbsp;${VND.format(req.body.provisional)}<br>
-        Phí vận chuyển:&nbsp;${VND.format(req.body.shippingFee)}<br>
-        Mã khuyến mại:&nbsp;${req.body.couponCode}<br>
-        Tổng:&nbsp;${VND.format(req.body.total)}<br>
-        Hình thức thanh toán:&nbsp;${method}<br>
-        </p>`,
+        html: `
+          <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+            <h1 style="color: #333333; text-align: center; margin-bottom: 20px; font-size: 24px;">Đặt hàng thành công</h1>
+            <p style="color: #555555; font-size: 16px; margin-bottom: 10px;">Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi.</p>
+            <p style="color: #555555; font-size: 16px; margin-bottom: 15px;">
+              Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn:
+            </p>
+            <div style="background-color: #ffffff; border-radius: 5px; padding: 20px;">
+              <p style="color: #333333; font-size: 16px; margin-bottom: 15px;">
+                <strong>Chi tiết đơn hàng:</strong>
+              </p>
+              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+                <span style="font-weight: bold;">Sản phẩm:</span> ${productName}<br>
+                <span style="font-weight: bold;">Số lượng:</span> ${quantity}
+              </p>
+              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+                <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(req.body.provisional)}
+              </p>
+              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+                <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(req.body.shippingFee)}
+              </p>
+              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+                <span style="font-weight: bold;">Mã khuyến mại:</span> ${req.body.couponCode}
+              </p>
+              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+                <span style="font-weight: bold;">Tổng:</span> ${VND.format(req.body.total)}
+              </p>
+              <p style="color: #666666; font-size: 14px; margin-bottom: 0;">
+                <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
+              </p>
+            </div>
+            <p style="color: #555555; font-size: 16px; margin-top: 20px; text-align: center;">
+              Xin cảm ơn bạn đã mua hàng tại cửa hàng chúng tôi!
+            </p>
+          </div>
+        `,
       });
     } else {
       let obj = productId.map((id, index_value) => {
@@ -1665,24 +1691,36 @@ app.post("/creat_new_order", async (req, res) => {
         from: "Gaming Shop",
         to: req.session.email,
         subject: "Đặt hàng thành công",
-        html: `<p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi<br>
-          Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn<br>
-          Chi tiết đơn hàng:</p>`,
+        html: `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+            <p style="color: #333333; font-size: 18px; margin-bottom: 10px;">Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi</p>
+            <p style="color: #333333; font-size: 16px; margin-bottom: 15px;">Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn</p>
+            <p style="color: #555555; font-size: 16px; margin-bottom: 10px; font-weight: bold;">Chi tiết đơn hàng:</p>
+            ${productId
+              .map(
+                (productId, index) => `
+                <p style="color: #666666; font-size: 14px; margin-bottom: 5px;">
+                  <span style="font-weight: bold;">Sản phẩm:</span> ${productName[index]},&nbsp;
+                  <span style="font-weight: bold;">số lượng:</span> ${quantity[index]}
+                </p>`
+              )
+              .join("")}
+            <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+              <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(req.body.provisional)}
+            </p>
+            <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+              <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(req.body.shippingFee)}
+            </p>
+            <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+              <span style="font-weight: bold;">Mã khuyến mại:</span> ${req.body.couponCode}
+            </p>
+            <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+              <span style="font-weight: bold;">Tổng:</span> ${VND.format(req.body.total)}
+            </p>
+            <p style="color: #666666; font-size: 16px; margin-bottom: 0;">
+              <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
+            </p>
+          </div>`,
       };
-      
-      for (let i = 0; i < productId.length; i++) {
-        const pName = productName[i];
-        const pQuantity = quantity[i];
-      
-        emailData.html += `<p>Sản phẩm:&nbsp;${pName},&nbsp;số lượng:&nbsp;${pQuantity}<br></p>`;
-      }
-      
-      emailData.html += `<p>
-          Tổng giá sản phẩm:&nbsp;${VND.format(req.body.provisional)}<br>
-          Phí vận chuyển:&nbsp;${VND.format(req.body.shippingFee)}<br>
-          Mã khuyến mại:&nbsp;${req.body.couponCode}<br>
-          Tổng:&nbsp;${VND.format(req.body.total)}<br>
-          Hình thức thanh toán:&nbsp;${method}</p>`;
       await transporter.sendMail(emailData);
     }
     res.redirect("/success");
