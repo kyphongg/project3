@@ -2192,7 +2192,7 @@ app.get("/admin_home", async (req, res) => {
     const employee = await Admin.find().count();
     const comment = await Comment.find().count();
 
-    let outOfStock = await Product.find({productQuantity:{$lte:20}});
+    let outOfStock = await Product.find({productQuantity:{$lte:20}}).sort({productQuantity:1});
     
     let limit = await Order.aggregate([
       { $match: { orderStatus: 3 } },

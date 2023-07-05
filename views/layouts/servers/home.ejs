@@ -154,7 +154,12 @@
                                 <td><%= outOfStock[i].productName %></td>
                                 <td><img src="/images/<%= outOfStock[i].productImage %>"   width="50" height="80" alt=""></td>
                                 <td><%= outOfStock[i].productQuantity %></td>
-                                <td><p class="btn btn-warning">Sắp hết hàng</p></td>
+                                <td><% if(outOfStock[i].productQuantity == 0){ %>
+                                  <p class="btn btn-warning">Hết hàng</p>
+                                <%} else { %>
+                                  <p class="btn btn-warning">Sắp hết hàng</p>
+                                  <%}%>
+                                </td>
                               </tr>
                               <% } %>
                             </tbody>
