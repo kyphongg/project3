@@ -2766,7 +2766,7 @@ app.post("/save_multiple_product",(req, res) => {
         } else if (err) {
           req.flash("error", "Lỗi bất ngờ xảy ra");
         } else {
-          const jsonArray = await csv().fromFile(req.file.path);
+          const jsonArray = await csv().fromFile(req.file.filename);
           await Product.insertMany(jsonArray);
           req.flash("success", "Thêm thành công");
           res.redirect("/admin_product");
