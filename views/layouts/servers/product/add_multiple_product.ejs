@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thêm nhiều sản phẩm</title>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <!--sidebar start-->
+    <%- include('../partials/sidebar') %>
+    <!-- sidebar end -->
+
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="table-agile-info">
+                <h3>Nhập nhiều sản phẩm mới</h3>
+                <form action="/save_multiple_product" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>File excel sản phẩm</label>
+                    <input type="file">
+                </div>
+                <div>
+                   <h1>Lưu ý</h1>
+                   <p>Phải làm y hệt như form mẫu ở dưới</p>
+                   <br>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; width: 240px" data-orderable="false">productName</th>
+                                <th style="text-align: center; width: 20px" data-orderable="false">productImage</th>
+                                <th style="text-align: center; width: 190px" data-orderable="false">categoryID</th>
+                                <th style="text-align: center; width: 200px" data-orderable="false">producerID</th>
+                                <th style="text-align: center; width: 150px" data-orderable="false">productDescription</th>
+                                <th style="text-align: center; width: 150px" data-orderable="false">priceIn</th>
+                                <th style="text-align: center; width: 180px" data-orderable="false">priceOut</th>
+                                <th style="text-align: center; width: 170px" data-orderable="false">productStatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center; width: 240px">God Of War</td>
+                                <td style="text-align: center; width: 20px"><img src="/images/1684119694000-gowr.jpg" alt=""></td>
+                                <td style="text-align: center; width: 190px">6476b3651cde57b995f9a9ed 645c554c5eca5bdb84a25d09 645c5a59cf52334165588922</td>
+                                <td style="text-align: center; width: 200px">645c5707b102c1336cab8b5b</td>
+                                <td style="text-align: center; width: 150px">Game chiến thần hay nhất của năm 2022</td>
+                                <td style="text-align: center; width: 150px">1500000</td>
+                                <td style="text-align: center; width: 180px">2500000</td>
+                                <td style="text-align: center; width: 170px">1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h2>Giải thích</h2>
+                    <p>- productName: Tên của sản phẩm</p>
+                    <p>- productImage: File ảnh của sản phẩm</p>
+                    <p>- categoryID: Thể loại của sản phẩm <br>Một sản phẩm có thể có nhiều thể loại, phải lưu dưới dạng <b>ID</b> của thể loại <br>
+                        Đối chiếu bảng thể loại ở dưới để làm
+                    </p>
+                    <p>- producerID: Nhà sản xuất của sản phẩm <br>Một sản phẩm chỉ có một nhà sản xuất, phải lưu dưới dạng <b>ID</b> của nhà sản xuất <br>
+                        Đối chiếu bảng nhà sản xuất ở dưới để làm
+                    </p>
+                    <p>- productDescription: Mô tả của sản phẩm</p>
+                    <p>- priceIn: Giá nhập của sản phẩm <br>Chỉ nhập số tiền chứ không cần nhập theo bất cứ format nào vì hệ thống sẽ tự format</p>
+                    <p>- priceOut: Giá bán của sản phẩm <br>Chỉ nhập số tiền chứ không cần nhập theo bất cứ format nào vì hệ thống sẽ tự format</p>
+                    <p>- productStatus: Trạng thái của sản phẩm <br>Mặc định khi nhập là 1</p>
+
+                    <h2>Bảng ID của thể loại</h2>
+                    <br>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; width: 200px" data-orderable="false">Tên thể loại</th>  
+                                <th style="text-align: center; width: 240px" data-orderable="false">ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(let i=0; i < category.length; i++) { %>
+                            <tr>
+                                <td style="text-align: center; width: 200px"><%= category[i].categoryName %></td>
+                                <td style="text-align: center; width: 240px"><%= category[i]._id %></td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+
+                    <h2>Bảng ID của nhà sản xuất</h2>
+                    <br>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; width: 200px" data-orderable="false">Tên nhà sản xuất</th>  
+                                <th style="text-align: center; width: 240px" data-orderable="false">ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(let i=0; i < producer.length; i++) { %>
+                            <tr>
+                                <td style="text-align: center; width: 200px"><%= producer[i].producerName %></td>
+                                <td style="text-align: center; width: 240px"><%= producer[i]._id %></td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+
+                </div>
+                <a href="/admin_product"><button type="button" class="btn btn-info" ><i class="fa-solid fa-arrow-left-long"></i> Quay lại</button></a>
+                <button type="submit" class="btn btn-success" name="add_product"><i class="fa-solid fa-plus"></i> Nhập nhiều SP mới</button>
+                </form>
+            </div>
+        </section>
+    <!--main content end-->
+
+</section>
+    <%- include('../partials/footer') %>
+</body>
+</html>
+

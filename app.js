@@ -15,6 +15,7 @@ const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const Swal = require('sweetalert2');
+const csv=require("csvtojson");
 
 app.use(cors());
 app.use(flash());
@@ -141,6 +142,29 @@ var avatarUpload = multer({
     }
   },
 }).single("avatar");
+
+var excelStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/excels");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const excelMimeType = [
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+];
+var excelUpload = multer({
+  storage: excelStorage,
+  fileFilter: function (req, file, cb) {
+    if (excelMimeType.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      return cb(new Error("Chỉ được sử dụng file excel cho tính năng này"));
+    }
+  },
+}).single("csvFile");
 
 //body-parser
 var bodyParser = require("body-parser");
@@ -2705,6 +2729,52 @@ app.post("/save_product", async (req, res) => {
         }
       }
     });
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/add_multiple_product", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      var category = await Category.find();
+      var producer = await Producer.find();
+      res.render("layouts/servers/product/add_multiple_product", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        VND,
+        admin_role: req.session.admin_role,
+        category,
+        producer,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.post("/save_multiple_product",(req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 1) {
+      excelUpload(req, res, async function (err) {
+        if (err instanceof multer.MulterError) {
+          req.flash("error", "Lỗi Multer khi upload ảnh");
+        } else if (err) {
+          req.flash("error", "Lỗi bất ngờ xảy ra");
+        } else {
+          const jsonArray = await csv().fromFile(req.file.path);
+          await Product.insertMany(jsonArray);
+          req.flash("success", "Thêm thành công");
+          res.redirect("/admin_product");
+        }
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
