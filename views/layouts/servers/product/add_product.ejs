@@ -23,12 +23,14 @@
                         <form action="/save_product" method="post" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label >Tên sản phẩm</label>
-                                <input type="text" class="form-control" name="productName" placeholder="Tên sản phẩm" required="">
+                                <input type="text" class="form-control" name="productName" placeholder="Tên sản phẩm" required>
                             </div>
         
                             <div class="form-group">
-                                <label >Hình ảnh sản phẩm</label>
-                                <input type="file" name="productImage">
+                                <label>Hình ảnh sản phẩm</label>
+                                <input type="file" name="productImage" id="imageInput" onchange="previewImage(event)">
+                                <img id="preview" style="max-width: 200px; max-height: 200px;">
+                                <button id="removeImageButton" onclick="removeImage()" style="display: none; background-color: #f44336; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">Xoá hình ảnh</button>
                             </div>
         
                             <div class="form-group">
@@ -60,12 +62,12 @@
         
                             <div class="form-group">
                                 <label >Giá nhập</label>
-                                <input type="text" class="form-control" name="priceIn" placeholder="Giá nhập" required="">
+                                <input type="text" class="form-control" name="priceIn" placeholder="Giá nhập">
                             </div>
         
                             <div class="form-group">
                                 <label >Giá bán</label>
-                                <input type="text" class="form-control" name="priceOut" placeholder="Giá bán" required="">
+                                <input type="text" class="form-control" name="priceOut" placeholder="Giá bán">
                             </div>
         
                             <div class="form-group">
@@ -87,6 +89,40 @@
     <!--main content end-->
 
 </section>
+<script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function() {
+        const preview = document.getElementById('preview');
+        if (file) {
+            preview.src = reader.result;
+        } else {
+            preview.removeAttribute('src');
+        }
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+
+    const removeImageButton = document.getElementById('removeImageButton');
+    removeImageButton.style.display = file ? 'inline-block' : 'none';
+}
+
+function removeImage() {
+    const preview = document.getElementById('preview');
+    preview.removeAttribute('src');
+
+    // Reset the input file element to clear the selection
+    const fileInput = document.getElementById('imageInput');
+    fileInput.value = '';
+
+    const removeImageButton = document.getElementById('removeImageButton');
+    removeImageButton.style.display = 'none';
+}
+</script>
     <%- include('../partials/footer') %>
 </body>
 </html>
