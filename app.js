@@ -1965,15 +1965,13 @@ app.get("/search", async (req, res) => {
 
 //Trang tất cả các sản phẩm
 app.get("/all_product", async (req, res) => {
-  var page = req.query.page;
-  if (page) {
-    page = parseInt(page);
-    if (page < 1) {
-      page = 1;
-    }
+  let page = req.query.page ? parseInt(req.query.page) : 1;
+
+  if (isNaN(page) || page < 1) {
+    page = 1;
   }
 
-  const limit = 4;
+  const limit = 12;
 
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -1981,18 +1979,23 @@ app.get("/all_product", async (req, res) => {
     if (user.avatar) {
       avatar = user.avatar;
     }
+
+    let count = await Product.find({
+      $or: [{ productStatus: 0 }, { productStatus: 1 }],
+    }).countDocuments();
+    const totalPages = Math.ceil(count / limit);
+
+    page = Math.min(page, totalPages);
+
     let data = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
-      .limit(limit * 1)
+      .limit(limit)
       .skip((page - 1) * limit)
       .populate("categoryID")
       .populate("producerID")
       .exec();
 
-    let count = await Product.find({
-      $or: [{ productStatus: 0 }, { productStatus: 1 }],
-    }).countDocuments();
     res.render("layouts/clients/main/all_product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -2000,25 +2003,30 @@ app.get("/all_product", async (req, res) => {
       danhsach: data,
       VND,
       cart: req.session.cart,
-      totalPages: Math.ceil(count / limit),
+      totalPages: totalPages,
       currentPage: page,
-      prevPage: page - 1,
-      nextPage: page + 1,
+      prevPage: page > 1 ? page - 1 : null,
+      nextPage: page < totalPages ? page + 1 : null,
       avatar: avatar,
     });
   } else {
+
+    let count = await Product.find({
+      $or: [{ productStatus: 0 }, { productStatus: 1 }],
+    }).countDocuments();
+    const totalPages = Math.ceil(count / limit);
+
+    page = Math.min(page, totalPages);
+
     let data = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
-      .limit(limit * 1)
+      .limit(limit)
       .skip((page - 1) * limit)
       .populate("categoryID")
       .populate("producerID")
       .exec();
 
-    let count = await Product.find({
-      $or: [{ productStatus: 0 }, { productStatus: 1 }],
-    }).countDocuments();
     res.render("layouts/clients/main/all_product", {
       fullname: 1,
       userid: 1,
@@ -2026,10 +2034,10 @@ app.get("/all_product", async (req, res) => {
       danhsach: data,
       VND,
       cart: 0,
-      totalPages: Math.ceil(count / limit),
+      totalPages: totalPages,
       currentPage: page,
-      prevPage: page - 1,
-      nextPage: page + 1,
+      prevPage: page > 1 ? page - 1 : null,
+      nextPage: page < totalPages ? page + 1 : null,
       avatar: "user (2).png",
     });
   }
@@ -2139,15 +2147,30 @@ app.post("/comment", async (req, res) => {
 
 //Trang danh mục theo NSX
 app.get("/producer/:id", async (req, res) => {
+  let page = req.query.page ? parseInt(req.query.page) : 1;
+  if (isNaN(page) || page < 1) {
+    page = 1;
+  }
+  const limit = 12;
+
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
     if (user.avatar) {
       avatar = user.avatar;
     }
+
+    const producerId = new mongoose.Types.ObjectId(req.params.id);
+    const count = await Product.countDocuments({ producerID: producerId });
+    const totalPages = Math.ceil(count / limit);
+    page = Math.min(page, totalPages);
+
     let data = await Product.find({
       producerID: new mongoose.Types.ObjectId(req.params.id),
-    });
+    })
+    .limit(limit)
+    .skip((page - 1) * limit);
+
     let producer = await Producer.findOne({
       _id: new mongoose.Types.ObjectId(req.params.id),
     });
@@ -2162,12 +2185,24 @@ app.get("/producer/:id", async (req, res) => {
       VND,
       title,
       id,
+      totalPages: totalPages,
+      currentPage: page,
+      prevPage: page > 1 ? page - 1 : null,
+      nextPage: page < totalPages ? page + 1 : null,
       avatar: avatar,
     });
   } else {
+    const producerId = new mongoose.Types.ObjectId(req.params.id);
+    const count = await Product.countDocuments({ producerID: producerId });
+    const totalPages = Math.ceil(count / limit);
+    page = Math.min(page, totalPages);
+
     let data = await Product.find({
       producerID: new mongoose.Types.ObjectId(req.params.id),
-    });
+    })
+    .limit(limit)
+    .skip((page - 1) * limit);
+
     let producer = await Producer.findOne({
       _id: new mongoose.Types.ObjectId(req.params.id),
     });
@@ -2182,6 +2217,10 @@ app.get("/producer/:id", async (req, res) => {
       VND,
       title,
       id,
+      totalPages: totalPages,
+      currentPage: page,
+      prevPage: page > 1 ? page - 1 : null,
+      nextPage: page < totalPages ? page + 1 : null,
       avatar: "user (2).png",
     });
   }
@@ -2189,15 +2228,30 @@ app.get("/producer/:id", async (req, res) => {
 
 //Trang category
 app.get("/category/:id", async (req, res) => {
+  let page = req.query.page ? parseInt(req.query.page) : 1;
+  if (isNaN(page) || page < 1) {
+    page = 1;
+  }
+  const limit = 12;
+
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
     if (user.avatar) {
       avatar = user.avatar;
     }
+
+    const categoryId = new mongoose.Types.ObjectId(req.params.id);
+    const count = await Product.countDocuments({ categoryID: categoryId });
+    const totalPages = Math.ceil(count / limit);
+    page = Math.min(page, totalPages);
+
     let data = await Product.find({
       categoryID: new mongoose.Types.ObjectId(req.params.id),
-    });
+    })
+    .limit(limit)
+    .skip((page - 1) * limit);
+
     let category = await Category.findOne({
       _id: new mongoose.Types.ObjectId(req.params.id),
     });
@@ -2212,12 +2266,23 @@ app.get("/category/:id", async (req, res) => {
       VND,
       title,
       id,
+      totalPages: totalPages,
+      currentPage: page,
+      prevPage: page > 1 ? page - 1 : null,
+      nextPage: page < totalPages ? page + 1 : null,
       avatar: avatar,
     });
   } else {
+    const categoryId = new mongoose.Types.ObjectId(req.params.id);
+    const count = await Product.countDocuments({ categoryID: categoryId });
+    const totalPages = Math.ceil(count / limit);
+    page = Math.min(page, totalPages);
+
     let data = await Product.find({
       categoryID: new mongoose.Types.ObjectId(req.params.id),
-    });
+    })
+    .limit(limit)
+    .skip((page - 1) * limit);
     let category = await Category.findOne({
       _id: new mongoose.Types.ObjectId(req.params.id),
     });
@@ -2232,6 +2297,10 @@ app.get("/category/:id", async (req, res) => {
       VND,
       title,
       id,
+      totalPages: totalPages,
+      currentPage: page,
+      prevPage: page > 1 ? page - 1 : null,
+      nextPage: page < totalPages ? page + 1 : null,
       avatar: "user (2).png",
     });
   }
