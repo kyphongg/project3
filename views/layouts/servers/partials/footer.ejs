@@ -78,9 +78,22 @@
         language: {
         url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
         },
-        scrollX: false
-    });
-
+        scrollX: false,
+        initComplete: function() {
+                this.api().columns().every(function() {
+                    var column = this;
+                    if (column.index() === 0) {
+                        $(column.header()).removeClass('sorting');
+                        $(column.header()).removeClass('sorting_asc');
+                        $(column.header()).removeClass('sorting_desc');
+                        $(column.footer()).removeClass('sorting');
+                        $(column.footer()).removeClass('sorting_asc');
+                        $(column.footer()).removeClass('sorting_desc');
+                        $(column.nodes()).addClass('no-sort');
+                    }
+                });
+            }
+        });
 </script>
 
 <script type="text/javascript">
