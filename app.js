@@ -1434,12 +1434,12 @@ app.get("/checkout/:id", async (req, res) => {
           nameError: req.flash("nameError"),
           cityError: req.flash("cityError"),
           districtError: req.flash("districtError"),
+          wardError: req.flash("wardError"),
           addressError: req.flash("addressError"),
           mobileError: req.flash("mobileError"),
           methodError: req.flash("methodError"),
           mobileED: req.flash("mobileED"),
           nameED: req.flash("nameED"),
-          districtED: req.flash("districtED"),
           addressED: req.flash("addressED"),
           noteED: req.flash("noteED"),
           avatar: avatar,
@@ -1456,7 +1456,6 @@ app.post("/add_coupon_checkout", async (req, res) => {
     let check = await Coupon.findOne({ couponCode: req.body.couponCode });
 
     var name = req.body.shippingName;
-    var district = req.body.shippingDistrict;
     var address = req.body.shippingAddress;
     var mobile = req.body.shippingPhone;
     var note = req.body.shippingNote;
@@ -1468,10 +1467,6 @@ app.post("/add_coupon_checkout", async (req, res) => {
     if (mobile != "") {
       let mobileED = mobile;
       req.flash("mobileED", mobileED);
-    }
-    if (district != "") {
-      let districtED = district;
-      req.flash("districtED", districtED);
     }
     if (address != "") {
       let addressED = address;
@@ -1511,19 +1506,11 @@ app.post("/add_coupon_checkout", async (req, res) => {
               req.flash("blunt", check.couponValue * 1000);
               req.flash("percent", 0);
               req.flash("code", check.couponCode);
-              await Coupon.updateOne(
-                { couponCode: req.body.couponCode },
-                { $addToSet: { userID: uid } }
-              );
             } else if (check.couponType == 1) {
               req.flash("cash", "- " + check.couponValue + "%");
               req.flash("blunt", 0);
               req.flash("percent", check.couponValue * 0.01);
               req.flash("code", check.couponCode);
-              await Coupon.updateOne(
-                { couponCode: req.body.couponCode },
-                { $addToSet: { userID: uid } }
-              );
             }
             req.flash("success", "Thêm mã giảm giá thành công");
           }
@@ -1551,6 +1538,7 @@ app.post("/creat_new_order", async (req, res) => {
   var name = req.body.shippingName;
   var city = req.body.shippingCity;
   var district = req.body.shippingDistrict;
+  var ward = req.body.shippingWard;
   var address = req.body.shippingAddress;
   var mobile = req.body.shippingPhone;
   var note = req.body.shippingNote;
@@ -1564,12 +1552,16 @@ app.post("/creat_new_order", async (req, res) => {
     req.flash("nameError", "Bạn chưa điền họ và tên người nhận!");
     errorForm++;
   }
-  if (city == "Chọn thành phố") {
-    req.flash("cityError", "Bạn chưa chọn thành phố!");
+  if (city == "") {
+    req.flash("cityError", "Bạn chưa chọn tỉnh thành!");
     errorForm++;
   }
   if (district == "") {
-    req.flash("districtError", "Bạn chưa điền quận!");
+    req.flash("districtError", "Bạn chưa chọn quận huyện!");
+    errorForm++;
+  }
+  if (ward == "") {
+    req.flash("wardError", "Bạn chưa chọn phường xã!");
     errorForm++;
   }
   if (address == "") {
@@ -1602,11 +1594,6 @@ app.post("/creat_new_order", async (req, res) => {
       req.flash("nameED", nameED);
     }
   }
-
-  if (district != "") {
-    let districtED = district;
-    req.flash("districtED", districtED);
-  }
   if (address != "") {
     let addressED = address;
     req.flash("addressED", addressED);
@@ -1638,6 +1625,7 @@ app.post("/creat_new_order", async (req, res) => {
         shippingName: name,
         shippingCity: city,
         shippingDistrict: district,
+        shippingWard: ward,
         shippingNote: req.body.shippingNote,
         shippingPhone: mobile,
         total: req.body.total,
@@ -1649,7 +1637,7 @@ app.post("/creat_new_order", async (req, res) => {
       });
       await Coupon.updateOne(
         { couponCode: code },
-        { $inc: { couponQuantity: -1 } }
+        { $inc: { couponQuantity: -1 }, $addToSet: { userID: uid } },
       );
       await Product.updateOne(
         { _id: productId },
@@ -1719,6 +1707,7 @@ app.post("/creat_new_order", async (req, res) => {
         shippingName: name,
         shippingCity: city,
         shippingDistrict: district,
+        shippingWard: ward,
         shippingNote: req.body.shippingNote,
         shippingPhone: mobile,
         total: req.body.total,
@@ -1736,7 +1725,7 @@ app.post("/creat_new_order", async (req, res) => {
       }
       await Coupon.updateOne(
         { couponCode: code },
-        { $inc: { couponQuantity: -1 } }
+        { $inc: { couponQuantity: -1 }, $addToSet: { userID: uid } }
       );
       await Cart.deleteOne({
         userID: new mongoose.Types.ObjectId(req.session.userid),

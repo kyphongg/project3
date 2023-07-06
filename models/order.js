@@ -36,6 +36,9 @@ var Order = new Schema({
   shippingDistrict: {
     type: String,
   },
+  shippingWard:{
+    type: String,
+  },
   shippingAddress: {
     type: String,
   },

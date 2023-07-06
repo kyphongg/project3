@@ -52,64 +52,6 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-  $(document).ready(function () {
-    var $progControl = $(".progControlSelect2").select2({
-      placeholder: "Chọn thành phố",
-    });
-  });
-</script>
-
-<script type="text/javascript">
-  const VND = new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  });
-
-  function changeFunc() {
-    var selectBox = document.getElementById("select-state");
-    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-    var name = selectBox.options[selectBox.selectedIndex].innerHTML;
-    document.getElementById("shippingcost").innerHTML =
-      VND.format(selectedValue);
-    var cost = document.getElementById("cost").innerHTML;
-    var blunt = document.getElementById("blunt").value;
-    var percent = document.getElementById("percent").value;
-    document.getElementById("total").innerHTML = VND.format(
-      (parseInt(selectedValue) + parseInt(cost) - parseInt(blunt)) - percent*(parseInt(selectedValue) + parseInt(cost) - parseInt(blunt))
-    );
-    document.getElementById("subTotal").value =
-    (parseInt(selectedValue) + parseInt(cost) - parseInt(blunt)) - percent*(parseInt(selectedValue) + parseInt(cost) - parseInt(blunt));
-    document.getElementById("fee").value = selectedValue;
-    document.getElementById("shippingCity").value = name;
-  }
-
-  function couponFunc(){
-    
-  }
-
-  function myNameFunction(){
-    let name = document.getElementById("myInputName").value;
-    document.getElementById("myInputNameHidden").value = name;
-  }
-  function myMobileFunction(){
-    let mobile = document.getElementById("myInputMobile").value;
-    document.getElementById("myInputMobileHidden").value = mobile;
-  }
-  function myDistrictFunction(){
-    let district = document.getElementById("myInputDistrict").value;
-    document.getElementById("myInputDistrictHidden").value = district;
-  }
-  function myAddressFunction(){
-    let address = document.getElementById("myInputAddress").value;
-    document.getElementById("myInputAddressHidden").value = address;
-  }
-  function myNoteFunction(){
-    let note = document.getElementById("myInputNote").value;
-    document.getElementById("myInputNoteHidden").value = note;
-  }
-</script>
-
-<script>
   new MultiSelectTag("categories", {
     // id
     rounded: true,

@@ -102,7 +102,7 @@
                                     <tr style="border: white;">
                                         <td style="width: 100%;">Tạm tính:</td>
                                         <td style="text-align: right; width: 100%;"><%= VND.format(convert) %></td>
-                                        <td form="main-form" style="visibility: hidden; text-align: right;" id="cost"><%= convert %></td>
+                                        <td form="main-form" style="visibility: hidden;text-align: right;" id="cost"><%= convert %></td>
                                         <input form="main-form" type="hidden" name="provisional" value="<%= convert %>">
                                     </tr>
                                     <tr style="border: white;">
@@ -153,23 +153,27 @@
                                 <label style="margin-top: 10px; font-weight: 500;">Địa chỉ giao hàng</label>
                                 <%if(cityError.length > 0){%><p style="font-size: 14px;color: red;"><%= cityError %></p><%}%>
                                 <p style="font-weight: 500;">Tỉnh thành</p>
-                                <select id="select-state" class="progControlSelect2" onchange="changeFunc();">
-                                    <option form="main-form" value="0">Chọn thành phố</option>
-                                    <% for(let i=0; i < city.length; i++) { %>
-                                    <option form="main-form" value="<%= city[i].price %>"><%= city[i].cityName %></option>
-                                    <%}%>
+                                <select class="form-select form-select-sm mb-3" name="shippingCity" id="city" aria-label=".form-select-sm">
+                                    <option value="" selected>Chọn tỉnh thành</option>           
                                 </select>
-                                <input form="main-form" type="hidden" name="shippingCity" id="shippingCity" value="Chọn thành phố">
-
-                                <%if(districtError.length > 0){%><p style="font-size: 14px;color: red;"><%= districtError %></p><%}%>
-                                <p style="font-weight: 500;">Quận</p>
-                                <input form="main-form" id="myInputDistrict" type="text" name="shippingDistrict" value="<%= districtED %>" oninput="myDistrictFunction()">
-                                <input form="sub-form" id="myInputDistrictHidden" type="hidden" name="shippingDistrict" value="<%= districtED %>">
                                 
+                                <%if(districtError.length > 0){%><p style="font-size: 14px;color: red;"><%= districtError %></p><%}%>
+                                <p style="font-weight: 500;">Quận huyện</p>
+                                <select class="form-select form-select-sm mb-3" name="shippingDistrict" id="district" aria-label=".form-select-sm">
+                                    <option value="" selected>Chọn quận huyện</option>
+                                </select>
+                                
+                                <%if(wardError.length > 0){%><p style="font-size: 14px;color: red;"><%= wardError %></p><%}%>
+                                <p style="font-weight: 500;">Phường xã</p>
+                                <select class="form-select form-select-sm" id="ward" name="shippingWard" aria-label=".form-select-sm">
+                                    <option value="" selected>Chọn phường xã</option>
+                                </select>
+
                                 <%if(addressError.length > 0){%><p style="font-size: 14px;color: red;"><%= addressError %></p><%}%>
-                                <p style="font-weight: 500;">Địa chỉ</p>
+                                <p style="font-weight: 500;">Địa chỉ chi tiết</p>
                                 <input form="main-form" id="myInputAddress" type="text" name="shippingAddress" value="<%= addressED %>" oninput="myAddressFunction()">
                                 <input form="sub-form" id="myInputAddressHidden" type="hidden" name="shippingAddress" value="<%= addressED %>">
+                                
                                 <p style="font-weight: 500;">Ghi chú (Nếu có)</p>
                                 <input form="main-form" id="myInputNote" type="text" name="shippingNote" value="<%= noteED %>" oninput="myNoteFunction()">
                                 <input form="sub-form" id="myInputNoteHidden" type="hidden" name="shippingNote" value="<%= noteED %>">
@@ -243,6 +247,98 @@
         <form action="/add_coupon_checkout" method="post" id="sub-form"></form>
         </div>
         </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script>
+const VND = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+});
+
+var citis = document.getElementById("city");
+var district = document.getElementById("district");
+var ward = document.getElementById("ward");
+var shippingFee = document.getElementById("fee");
+var shippingCost = document.getElementById("shippingcost");
+var cost = document.getElementById("cost").innerHTML;
+var total = document.getElementById("total");
+var subTotal = document.getElementById("subTotal");
+var blunt = document.getElementById("blunt").value;
+var percent = document.getElementById("percent").value;
+var Parameter = {
+  url: "https://raw.githubusercontent.com/lam3531/vietnam/main/data.json",
+  method: "GET",
+  responseType: "application/json",
+};
+var promise = axios(Parameter);
+promise.then(function (result) {
+  renderCity(result.data);
+});
+function renderCity(data) {
+  for (const x of data) {
+    const option = new Option(x.Name, x.Name);
+    option.setAttribute('shippingFee', x.Fee);
+    citis.options.add(option);
+  }
+
+  citis.onchange = function () {
+    district.length = 1;
+    ward.length = 1;
+
+    if (this.value !== "") {
+      const result = data.filter(n => n.Name === this.value);
+
+      for (const k of result[0].Districts) {
+        const option = new Option(k.Name, k.Name);
+        district.options.add(option);
+      }
+    }
+    const selectedOption = citis.options[citis.selectedIndex];
+    const fee = selectedOption.getAttribute("shippingFee");
+    shippingFee.value = fee;
+    shippingCost.innerHTML = VND.format(fee);
+
+    total.innerHTML = VND.format((parseInt(shippingFee.value) + parseInt(cost) - parseInt(blunt)) - percent*(parseInt(shippingFee.value) + parseInt(cost) - parseInt(blunt)));
+    subTotal.value = (parseInt(shippingFee.value) + parseInt(cost) - parseInt(blunt)) - percent*(parseInt(shippingFee.value) + parseInt(cost) - parseInt(blunt));
+    this.options[0].style.display = "none";
+  };
+
+  district.onchange = function () {
+    ward.length = 1;
+    const selectedCityName = citis.value;
+    const selectedDistrictName = this.value;
+
+    if (selectedCityName !== "" && selectedDistrictName !== "") {
+      const city = data.find(n => n.Name === selectedCityName);
+      const district = city.Districts.find(n => n.Name === selectedDistrictName);
+
+      for (const w of district.Wards) {
+        const option = new Option(w.Name, w.Name);
+        ward.options.add(option);
+      }
+    }
+    this.options[0].style.display = "none";
+  };
+  ward.onchange = function () {
+    this.options[0].style.display = "none";
+  };
+}
+function myNameFunction(){
+    let name = document.getElementById("myInputName").value;
+    document.getElementById("myInputNameHidden").value = name;
+}
+function myMobileFunction(){
+    let mobile = document.getElementById("myInputMobile").value;
+    document.getElementById("myInputMobileHidden").value = mobile;
+}
+function myAddressFunction(){
+    let address = document.getElementById("myInputAddress").value;
+    document.getElementById("myInputAddressHidden").value = address;
+}
+function myNoteFunction(){
+    let note = document.getElementById("myInputNote").value;
+    document.getElementById("myInputNoteHidden").value = note;
+}
+</script>
      <%- include('../partials/footer') %>
 </body>
 </html>
