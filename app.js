@@ -14,11 +14,15 @@ const collect = require("collect.js");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
-const Swal = require('sweetalert2');
-const csv=require("csvtojson");
+const Swal = require("sweetalert2");
+const csv = require("csvtojson");
 
 app.use(cors());
 app.use(flash());
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
 
 const dateVietNam = moment
   .tz(Date.now(), "Asia/Ho_Chi_Minh")
@@ -50,7 +54,6 @@ let transporter = nodemailer.createTransport({
     pass: "zsxwxpkplctjwyxz",
   },
 });
-
 
 //Money format
 const VND = new Intl.NumberFormat("vi-VN", {
@@ -84,8 +87,7 @@ const Cart = require("./models/cart.js");
 const Order = require("./models/order.js");
 const News = require("./models/news.js");
 const Password = require("./models/password.js");
-const Comment = require("./models/comment.js")
-
+const Comment = require("./models/comment.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -152,8 +154,8 @@ var excelStorage = multer.diskStorage({
   },
 });
 const excelMimeType = [
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ];
 var excelUpload = multer({
   storage: excelStorage,
@@ -185,18 +187,18 @@ function makeid(length) {
 }
 
 //Order code
-let previousDate = moment().format('DD-MM-YYYY');
+let previousDate = moment().format("DD-MM-YYYY");
 let counter = 1;
 
 function generateOrderCode() {
-  const currentDate = moment().format('DD-MM-YYYY');
+  const currentDate = moment().format("DD-MM-YYYY");
 
   if (currentDate !== previousDate) {
     counter = 1;
     previousDate = currentDate;
   }
 
-  const uniqueId = counter.toString().padStart(2, '0');
+  const uniqueId = counter.toString().padStart(2, "0");
 
   // Combine timestamp and unique ID to form the order code
   const orderCode = `GSLP-${currentDate}-${uniqueId}`;
@@ -500,7 +502,7 @@ app.post("/requestPasswordReset", async (req, res) => {
     .format("DD/MM/YYYY hh:mm a");
   let timeOut = moment
     .tz(Date.now(), "Asia/Ho_Chi_Minh")
-    .add(15, 'minutes')
+    .add(15, "minutes")
     .format("DD/MM/YYYY hh:mm a");
   if (errorEmail == "") {
     req.flash("error", "Vui lòng nhập Email!");
@@ -704,11 +706,11 @@ app.get("/", async (req, res) => {
     ]);
     var sess = req.session;
     sess.cart = cart;
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     let data = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
@@ -749,11 +751,11 @@ app.get("/", async (req, res) => {
 //Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
 app.get("/about", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/main/about", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -774,11 +776,11 @@ app.get("/about", async (req, res) => {
 
 app.get("/privacy_policy", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/main/privacy_policy", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -799,11 +801,11 @@ app.get("/privacy_policy", async (req, res) => {
 
 app.get("/terms_of_service", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/main/terms_of_service", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -825,11 +827,11 @@ app.get("/terms_of_service", async (req, res) => {
 app.get("/news", async (req, res) => {
   let data = await News.find().populate("newsProduct");
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/news/news", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -853,11 +855,11 @@ app.get("/news", async (req, res) => {
 app.get("/news/:id", async (req, res) => {
   let data = await News.find({ _id: req.params.id }).populate("newsProduct");
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/news/news_detail", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -880,11 +882,11 @@ app.get("/news/:id", async (req, res) => {
 
 app.get("/hiring", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/main/hiring", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -905,11 +907,11 @@ app.get("/hiring", async (req, res) => {
 
 app.get("/support", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/main/support", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -930,11 +932,11 @@ app.get("/support", async (req, res) => {
 
 app.get("/hotline", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/main/hotline", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -955,11 +957,11 @@ app.get("/hotline", async (req, res) => {
 
 app.get("/customer_care", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/main/customer_care", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -981,11 +983,11 @@ app.get("/customer_care", async (req, res) => {
 //Trang profile, lịch sử đơn hàng, mật khẩu
 app.get("/profile/:id", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/profile", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -1008,9 +1010,12 @@ app.post("/saveAvatar", async (req, res) => {
       } else if (err) {
         req.flash("error", "Lỗi bất ngờ xảy ra");
       } else {
-        await User.updateOne({_id:userid},{$set:{avatar:req.file.filename}});
+        await User.updateOne(
+          { _id: userid },
+          { $set: { avatar: req.file.filename } }
+        );
         req.flash("success", "Thêm thành công");
-        res.redirect("/profile/"+userid);
+        res.redirect("/profile/" + userid);
       }
     });
   } else {
@@ -1020,12 +1025,15 @@ app.post("/saveAvatar", async (req, res) => {
 
 app.get("/orders/:id", async (req, res) => {
   if (req.session.guest) {
-    let data = await Order.find({ userID: req.session.userid }).sort({orderStatus:1,timeIn:1});
-    let user = await User.findOne({_id:req.session.userid});
+    let data = await Order.find({ userID: req.session.userid }).sort({
+      orderStatus: 1,
+      timeIn: 1,
+    });
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/order/orders", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -1043,11 +1051,11 @@ app.get("/orders/:id", async (req, res) => {
 
 app.get("/password/:id", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/password/password", {
       fullname: req.session.fullname,
       email: req.session.email,
@@ -1129,11 +1137,11 @@ app.post("/changePasswordNew", async (req, res) => {
 //Trang chi tiết lịch sử đơn hàng
 app.get("/orders_detail/:id", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     let data = await Order.findOne({ _id: req.params.id }).populate(
       "items.productID"
     );
@@ -1189,11 +1197,11 @@ app.get("/orders_detail/:id", async (req, res) => {
 //Trang giỏ hàng và thanh toán và trang thông báo đặt hàng thành công
 app.get("/cart/:id", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     const cart = await Cart.aggregate([
       { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
       {
@@ -1217,8 +1225,9 @@ app.get("/cart/:id", async (req, res) => {
     const carti = await Cart.find({
       userID: new mongoose.Types.ObjectId(req.session.userid),
     });
-    let data = await Cart.find({ userID: new mongoose.Types.ObjectId(req.session.userid) })
-      .populate("items.productID");
+    let data = await Cart.find({
+      userID: new mongoose.Types.ObjectId(req.session.userid),
+    }).populate("items.productID");
     let money = 0;
     for (let i = 0; i < data.length; i++) {
       data[i].items.forEach(function (pid) {
@@ -1242,7 +1251,7 @@ app.get("/cart/:id", async (req, res) => {
 });
 
 app.post("/add_to_cart", async (req, res) => {
-  if(req.session.guest){
+  if (req.session.guest) {
     const productId = req.body.product_id_hidden;
     const quantity = parseInt(req.body.quantity);
     const convert = req.body.quantity;
@@ -1251,7 +1260,9 @@ app.post("/add_to_cart", async (req, res) => {
     let cartE = await Cart.find({ userID: req.body.user_id_hidden });
     if (cartE[0]) {
       const isE = cartE[0].items.findIndex((item) => {
-        return new String(item.productID).trim() == new String(productId).trim();
+        return (
+          new String(item.productID).trim() == new String(productId).trim()
+        );
       });
       if (isE == -1) {
         await Cart.updateOne(
@@ -1269,7 +1280,10 @@ app.post("/add_to_cart", async (req, res) => {
       } else {
         if (cartE[0].items[isE].quantity == qty.productQuantity) {
           req.flash("error", "Số lượng của sản phẩm trong giỏ đã đầy");
-        } else if (quantity + cartE[0].items[isE].quantity > qty.productQuantity) {
+        } else if (
+          quantity + cartE[0].items[isE].quantity >
+          qty.productQuantity
+        ) {
           await Cart.updateOne(
             {
               userID: uid,
@@ -1288,7 +1302,7 @@ app.post("/add_to_cart", async (req, res) => {
         }
       }
       req.flash("add", "Thêm vào giỏ thành công");
-      res.redirect("/product/"+productId);
+      res.redirect("/product/" + productId);
     } else {
       var cartData = Cart({
         _id: uid,
@@ -1303,7 +1317,7 @@ app.post("/add_to_cart", async (req, res) => {
       });
       await cartData.save();
       req.flash("add", "Thêm vào giỏ thành công");
-      res.redirect("/product/"+productId);
+      res.redirect("/product/" + productId);
     }
   } else {
     res.redirect("/login");
@@ -1311,32 +1325,32 @@ app.post("/add_to_cart", async (req, res) => {
 });
 
 app.post("/update_quantity_cart", async (req, res) => {
-  if(req.session.guest){
-  const uid = req.session.userid;
-  var productId = req.body.product_id_hidden;
-  var quantity = req.body.quantity;
-  const data = collect(productId);
-  const total = data.count();
-  if(total == 1){
-    await Cart.updateOne(
-      {
-        userID: uid,
-        items: { $elemMatch: { _id: productId } },
-      },
-      { "items.$.quantity": quantity }
-    );
-  } else {
-    for (let i = 0; i < productId.length; i++) {
+  if (req.session.guest) {
+    const uid = req.session.userid;
+    var productId = req.body.product_id_hidden;
+    var quantity = req.body.quantity;
+    const data = collect(productId);
+    const total = data.count();
+    if (total == 1) {
       await Cart.updateOne(
         {
           userID: uid,
-          items: { $elemMatch: { _id: productId[i] } },
+          items: { $elemMatch: { _id: productId } },
         },
-        { "items.$.quantity": quantity[i] }
+        { "items.$.quantity": quantity }
       );
+    } else {
+      for (let i = 0; i < productId.length; i++) {
+        await Cart.updateOne(
+          {
+            userID: uid,
+            items: { $elemMatch: { _id: productId[i] } },
+          },
+          { "items.$.quantity": quantity[i] }
+        );
+      }
     }
-  }
-  res.redirect("/cart/" + uid);
+    res.redirect("/cart/" + uid);
   } else {
     res.redirect("/login");
   }
@@ -1391,11 +1405,11 @@ app.get("/delete_cart_items/:id", async (req, res) => {
 
 app.get("/checkout/:id", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     let carti = await Cart.find({
       userID: new mongoose.Types.ObjectId(req.session.userid),
     });
@@ -1637,7 +1651,7 @@ app.post("/creat_new_order", async (req, res) => {
       });
       await Coupon.updateOne(
         { couponCode: code },
-        { $inc: { couponQuantity: -1 }, $addToSet: { userID: uid } },
+        { $inc: { couponQuantity: -1 }, $addToSet: { userID: uid } }
       );
       await Product.updateOne(
         { _id: productId },
@@ -1668,16 +1682,24 @@ app.post("/creat_new_order", async (req, res) => {
                 <span style="font-weight: bold;">Số lượng:</span> ${quantity}
               </p>
               <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
-                <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(req.body.provisional)}
+                <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(
+                  req.body.provisional
+                )}
               </p>
               <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
-                <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(req.body.shippingFee)}
+                <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(
+                  req.body.shippingFee
+                )}
               </p>
               <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
-                <span style="font-weight: bold;">Mã khuyến mại:</span> ${req.body.couponCode}
+                <span style="font-weight: bold;">Mã khuyến mại:</span> ${
+                  req.body.couponCode
+                }
               </p>
               <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
-                <span style="font-weight: bold;">Tổng:</span> ${VND.format(req.body.total)}
+                <span style="font-weight: bold;">Tổng:</span> ${VND.format(
+                  req.body.total
+                )}
               </p>
               <p style="color: #666666; font-size: 14px; margin-bottom: 0;">
                 <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
@@ -1749,16 +1771,24 @@ app.post("/creat_new_order", async (req, res) => {
               )
               .join("")}
             <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
-              <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(req.body.provisional)}
+              <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(
+                req.body.provisional
+              )}
             </p>
             <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
-              <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(req.body.shippingFee)}
+              <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(
+                req.body.shippingFee
+              )}
             </p>
             <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
-              <span style="font-weight: bold;">Mã khuyến mại:</span> ${req.body.couponCode}
+              <span style="font-weight: bold;">Mã khuyến mại:</span> ${
+                req.body.couponCode
+              }
             </p>
             <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
-              <span style="font-weight: bold;">Tổng:</span> ${VND.format(req.body.total)}
+              <span style="font-weight: bold;">Tổng:</span> ${VND.format(
+                req.body.total
+              )}
             </p>
             <p style="color: #666666; font-size: 16px; margin-bottom: 0;">
               <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
@@ -1793,11 +1823,11 @@ app.get("/success", async (req, res) => {
     ]);
     var sess = req.session;
     sess.cart = cart;
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/cart/success", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1826,17 +1856,14 @@ app.post("/get_order/:id", async (req, res) => {
         },
       }
     );
-    let data = await Order.findOne({_id: req.params.id});
+    let data = await Order.findOne({ _id: req.params.id });
     let array = [];
-    data.items.forEach(function(id){
+    data.items.forEach(function (id) {
       array.push(id.productID);
     });
     let length = array.length;
-    if(length == 1){
-      await Product.updateOne(
-        { _id: array },
-        { $addToSet: { userID: uid } }
-      );
+    if (length == 1) {
+      await Product.updateOne({ _id: array }, { $addToSet: { userID: uid } });
     } else {
       for (let i = 0; i < array.length; i++) {
         await Product.updateMany(
@@ -1906,11 +1933,11 @@ app.get("/search", async (req, res) => {
     let data = await Product.find({
       productName: { $regex: ".*" + kw + ".*", $options: "i" },
     });
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/main/search", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1938,35 +1965,34 @@ app.get("/search", async (req, res) => {
 
 //Trang tất cả các sản phẩm
 app.get("/all_product", async (req, res) => {
-  var page= req.query.page;
-  if(page){
-    page=parseInt(page);
-    if(page < 1) {
-      page = 1 
-    } 
+  var page = req.query.page;
+  if (page) {
+    page = parseInt(page);
+    if (page < 1) {
+      page = 1;
+    }
   }
 
   const limit = 4;
-  
+
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     let data = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
-      .limit(limit*1)
-      .skip((page-1) *limit)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
       .populate("categoryID")
       .populate("producerID")
       .exec();
 
-      let count = await Product.find({
-        $or: [{ productStatus: 0 }, { productStatus: 1 }],
-      })
-      .countDocuments();   
+    let count = await Product.find({
+      $or: [{ productStatus: 0 }, { productStatus: 1 }],
+    }).countDocuments();
     res.render("layouts/clients/main/all_product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -1974,7 +2000,7 @@ app.get("/all_product", async (req, res) => {
       danhsach: data,
       VND,
       cart: req.session.cart,
-      totalPages: Math.ceil(count/limit),
+      totalPages: Math.ceil(count / limit),
       currentPage: page,
       prevPage: page - 1,
       nextPage: page + 1,
@@ -1983,17 +2009,16 @@ app.get("/all_product", async (req, res) => {
   } else {
     let data = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
-    }).limit(limit*1)
-      .skip((page-1) *limit)
+    })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
       .populate("categoryID")
       .populate("producerID")
       .exec();
-     
-      
+
     let count = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
-    })
-      .countDocuments();   
+    }).countDocuments();
     res.render("layouts/clients/main/all_product", {
       fullname: 1,
       userid: 1,
@@ -2001,7 +2026,7 @@ app.get("/all_product", async (req, res) => {
       danhsach: data,
       VND,
       cart: 0,
-      totalPages: Math.ceil(count/limit),
+      totalPages: Math.ceil(count / limit),
       currentPage: page,
       prevPage: page - 1,
       nextPage: page + 1,
@@ -2034,22 +2059,25 @@ app.get("/product/:id", async (req, res) => {
     var sess = req.session;
     sess.cart = cart;
     let product = await Product.findOne({ _id: req.params.id });
-    let comments = await Comment.find({productID: new mongoose.Types.ObjectId(req.params.id)})
-      .populate("userID");
+    let comments = await Comment.find({
+      productID: new mongoose.Types.ObjectId(req.params.id),
+    }).populate("userID");
     let pname = product.productName;
     let data = await Product.findOne({ _id: req.params.id })
       .populate("categoryID")
       .populate("producerID");
-    let check = await Product.findOne({$and:[{_id: req.params.id},{userID:req.session.userid}]});
+    let check = await Product.findOne({
+      $and: [{ _id: req.params.id }, { userID: req.session.userid }],
+    });
     let random = 0;
-    if(check){
+    if (check) {
       random++;
     }
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     res.render("layouts/clients/main/product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -2088,21 +2116,21 @@ app.post("/comment", async (req, res) => {
   if (req.session.guest) {
     let pid = req.body.productID;
     let uid = req.body.userID;
-    let check = Product.find({$and:[{_id:pid},{userID:uid}]});
-    if(check){
-      var comment = Comment({ 
+    let check = Product.find({ $and: [{ _id: pid }, { userID: uid }] });
+    if (check) {
+      var comment = Comment({
         productID: pid,
         userID: uid,
         commentInfo: req.body.commentInfo,
         commentStatus: 1,
         commentDate: moment
-        .tz(Date.now(), "Asia/Ho_Chi_Minh")
-        .format("DD/MM/YYYY hh:mm a"),
+          .tz(Date.now(), "Asia/Ho_Chi_Minh")
+          .format("DD/MM/YYYY hh:mm a"),
       });
       comment.save();
-      res.redirect("/product/"+pid);
+      res.redirect("/product/" + pid);
     } else {
-      res.redirect("/product/"+pid);
+      res.redirect("/product/" + pid);
     }
   } else {
     res.redirect("/login");
@@ -2112,15 +2140,17 @@ app.post("/comment", async (req, res) => {
 //Trang danh mục theo NSX
 app.get("/producer/:id", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId(req.params.id)
+      producerID: new mongoose.Types.ObjectId(req.params.id),
     });
-    let producer = await Producer.findOne({_id: new mongoose.Types.ObjectId(req.params.id)});
+    let producer = await Producer.findOne({
+      _id: new mongoose.Types.ObjectId(req.params.id),
+    });
     let title = producer.producerName;
     let id = producer._id;
     res.render("layouts/clients/producer/producer", {
@@ -2136,9 +2166,11 @@ app.get("/producer/:id", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId(req.params.id)
+      producerID: new mongoose.Types.ObjectId(req.params.id),
     });
-    let producer = await Producer.findOne({_id: new mongoose.Types.ObjectId(req.params.id)});
+    let producer = await Producer.findOne({
+      _id: new mongoose.Types.ObjectId(req.params.id),
+    });
     let title = producer.producerName;
     let id = producer._id;
     res.render("layouts/clients/producer/producer", {
@@ -2158,15 +2190,17 @@ app.get("/producer/:id", async (req, res) => {
 //Trang category
 app.get("/category/:id", async (req, res) => {
   if (req.session.guest) {
-    let user = await User.findOne({_id:req.session.userid});
+    let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
-    if(user.avatar){
+    if (user.avatar) {
       avatar = user.avatar;
-    };
+    }
     let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId(req.params.id)
+      categoryID: new mongoose.Types.ObjectId(req.params.id),
     });
-    let category = await Category.findOne({_id: new mongoose.Types.ObjectId(req.params.id)});
+    let category = await Category.findOne({
+      _id: new mongoose.Types.ObjectId(req.params.id),
+    });
     let title = category.categoryName;
     let id = category._id;
     res.render("layouts/clients/category/category", {
@@ -2182,9 +2216,11 @@ app.get("/category/:id", async (req, res) => {
     });
   } else {
     let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId(req.params.id)
+      categoryID: new mongoose.Types.ObjectId(req.params.id),
     });
-    let category = await Category.findOne({_id: new mongoose.Types.ObjectId(req.params.id)});
+    let category = await Category.findOne({
+      _id: new mongoose.Types.ObjectId(req.params.id),
+    });
     let title = category.categoryName;
     let id = category._id;
     res.render("layouts/clients/category/category", {
@@ -2274,8 +2310,10 @@ app.get("/admin_home", async (req, res) => {
     const employee = await Admin.find().count();
     const comment = await Comment.find().count();
 
-    let outOfStock = await Product.find({productQuantity:{$lte:20}}).sort({productQuantity:1});
-    
+    let outOfStock = await Product.find({ productQuantity: { $lte: 20 } }).sort(
+      { productQuantity: 1 }
+    );
+
     let limit = await Order.aggregate([
       { $match: { orderStatus: 3 } },
       {
@@ -2294,10 +2332,10 @@ app.get("/admin_home", async (req, res) => {
       },
     ]);
     let sum = 0;
-    for(let i = 0; i<limit.length; i++){
+    for (let i = 0; i < limit.length; i++) {
       sum += limit[i].totalCount;
     }
-    let tb = sum/(limit.length);
+    let tb = sum / limit.length;
     let bestSale = await Order.aggregate([
       { $match: { orderStatus: 3 } },
       {
@@ -2314,7 +2352,7 @@ app.get("/admin_home", async (req, res) => {
           },
         },
       },
-      {$match:{"totalCount":{$gt:tb}}},
+      { $match: { totalCount: { $gt: tb } } },
       {
         $lookup: {
           from: "products",
@@ -2323,8 +2361,8 @@ app.get("/admin_home", async (req, res) => {
           as: "productList",
         },
       },
-      { $limit : 5 },
-    ]).sort({"totalCount":-1});
+      { $limit: 5 },
+    ]).sort({ totalCount: -1 });
 
     // let data1 = await Order.find({ month: 0 }).populate("items.productID"); let money1 = 0;
     // let data2 = await Order.find({ month: 1 }).populate("items.productID"); let money2 = 0;
@@ -2724,7 +2762,9 @@ app.post("/save_product", async (req, res) => {
       } else if (err) {
         req.flash("error", "Lỗi bất ngờ xảy ra");
       } else {
-        let check = await Product.findOne({ productName: req.body.productName });
+        let check = await Product.findOne({
+          productName: req.body.productName,
+        });
         if (check) {
           req.flash("error", "Sản phẩm đã tồn tại");
           res.redirect("/admin_product");
@@ -2776,7 +2816,7 @@ app.get("/add_multiple_product", async (req, res) => {
   }
 });
 
-app.post("/save_multiple_product",(req, res) => {
+app.post("/save_multiple_product", (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
@@ -3319,7 +3359,9 @@ app.get("/all_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let data = await Order.find().populate("userID").sort({"orderStatus":1,"timeIn":-1});
+      let data = await Order.find()
+        .populate("userID")
+        .sort({ orderStatus: 1, timeIn: -1 });
       const orderNew = await Order.find({ orderStatus: 0 }).count();
       const orderAccept = await Order.find({ orderStatus: 1 }).count();
       const orderVroom = await Order.find({ orderStatus: 2 }).count();
@@ -3599,7 +3641,7 @@ app.get("/revenue", async (req, res) => {
             as: "productList",
           },
         },
-        { $sort : { total : -1 } }
+        { $sort: { total: -1 } },
       ]);
       res.render("layouts/servers/sales/revenue", {
         adminName: req.session.adminName,
@@ -3609,8 +3651,8 @@ app.get("/revenue", async (req, res) => {
         admin_role: req.session.admin_role,
       });
     } else {
-    res.redirect("/admin_home");
-    } 
+      res.redirect("/admin_home");
+    }
   } else {
     res.redirect("/admin_login");
   }
@@ -3712,6 +3754,7 @@ app.get("/warehouse", async (req, res) => {
             as: "productList",
           },
         },
+        { $sort: { "productList.productName": 1 } },
       ]);
       res.render("layouts/servers/warehouse/warehouse", {
         adminName: req.session.adminName,
@@ -3794,15 +3837,15 @@ app.get("/add_warehouse", async (req, res) => {
       let data = await Product.find()
         .populate("categoryID")
         .populate("producerID");
-        res.render("layouts/servers/warehouse/add_warehouse", {
-          adminName: req.session.adminName,
-          admin_id: req.session.admin_id,
-          danhsach: data,
-          admin_role: req.session.admin_role,
-          emptyError: req.flash("emptyError"),
-          quantityError: req.flash("quantityError"),
-          quantityED: req.flash("quantityED"),
-        });
+      res.render("layouts/servers/warehouse/add_warehouse", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        admin_role: req.session.admin_role,
+        emptyError: req.flash("emptyError"),
+        quantityError: req.flash("quantityError"),
+        quantityED: req.flash("quantityED"),
+      });
     } else {
       res.redirect("/admin_home");
     }
@@ -3817,21 +3860,21 @@ app.post("/save_warehouse", async (req, res) => {
     var quantity = req.body.quantityIn;
     const data = collect(productId);
     const total = data.count();
-    if(total == 1){
+    if (total == 1) {
       let error = 0;
-      if(quantity == ""){
+      if (quantity == "") {
         req.flash("emptyError", "Vui lòng nhập số lượng!");
         error++;
       }
-      if(quantity != ""){
-        if(quantity <=0 || quantity > 100){
+      if (quantity != "") {
+        if (quantity <= 0 || quantity > 100) {
           req.flash("quantityError", "Số lượng lỗi!");
           let quantityED = quantity;
           req.flash("quantityED", quantityED);
           error++;
         }
       }
-      if(error==0){
+      if (error == 0) {
         var warehouse = Warehouse({
           productID: productId,
           quantityIn: quantity,
@@ -3852,40 +3895,52 @@ app.post("/save_warehouse", async (req, res) => {
       }
     } else {
       let error = 0;
+      const warehouses = [];
+
       for (let i = 0; i < productId.length; i++) {
-        if(quantity[i] == ""){
+        if (quantity[i] === "") {
           req.flash("emptyError", "Vui lòng nhập số lượng!");
           error++;
-        }
-        if(quantity[i] != ""){
-          if(quantity[i] <=0 || quantity[i] > 100){
+        } else {
+          const parsedQuantity = parseInt(quantity[i]);
+          if (parsedQuantity <= 0 || parsedQuantity > 100) {
             req.flash("quantityError", "Số lượng lỗi!");
-            let quantityED = quantity[i];
-            req.flash("quantityED", quantityED);
+            req.flash("quantityED", quantity[i]);
             error++;
           }
         }
-        if(error==0){
-          var warehouse = Warehouse({
+
+        if (error === 0) {
+          const warehouse = {
             productID: productId[i],
             quantityIn: quantity[i],
             created_by: req.session.admin_id,
             created_date: moment
-              .tz(Date.now(), "Asia/Ho_Chi_Minh")
+              .tz("Asia/Ho_Chi_Minh")
               .format("DD/MM/YYYY hh:mm a"),
-          });
+          };
+
+          warehouses.push(warehouse);
+
           await Product.updateMany(
             { _id: productId[i] },
             { $inc: { productQuantity: quantity[i] } }
           );
         }
       }
-      if(error!=0){
+
+      if (error !== 0) {
         res.redirect("/add_warehouse");
       } else {
-        await warehouse.save();
-        req.flash("success", "Thêm thành công");
-        res.redirect("/warehouse");
+        try {
+          await Warehouse.insertMany(warehouses);
+          req.flash("success", "Thêm thành công");
+          res.redirect("/warehouse");
+        } catch (err) {
+          console.error(err);
+          req.flash("error", "Đã xảy ra lỗi trong quá trình lưu trữ sản phẩm.");
+          res.redirect("/error-page");
+        }
       }
     }
   } else {
@@ -4285,20 +4340,16 @@ app.get("/delete_news/:id", (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
 //Danh sách bình luận
 app.get("/comment", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 3) {
       let comments = await Comment.find()
-      .populate("userID")
-      .populate("productID");
+        .populate("userID")
+        .populate("productID");
       const notAcceptComment = await Comment.find({ commentStatus: 0 }).count();
-      const acceptComment = await Comment.find({ CommentStatus:1 }).count();
+      const acceptComment = await Comment.find({ CommentStatus: 1 }).count();
       res.render("layouts/servers/comment/comment", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
@@ -4329,7 +4380,6 @@ app.post("/update_commentStatus/:id", async (req, res) => {
     res.redirect("/admin_login");
   }
 });
-
 
 app.post("/update_commentStatus_1/:id", async (req, res) => {
   if (req.session.daDangNhap) {
