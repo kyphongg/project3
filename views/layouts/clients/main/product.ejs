@@ -112,7 +112,9 @@
         </div>
     </div>
     <% if(fullname == 1){ %>
-        <p>Vui lòng đăng nhập để xem bình luận</p>
+        <div class="container noti-comment">
+            <p>Vui lòng đăng nhập để xem bình luận</p>
+        </div>
         <%}else{%>
             <div class="container">
                 <div class="comment">
@@ -127,7 +129,9 @@
                         </button>
                     </form>
                     <%}else{%>
-                    <p>Vui lòng mua sản phẩm để bình luận</p>
+                    <div class="noti-comment">
+                        <p>Vui lòng mua sản phẩm để bình luận</p>
+                    </div>
                     <%}%>
                     <% for(let i=0; i < comments.length; i++) { %>
                         <% if(comments[i].commentStatus == 1){ %>
