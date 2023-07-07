@@ -28,7 +28,9 @@
                             <tr>
                                 <th style="text-align: center; width: 45px;">STT</th>
                                 <th style="text-align: center;">Game</th>
+                                <th style="text-align: center;">Giá nhập</th>
                                 <th style="text-align: center;">Số lượng nhập</th>
+                                <th style="text-align: center;">Tổng tiền nhập</th>
                                 <th style="text-align: center;">Người nhập</th>
                                 <th style="text-align: center;">Ngày nhập</th>
                             </tr>
@@ -38,7 +40,9 @@
                             <tr>
                                 <td style="text-align: center;"><%= i+1 %></td>
                                 <td><%= danhsach[i].productID.productName %></td>
+                                <td style="text-align: center;"><%= VND.format(danhsach[i].productID.priceIn) %></td>
                                 <td style="text-align: center;"><%= danhsach[i].quantityIn %></td>
+                                <td style="text-align: center;"><%= VND.format(danhsach[i].productID.priceIn * danhsach[i].quantityIn) %></td>
                                 <td style="text-align: center;"><%= danhsach[i].created_by.fullname %></td>
                                 <td style="text-align: center;"><%= danhsach[i].created_date %></td>
                             </tr>

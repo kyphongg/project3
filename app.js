@@ -3791,20 +3791,22 @@ app.get("/sale_history/:id", async (req, res) => {
     if (role == 0 || role == 2) {
       const data = await Order.find(
         {
-          $and: [{ orderStatus: { $lt: 4 } }, { "items._id": req.params.id }],
+          $and: [{ "items._id": req.params.id },{ orderStatus: { $lt: 4 } }],
         },
         { "items.$": 1 }
       );
       let money = 0;
+      let order = [];
       for (let i = 0; i < data.length; i++) {
+        let n = await Order.find({_id:data[i]._id});
+        for(let j = 0; j < n.length; j++){
+          order.push(n[j].orderCode);
+        }
         data[i].items.forEach(function (id) {
           money += id.quantity;
         });
       }
-      const name = await Order.findOne(
-        { "items._id": req.params.id },
-        { "items.$": 1 }
-      ).populate("items.productID");
+      const name = await Product.findOne({ _id: req.params.id });
       res.render("layouts/servers/warehouse/sale_history", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
@@ -3812,6 +3814,7 @@ app.get("/sale_history/:id", async (req, res) => {
         danhsach: data,
         name,
         money,
+        order,
       });
     } else {
       res.redirect("/admin_home");
