@@ -138,13 +138,13 @@
                         <div class="payment-infomation">
                             <div class="payment-form">
                                 <%if(nameError.length > 0){%><p style="font-size: 14px;color: red;"><%= nameError %></p><%}%>
-                                <p style="font-weight: 500;">Họ và tên người nhận</p>
+                                <p style="font-weight: 500;">Họ và tên người nhận <span style="color: red;">*</span></p>
                                 <%if(nameED.length > 0){%><input form="main-form" id="myInputName" type="text" name="shippingName" value="<%= nameED %>" oninput="myNameFunction()"><%}else{%>
                                 <input form="main-form" type="text" id="myInputName" name="shippingName" value="<%= fullname %>" oninput="myNameFunction()"><%}%>
                                 <input form="sub-form" id="myInputNameHidden" type="hidden" name="shippingName" value="<%= fullname %>">
 
                                 <%if(mobileError.length > 0){%><p style="font-size: 14px;color: red;"><%= mobileError %></p><%}%>
-                                <p style="font-weight: 500;">Số điện thoại người nhận</p>
+                                <p style="font-weight: 500;">Số điện thoại người nhận <span style="color: red;">*</span></p>
                                 <%if(mobileED.length > 0){%><input form="main-form" type="text" name="shippingPhone" value="<%= mobileED %>" oninput="myMobileFunction()"><%}else{%>
                                 <input form="main-form" id="myInputMobile" type="text" name="shippingPhone" value="<%= phone %>" oninput="myMobileFunction()"><%}%>
                                 <input form="sub-form" id="myInputMobileHidden" type="hidden" name="shippingPhone" value="<%= phone %>">
@@ -152,25 +152,25 @@
                             <div class="payment-form">
                                 <label style="margin-top: 10px; font-weight: 500;">Địa chỉ giao hàng</label>
                                 <%if(cityError.length > 0){%><p style="font-size: 14px;color: red;"><%= cityError %></p><%}%>
-                                <p style="font-weight: 500;">Tỉnh thành</p>
+                                <p style="font-weight: 500;">Tỉnh thành <span style="color: red;">*</span></p>
                                 <select class="form-select form-select-sm mb-3" name="shippingCity" id="city" aria-label=".form-select-sm">
                                     <option value="" selected>Chọn tỉnh thành</option>           
                                 </select>
                                 
                                 <%if(districtError.length > 0){%><p style="font-size: 14px;color: red;"><%= districtError %></p><%}%>
-                                <p style="font-weight: 500;">Quận huyện</p>
+                                <p style="font-weight: 500;">Quận huyện <span style="color: red;">*</span></p>
                                 <select class="form-select form-select-sm mb-3" name="shippingDistrict" id="district" aria-label=".form-select-sm">
                                     <option value="" selected>Chọn quận huyện</option>
                                 </select>
                                 
                                 <%if(wardError.length > 0){%><p style="font-size: 14px;color: red;"><%= wardError %></p><%}%>
-                                <p style="font-weight: 500;">Phường xã</p>
+                                <p style="font-weight: 500;">Phường xã <span style="color: red;">*</span></p>
                                 <select class="form-select form-select-sm" id="ward" name="shippingWard" aria-label=".form-select-sm">
                                     <option value="" selected>Chọn phường xã</option>
                                 </select>
 
                                 <%if(addressError.length > 0){%><p style="font-size: 14px;color: red;"><%= addressError %></p><%}%>
-                                <p style="font-weight: 500;">Địa chỉ chi tiết</p>
+                                <p style="font-weight: 500;">Địa chỉ chi tiết <span style="color: red;">*</span></p>
                                 <input form="main-form" id="myInputAddress" type="text" name="shippingAddress" value="<%= addressED %>" oninput="myAddressFunction()">
                                 <input form="sub-form" id="myInputAddressHidden" type="hidden" name="shippingAddress" value="<%= addressED %>">
                                 

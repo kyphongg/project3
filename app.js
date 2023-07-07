@@ -2684,7 +2684,8 @@ app.get("/admin_product", async (req, res) => {
     if (role == 0 || role == 1) {
       let data = await Product.find()
         .populate("categoryID")
-        .populate("producerID");
+        .populate("producerID")
+        .sort({"productName":1});
       res.render("layouts/servers/product/product", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
