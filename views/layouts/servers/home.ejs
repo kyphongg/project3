@@ -127,8 +127,11 @@
                       </div>
                     </div>
                   </div>
-                  
-                    
+                  <div class="box">
+                    <h3 style="text-align: center;">Doanh thu năm 2023</h3>
+                    <p id="monthlyData" style="display: none;"><%= monthlyData %></p>
+                    <canvas id="myChart" style="margin-top: 15px;"></canvas>
+                  </div>
                 </div>
                 <%}%>
 
@@ -170,10 +173,62 @@
                 </div>
             </div>
     </section>
-
     <!-- Biểu đồ cột -->
+    <script src="../../../public/js/vi.js"></script>
     <script>
-        
+        moment.locale('vi');
+        Chart.defaults.locale = moment.locale();
+        const value = document.getElementById("monthlyData").innerHTML;
+        const monthlyData = value.split(",");
+        const [var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12] = monthlyData;
+        var startOfYear = moment().month(0);
+        var endOfYear = moment().month(11);
+        var months = [];
+        var month = startOfYear;
+
+        while (month <= endOfYear) {
+          months.push(month.format("YYYY-MM"));
+          month = month.clone().add(1, "M");
+        }
+        const data = {
+          labels: months,
+          datasets: [
+            {
+              label: "Doanh thu",
+              data: [var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12],
+              backgroundColor: "rgba(46, 204, 113, 0.5)",
+              borderColor: "rgba(0,0,0)",
+              borderWidth: 1,
+            },
+          ],
+        };
+        // config
+        const config = {
+          type: "bar",
+          data,
+          options: {
+            scales: {
+              x: {
+                type: "time",
+                time: {
+                  unit: "month",
+                  displayFormats: {
+                    month: "MM-YYYY"
+                  }
+                },
+              },
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        };
+    
+        // render init block
+        const myChart = new Chart(document.getElementById("myChart"), config);
+        // Instantly assign Chart.js version
+        const chartVersion = document.getElementById("chartVersion");
+        chartVersion.innerText = Chart.version;
     </script>
     <!--main content end-->
     <%- include('partials/footer') %>

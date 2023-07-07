@@ -2364,85 +2364,17 @@ app.get("/admin_home", async (req, res) => {
       { $limit: 5 },
     ]).sort({ totalCount: -1 });
 
-    // let data1 = await Order.find({ month: 0 }).populate("items.productID"); let money1 = 0;
-    // let data2 = await Order.find({ month: 1 }).populate("items.productID"); let money2 = 0;
-    // let data3 = await Order.find({ month: 2 }).populate("items.productID"); let money3 = 0;
-    // let data4 = await Order.find({ month: 3 }).populate("items.productID"); let money4 = 0;
-    // let data5 = await Order.find({ month: 4 }).populate("items.productID"); let money5 = 0;
-    // let data6 = await Order.find({ month: 5 }).populate("items.productID"); let money6 = 0;
-    // let data7 = await Order.find({ month: 6 }).populate("items.productID"); let money7 = 0;
-    // let data8 = await Order.find({ month: 7 }).populate("items.productID"); let money8 = 0;
-    // let data9 = await Order.find({ month: 8 }).populate("items.productID"); let money9 = 0;
-    // let data10 = await Order.find({ month: 9 }).populate("items.productID");  let money10 = 0;
-    // let data11 = await Order.find({ month: 10 }).populate("items.productID"); let money11 = 0;
-    // let data12 = await Order.find({ month: 11 }).populate("items.productID"); let money12 = 0;
-
-    // for(let i = 0; i < data1.length; i++){
-    //   data1[i].items.forEach(function(id){
-    //     money1 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data1[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data2.length; i++){
-    //   data2[i].items.forEach(function(id){
-    //     money2 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data2[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data3.length; i++){
-    //   data3[i].items.forEach(function(id){
-    //     money3 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data3[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data4.length; i++){
-    //   data4[i].items.forEach(function(id){
-    //     money4 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data4[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data5.length; i++){
-    //   data5[i].items.forEach(function(id){
-    //     money5 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data5[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data6.length; i++){
-    //   data6[i].items.forEach(function(id){
-    //     money6 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data6[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data7.length; i++){
-    //   data7[i].items.forEach(function(id){
-    //     money7 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data7[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data8.length; i++){
-    //   data8[i].items.forEach(function(id){
-    //     money8 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data8[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data9.length; i++){
-    //   data9[i].items.forEach(function(id){
-    //     money9 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data9[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data9.length; i++){
-    //   data9[i].items.forEach(function(id){
-    //     money9 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data9[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data10.length; i++){
-    //   data10[i].items.forEach(function(id){
-    //     money10 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data10[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data11.length; i++){
-    //   data11[i].items.forEach(function(id){
-    //     money11 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data11[i].shippingFee);
-    //   });
-    // };
-    // for(let i = 0; i < data12.length; i++){
-    //   data12[i].items.forEach(function(id){
-    //     money12 += (id.quantity * (id.productID.priceOut - id.productID.priceIn)+data12[i].shippingFee);
-    //   });
-    // };
-
+    let monthlyData = [];
+    for (let i = 0; i < 12; i++) {
+      let data = await Order.find({ month: i }).populate("items.productID");
+      let monthlyRevenue = 0;
+      for (let j = 0; j < data.length; j++) {
+        data[j].items.forEach(function (id) {
+        monthlyRevenue += (id.quantity * (id.productID.priceOut - id.productID.priceIn) + data[j].shippingFee);
+        });
+      }
+    monthlyData.push(monthlyRevenue);
+    }
     res.render("layouts/servers/home", {
       adminName: req.session.adminName,
       number: customer,
@@ -2451,21 +2383,10 @@ app.get("/admin_home", async (req, res) => {
       admin_id: req.session.admin_id,
       admin_role: req.session.admin_role,
       VND,
-      // money1,
-      // money2,
-      // money3,
-      // money4,
-      // money5,
-      // money6,
-      // money7,
-      // money8,
-      // money9,
-      // money10,
-      // money11,
-      // money12,
       bestSale,
       outOfStock,
       comment,
+      monthlyData,
     });
   } else {
     res.redirect("/admin_login");
