@@ -3631,7 +3631,7 @@ app.get("/revenue", async (req, res) => {
             as: "productList",
           },
         },
-        { $sort: { total: -1 } },
+        { $sort: { "productList.productName":1 ,total: -1 } },
       ]);
       res.render("layouts/servers/sales/revenue", {
         adminName: req.session.adminName,
