@@ -187,20 +187,18 @@ function makeid(length) {
 }
 
 //Order code
-let previousDate = moment().format("DD-MM-YYYY");
+let previousDate = null;
 let counter = 1;
 
 function generateOrderCode() {
   const currentDate = moment().format("DD-MM-YYYY");
 
-  if (currentDate !== previousDate) {
+  if (previousDate === null || currentDate !== previousDate) {
     counter = 1;
     previousDate = currentDate;
   }
 
   const uniqueId = counter.toString().padStart(2, "0");
-
-  // Combine timestamp and unique ID to form the order code
   const orderCode = `GSLP-${currentDate}-${uniqueId}`;
 
   counter++;
