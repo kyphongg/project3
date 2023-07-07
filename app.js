@@ -2346,10 +2346,14 @@ app.get("/category/:id", async (req, res) => {
 //Servers
 //Trang đăng nhập
 app.get("/admin_login", (req, res) => {
-  res.render("layouts/servers/login", {
-    error: req.flash("error"),
-    errorEmail: req.flash("errorEmail"),
-  });
+  if (req.session.daDangNhap) {
+    res.redirect("/admin_home");
+  } else {
+    res.render("layouts/servers/login", {
+      error: req.flash("error"),
+      errorEmail: req.flash("errorEmail"),
+    });
+  }
 });
 
 //Xử lý đăng nhập
@@ -3422,6 +3426,7 @@ app.get("/all_orders", async (req, res) => {
       const orderVroom = await Order.find({ orderStatus: 2 }).count();
       const orderDone = await Order.find({ orderStatus: 3 }).count();
       const orderCancel = await Order.find({ orderStatus: 4 }).count();
+      const orderCoupon = await Order.find({ couponCode:{$ne : "Không"}}).count();
       res.render("layouts/servers/orders/all_orders", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
@@ -3433,6 +3438,7 @@ app.get("/all_orders", async (req, res) => {
         orderVroom: orderVroom,
         orderDone: orderDone,
         orderCancel: orderCancel,
+        orderCoupon: orderCoupon,
       });
     } else {
       res.redirect("/admin_home");
@@ -3508,6 +3514,28 @@ app.get("/order_detail/:id", async (req, res) => {
           couponType,
         });
       }
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+app.get("/coupon_orders", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let data = await Order.find({ couponCode: { $ne: "Không" } }).populate("userID");
+      const order = await Order.find({ couponCode: { $ne: "Không" } }).count();
+      res.render("layouts/servers/orders/coupon_orders", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        order,
+      });
     } else {
       res.redirect("/admin_home");
     }
