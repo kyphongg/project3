@@ -1684,27 +1684,27 @@ app.post("/creat_new_order", async (req, res) => {
             <span style="font-weight: bold;">Mã đơn hàng:</span> ${orderCode}
           </p>
           <p style="font-weight: bold;">Thời gian đặt: ${time}</p>
-          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+          <p style="font-size: 14px; margin-bottom: 15px;">
             <span style="font-weight: bold;">Sản phẩm:</span> ${productName}<br>
             <span style="font-weight: bold;">Số lượng:</span> ${quantity}
           </p>
-          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+          <p style="font-size: 14px; margin-bottom: 15px;">
             <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(req.body.provisional)}
           </p>
-          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+          <p style="font-size: 14px; margin-bottom: 15px;">
             <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(req.body.shippingFee)}
           </p>
-          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+          <p style="font-size: 14px; margin-bottom: 15px;">
             <span style="font-weight: bold;">Mã khuyến mại:</span> ${req.body.couponCode}
           </p>
-          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+          <p style="font-size: 14px; margin-bottom: 15px;">
             <span style="font-weight: bold;">Tổng:</span> ${VND.format(req.body.total)}
           </p>
-          <p style="color: #666666; font-size: 14px; margin-bottom: 0;">
+          <p style="font-size: 14px; margin-bottom: 0;">
             <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
           </p>
         </div>
-        <p style="color: #555555; font-size: 16px; margin-top: 20px; text-align: center;">
+        <p style="font-size: 16px; margin-top: 20px; text-align: center;">
           Xin cảm ơn bạn đã mua hàng tại cửa hàng chúng tôi!
         </p>
       </div>
@@ -1768,25 +1768,28 @@ app.post("/creat_new_order", async (req, res) => {
         <p style="font-weight: bold;">Thời gian đặt: ${time}</p>
         ${productId.map(
           (productId, index) => `
-          <p style="color: #666666; font-size: 14px; margin-bottom: 5px;">
+          <p style="font-size: 14px; margin-bottom: 5px;">
             <span style="font-weight: bold;">Sản phẩm:</span> ${productName[index]},&nbsp;
             <span style="font-weight: bold;">số lượng:</span> ${quantity[index]}
           </p>`
         ).join("")}
-        <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+        <p style="font-size: 16px; margin-bottom: 10px;">
           <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(req.body.provisional)}
         </p>
-        <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+        <p style="font-size: 16px; margin-bottom: 10px;">
           <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(req.body.shippingFee)}
         </p>
-        <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+        <p style="font-size: 16px; margin-bottom: 10px;">
           <span style="font-weight: bold;">Mã khuyến mại:</span> ${req.body.couponCode}
         </p>
-        <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+        <p style="font-size: 16px; margin-bottom: 10px;">
           <span style="font-weight: bold;">Tổng:</span> ${VND.format(req.body.total)}
         </p>
-        <p style="color: #666666; font-size: 16px; margin-bottom: 0;">
+        <p style="font-size: 16px; margin-bottom: 0;">
           <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
+        </p>
+        <p style="margin-top: 20px; text-align: center;">
+          Xin cảm ơn bạn đã mua hàng tại cửa hàng chúng tôi!
         </p>
       </div>
       `,
