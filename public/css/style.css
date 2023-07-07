@@ -3711,3 +3711,8 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     margin-bottom: 5px;
     padding-bottom: 5px;
 }
+
+.no-sort {
+    pointer-events: none;
+    cursor: default;
+}

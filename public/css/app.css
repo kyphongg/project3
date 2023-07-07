@@ -580,7 +580,13 @@ input:focus{
     display: -webkit-box;
 }
 
+.featured-box .p-title p{
+    margin-top: 0;
+    margin-bottom: 0px;
+}
+
 .price{
+    margin-top: 16px;
     padding-left: 10px;
     margin-bottom: 35px;
     color: #DC3545;
@@ -1441,6 +1447,16 @@ input:focus{
     padding-top: 10px;
     font-size: 16px;
     font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+}
+
+.sp-box .p-title p{
+    margin-top: 0;
+    margin-bottom: 0px;
 }
 
 .contentt{
@@ -1993,10 +2009,8 @@ input:focus{
     font-size: 18px;
     border-radius: 5px;
     cursor: pointer;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);    margin-top: 16px;
 }
-
-
 
 
 

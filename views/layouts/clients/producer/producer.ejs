@@ -33,6 +33,28 @@
                 </div>
                 <% } %>
         </div>
+
+        <div class="paginationn">
+            <ul class="pagination">
+                <%  if(prevPage == null) { %>
+                    <li style="display: none" class="page-item"><a class="page-link" href="?page=<%= prevPage %>">Trang trước</a></li>
+                <% }else { %>
+                    <li class="page-item"><a class="page-link" href="?page=<%= prevPage %>">Trang trước</a></li>
+                <% } %>
+                <%  for (let j = 1; j <= totalPages; j++) { %>
+                    <% if (j == currentPage) { %>
+                        <li class="page-item active"><a class="page-link" href="?page=<%= j %>"><%= j %></a></li>
+                      <% } else { %>
+                        <li class="page-item"><a class="page-link" href="?page=<%= j %>"><%= j %></a></li>
+                      <% } %>
+                <%  } %>
+                <%  if(nextPage == null) { %>
+                    <li style="display: none" class="page-item"><a class="page-link" href="?page=<%= nextPage %>">Trang sau</a></li>   
+                <% }else { %>   
+                    <li class="page-item"><a class="page-link" href="?page=<%= nextPage %>">Trang sau</a></li>   
+                 <%  } %>
+            </ul>
+        </div>
     </div>
     
      <%- include('../partials/footer') %>
