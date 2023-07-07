@@ -709,11 +709,31 @@ app.get("/", async (req, res) => {
     if (user.avatar) {
       avatar = user.avatar;
     }
-    let data = await Product.find({
-      $or: [{ productStatus: 0 }, { productStatus: 1 }],
-    })
-      .populate("categoryID")
-      .populate("producerID");
+    const data = await Product.aggregate([
+      {
+        $match: {
+          productStatus: { $in: [0, 1] }
+        }
+      },
+      {
+        $group: {
+          _id: "$productStatus",
+          products: { $push: "$$ROOT" }
+        }
+      },
+      {
+        $project: {
+          products: { $slice: ["$products", 32] }
+        }
+      },
+      {
+        $unwind: "$products"
+      },
+      {
+        $replaceRoot: { newRoot: "$products" }
+      },
+      { $sample: { size: 16 } },
+    ]);
     res.render("layouts/clients/home", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -728,11 +748,31 @@ app.get("/", async (req, res) => {
     const news = await News.find({
       $or: [{ newsStatus: 0 }, { newsStatus: 1 }],
     });
-    let data = await Product.find({
-      $or: [{ productStatus: 0 }, { productStatus: 1 }],
-    })
-      .populate("categoryID")
-      .populate("producerID");
+    const data = await Product.aggregate([
+      {
+        $match: {
+          productStatus: { $in: [0, 1] }
+        }
+      },
+      {
+        $group: {
+          _id: "$productStatus",
+          products: { $push: "$$ROOT" }
+        }
+      },
+      {
+        $project: {
+          products: { $slice: ["$products", 16] }
+        }
+      },
+      {
+        $unwind: "$products"
+      },
+      {
+        $replaceRoot: { newRoot: "$products" }
+      },
+      { $sample: { size: 32 } },
+    ]); 
     res.render("layouts/clients/home", {
       fullname: 1,
       userid: 1,
