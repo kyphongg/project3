@@ -1650,6 +1650,9 @@ app.post("/creat_new_order", async (req, res) => {
           .format("DD/MM/YYYY hh:mm a"),
         orderStatus: 0,
       });
+      let time = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .format("DD/MM/YYYY hh:mm a");
       await Coupon.updateOne(
         { couponCode: code },
         { $inc: { couponQuantity: -1 }, $addToSet: { userID: uid } }
@@ -1666,50 +1669,45 @@ app.post("/creat_new_order", async (req, res) => {
         to: req.session.email,
         subject: "Đặt hàng thành công",
         html: `
-          <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-            <h1 style="color: #333333; text-align: center; margin-bottom: 20px; font-size: 24px;">Đặt hàng thành công</h1>
-            <p style="color: #555555; font-size: 16px; margin-bottom: 10px;">Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi.</p>
-            <p style="color: #555555; font-size: 16px; margin-bottom: 15px;">
-              Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn:
-            </p>
-            <div style="background-color: #ffffff; border-radius: 5px; padding: 20px;">
-              <p style="color: #333333; font-size: 16px; margin-bottom: 15px;">
-                <strong>Chi tiết đơn hàng:</strong>
-              </p>
-              <p> Mã đơn hàng:${orderCode} </p>
-
-              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
-                <span style="font-weight: bold;">Sản phẩm:</span> ${productName}<br>
-                <span style="font-weight: bold;">Số lượng:</span> ${quantity}
-              </p>
-              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
-                <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(
-                  req.body.provisional
-                )}
-              </p>
-              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
-                <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(
-                  req.body.shippingFee
-                )}
-              </p>
-              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
-                <span style="font-weight: bold;">Mã khuyến mại:</span> ${
-                  req.body.couponCode
-                }
-              </p>
-              <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
-                <span style="font-weight: bold;">Tổng:</span> ${VND.format(
-                  req.body.total
-                )}
-              </p>
-              <p style="color: #666666; font-size: 14px; margin-bottom: 0;">
-                <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
-              </p>
-            </div>
-            <p style="color: #555555; font-size: 16px; margin-top: 20px; text-align: center;">
-              Xin cảm ơn bạn đã mua hàng tại cửa hàng chúng tôi!
-            </p>
-          </div>
+        <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+        <img src="https://github.com/lam3531/vietnam/blob/main/gamingstore-logoo.png?raw=true" alt="Logo" style="display: block; margin: 0 auto; max-width: 30%;">
+        <h1 style="color: #333333; text-align: center; margin-bottom: 20px; font-size: 24px;">Đặt hàng thành công</h1>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 10px; text-align: center;">Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi.</p>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 15px; text-align: center;">
+          Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn:
+        </p>
+        <div style="background-color: #ffffff; border-radius: 5px; padding: 20px;">
+          <p style="color: #333333; font-size: 16px; margin-bottom: 15px;">
+            <strong>Chi tiết đơn hàng:</strong>
+          </p>
+          <p>
+            <span style="font-weight: bold;">Mã đơn hàng:</span> ${orderCode}
+          </p>
+          <p style="font-weight: bold;">Thời gian đặt: ${time}</p>
+          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+            <span style="font-weight: bold;">Sản phẩm:</span> ${productName}<br>
+            <span style="font-weight: bold;">Số lượng:</span> ${quantity}
+          </p>
+          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+            <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(req.body.provisional)}
+          </p>
+          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+            <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(req.body.shippingFee)}
+          </p>
+          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+            <span style="font-weight: bold;">Mã khuyến mại:</span> ${req.body.couponCode}
+          </p>
+          <p style="color: #666666; font-size: 14px; margin-bottom: 15px;">
+            <span style="font-weight: bold;">Tổng:</span> ${VND.format(req.body.total)}
+          </p>
+          <p style="color: #666666; font-size: 14px; margin-bottom: 0;">
+            <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
+          </p>
+        </div>
+        <p style="color: #555555; font-size: 16px; margin-top: 20px; text-align: center;">
+          Xin cảm ơn bạn đã mua hàng tại cửa hàng chúng tôi!
+        </p>
+      </div>
         `,
       });
     } else {
@@ -1720,6 +1718,9 @@ app.post("/creat_new_order", async (req, res) => {
           quantity: quantity[index_value],
         };
       });
+      let time = moment
+      .tz(Date.now(), "Asia/Ho_Chi_Minh")
+      .format("DD/MM/YYYY hh:mm a");
       await Order.insertMany({
         orderCode: orderCode,
         items: obj,
@@ -1758,43 +1759,37 @@ app.post("/creat_new_order", async (req, res) => {
         to: req.session.email,
         subject: "Đặt hàng thành công",
         html: `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-            <p style="color: #333333; font-size: 18px; margin-bottom: 10px;">Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi</p>
-            <p style="color: #333333; font-size: 16px; margin-bottom: 15px;">Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn</p>
-            <p style="color: #555555; font-size: 16px; margin-bottom: 10px; font-weight: bold;">Chi tiết đơn hàng:</p>
-            <p> Mã đơn hàng:${orderCode} </p>
-            ${productId
-              .map(
-                (productId, index) => `
-                <p style="color: #666666; font-size: 14px; margin-bottom: 5px;">
-                  <span style="font-weight: bold;">Sản phẩm:</span> ${productName[index]},&nbsp;
-                  <span style="font-weight: bold;">số lượng:</span> ${quantity[index]}
-                </p>`
-              )
-              .join("")}
-            <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
-              <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(
-                req.body.provisional
-              )}
-            </p>
-            <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
-              <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(
-                req.body.shippingFee
-              )}
-            </p>
-            <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
-              <span style="font-weight: bold;">Mã khuyến mại:</span> ${
-                req.body.couponCode
-              }
-            </p>
-            <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
-              <span style="font-weight: bold;">Tổng:</span> ${VND.format(
-                req.body.total
-              )}
-            </p>
-            <p style="color: #666666; font-size: 16px; margin-bottom: 0;">
-              <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
-            </p>
-          </div>`,
+        <img src="https://github.com/lam3531/vietnam/blob/main/gamingstore-logoo.png?raw=true" alt="Logo" style="display: block; margin: 0 auto; max-width: 30%;">
+        <h1 style="color: #333333; text-align: center; margin-bottom: 20px; font-size: 24px;">Đặt hàng thành công</h1>
+        <p style="color: #333333; font-size: 18px; margin-bottom: 10px; text-align: center;">Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi.</p>
+        <p style="color: #333333; font-size: 16px; margin-bottom: 15px; text-align: center;">Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn.</p>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 10px; font-weight: bold;">Chi tiết đơn hàng:</p>
+        <p style="font-weight: bold;">Mã đơn hàng: ${orderCode}</p>
+        <p style="font-weight: bold;">Thời gian đặt: ${time}</p>
+        ${productId.map(
+          (productId, index) => `
+          <p style="color: #666666; font-size: 14px; margin-bottom: 5px;">
+            <span style="font-weight: bold;">Sản phẩm:</span> ${productName[index]},&nbsp;
+            <span style="font-weight: bold;">số lượng:</span> ${quantity[index]}
+          </p>`
+        ).join("")}
+        <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+          <span style="font-weight: bold;">Tổng giá sản phẩm:</span> ${VND.format(req.body.provisional)}
+        </p>
+        <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+          <span style="font-weight: bold;">Phí vận chuyển:</span> ${VND.format(req.body.shippingFee)}
+        </p>
+        <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+          <span style="font-weight: bold;">Mã khuyến mại:</span> ${req.body.couponCode}
+        </p>
+        <p style="color: #666666; font-size: 16px; margin-bottom: 10px;">
+          <span style="font-weight: bold;">Tổng:</span> ${VND.format(req.body.total)}
+        </p>
+        <p style="color: #666666; font-size: 16px; margin-bottom: 0;">
+          <span style="font-weight: bold;">Hình thức thanh toán:</span> ${method}
+        </p>
+      </div>
+      `,
       };
       await transporter.sendMail(emailData);
     }
