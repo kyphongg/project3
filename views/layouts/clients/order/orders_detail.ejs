@@ -126,7 +126,7 @@
                               
                                         <div class="modal-body">
                                             <label for="tickets-quantity" class="modal-label">
-                                                Lý do hủy đơn hàng: 
+                                                Lý do hủy đơn hàng: <span style="color: red;">*</span> <% if(formError.length > 0){ %> <p style="color: red;"><%= formError %></p> <% } %>
                                             </label>
                                             <input form="cancelOrder" type="text" class="text-cancel" name="cancelReason"></input>
                                             <div class="btn-js">

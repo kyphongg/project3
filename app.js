@@ -1204,6 +1204,7 @@ app.get("/orders_detail/:id", async (req, res) => {
         couponValue,
         couponType,
         avatar: avatar,
+        formError: req.flash("formError"),
       });
     } else if (code != "Không") {
       let coupon = await Coupon.findOne({ couponCode: code });
@@ -1226,6 +1227,7 @@ app.get("/orders_detail/:id", async (req, res) => {
         couponValue,
         couponType,
         avatar: avatar,
+        formError: req.flash("formError"),
       });
     }
   } else {
@@ -1918,46 +1920,58 @@ app.post("/get_order/:id", async (req, res) => {
 app.post("/cancel_order/:id", async (req, res) => {
   if (req.session.guest) {
     let uid = req.session.userid;
-    await Order.updateOne(
-      { _id: req.params.id },
-      {
-        $set: {
-          orderStatus: 4,
-          cancelReason: req.body.cancelReason,
-          cancelFrom: "Khách",
-          timeOut: moment
-            .tz(Date.now(), "Asia/Ho_Chi_Minh")
-            .format("DD/MM/YYYY hh:mm a"),
-        },
-      }
-    );
-    let data = await Order.findOne({ _id: req.params.id });
-    if (data.items.length == 1) {
-      data.items.forEach(async function (id) {
-        let qty = id.quantity;
-        let pid = id._id;
-        await Product.updateOne(
-          { _id: pid },
-          { $inc: { productQuantity: qty } }
+    let order = req.params.id;
+    let check = await Order.findOne({_id: req.params.id});
+    if(check.orderStatus != 0){
+      res.redirect("/orders_detail/" + order);
+    } else{
+      let check = req.body.cancelReason;
+      if(check == ""){
+        req.flash("formError", "Bạn chưa điền lý do huỷ đơn hàng!");
+        res.redirect("/orders_detail/" + order);
+      } else {
+        await Order.updateOne(
+          { _id: req.params.id },
+          {
+            $set: {
+              orderStatus: 4,
+              cancelReason: req.body.cancelReason,
+              cancelFrom: "Khách",
+              timeOut: moment
+                .tz(Date.now(), "Asia/Ho_Chi_Minh")
+                .format("DD/MM/YYYY hh:mm a"),
+            },
+          }
         );
-      });
-    } else if (data.items.length > 1) {
-      let arrayQ = [];
-      let arrayP = [];
-      data.items.forEach(async function (id) {
-        let qty = id.quantity;
-        let pid = id._id;
-        arrayQ.push(qty);
-        arrayP.push(pid);
-      });
-      for (let i = 0; i < arrayP.length; i++) {
-        await Product.updateMany(
-          { _id: arrayP[i] },
-          { $inc: { productQuantity: arrayQ[i] } }
-        );
+        let data = await Order.findOne({ _id: req.params.id });
+        if (data.items.length == 1) {
+          data.items.forEach(async function (id) {
+            let qty = id.quantity;
+            let pid = id._id;
+            await Product.updateOne(
+              { _id: pid },
+              { $inc: { productQuantity: qty } }
+            );
+          });
+        } else if (data.items.length > 1) {
+          let arrayQ = [];
+          let arrayP = [];
+          data.items.forEach(async function (id) {
+            let qty = id.quantity;
+            let pid = id._id;
+            arrayQ.push(qty);
+            arrayP.push(pid);
+          });
+          for (let i = 0; i < arrayP.length; i++) {
+            await Product.updateMany(
+              { _id: arrayP[i] },
+              { $inc: { productQuantity: arrayQ[i] } }
+            );
+          }
+        }
+        res.redirect("/orders_detail/" + order);
       }
     }
-    res.redirect("/orders/" + uid);
   } else {
     res.redirect("/login");
   }
