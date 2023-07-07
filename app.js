@@ -2380,7 +2380,7 @@ app.get("/admin_home", async (req, res) => {
     const employee = await Admin.find().count();
     const comment = await Comment.find().count();
 
-    let outOfStock = await Product.find({ productQuantity: { $lte: 20 } }).sort(
+    let outOfStock = await Product.find({ productQuantity: { $lte: 9 } }).sort(
       { productQuantity: 1 }
     );
 
@@ -2445,6 +2445,7 @@ app.get("/admin_home", async (req, res) => {
       }
     monthlyData.push(monthlyRevenue);
     }
+
     res.render("layouts/servers/home", {
       adminName: req.session.adminName,
       number: customer,
