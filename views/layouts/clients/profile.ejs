@@ -16,7 +16,7 @@
                 <div class="col-3" style="margin-bottom: 80px;">
                     <div class="side-nav">
                         <ul class="nav-links">
-                            <li style="border-bottom: 1px solid #E6E8EB;">
+                            <li class="active" style="border-bottom: 1px solid #E6E8EB;">
                                 <a href="/profile/<%= userid %>" ><i class="fa-solid fa-user"></i>Tài khoản</a>
                             </li>
                             <li style="border-bottom: 1px solid #E6E8EB;">
@@ -41,7 +41,11 @@
                                 <p style="text-align: center;">Địa chỉ email</p>
                                 <p style="font-weight: 600; text-align: center;"><%= email %></p>
                             </div>
-                            <div class="col-4 avatar">
+                            <div class="col-2">
+                                <p style="text-align: center;">Số điện thoại</p>
+                                <p style="font-weight: 600; text-align: center;"><%= phone %></p>
+                            </div>
+                            <div class="col-3 avatar">
                                 <div class="avatar-style">
                                     <img src="/avatars/<%= avatar %>" alt="" width="120" height="120" style="border-radius: 50%;">
                                     <form action="/saveAvatar" method="post" enctype="multipart/form-data">
@@ -66,4 +70,29 @@
 
      <%- include('partials/footer') %>
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var navLinks = document.querySelectorAll(".nav-links li a");
+
+        // Lặp qua từng mục điều hướng
+        navLinks.forEach(function(link) {
+            link.addEventListener("click", function(e) {
+                e.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
+
+                // Loại bỏ lớp 'active' từ tất cả các mục điều hướng
+                navLinks.forEach(function(link) {
+                    link.parentElement.classList.remove("active");
+                });
+
+                // Thêm lớp 'active' vào mục điều hướng được nhấp vào
+                this.parentElement.classList.add("active");
+
+                // Chuyển hướng đến URL được xác định trong thuộc tính href của thẻ <a>
+                var url = this.getAttribute("href");
+                window.location.href = url;
+            });
+        });
+    });
+</script>
 </html>

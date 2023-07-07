@@ -1185,8 +1185,8 @@ input:focus{
     top: 52.6%;
 }
 
-.nav-links .start-yeuthich, li:nth-child(4):hover ~.animation{
-    top: 77.6%;
+.nav-links li.active a {
+    color: #2579F2;
 }
 
 .account{
@@ -1210,7 +1210,6 @@ input:focus{
 }
 
 .account .avatar-style{
-    margin-left: 50px;
     text-align: center;
 }
 

@@ -992,6 +992,7 @@ app.get("/profile/:id", async (req, res) => {
       fullname: req.session.fullname,
       email: req.session.email,
       userid: req.session.userid,
+      phone: req.session.phone,
       sID: req.session.sessionID,
       cart: req.session.cart,
       avatar: avatar,
