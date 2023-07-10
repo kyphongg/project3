@@ -1298,6 +1298,7 @@ app.post("/add_to_cart", async (req, res) => {
     const convert = req.body.quantity;
     const uid = req.body.user_id_hidden;
     const qty = await Product.findOne({ _id: productId });
+    const slug = qty.slug;
     let cartE = await Cart.find({ userID: req.body.user_id_hidden });
     if (cartE[0]) {
       const isE = cartE[0].items.findIndex((item) => {
@@ -1343,7 +1344,7 @@ app.post("/add_to_cart", async (req, res) => {
         }
       }
       req.flash("add", "Thêm vào giỏ thành công");
-      res.redirect("/product/" + productId);
+      res.redirect("/product/" + slug);
     } else {
       var cartData = Cart({
         _id: uid,
@@ -1358,7 +1359,7 @@ app.post("/add_to_cart", async (req, res) => {
       });
       await cartData.save();
       req.flash("add", "Thêm vào giỏ thành công");
-      res.redirect("/product/" + productId);
+      res.redirect("/product/" + slug);
     }
   } else {
     res.redirect("/login");
@@ -2118,8 +2119,9 @@ app.get("/product/:slug", async (req, res) => {
     var sess = req.session;
     sess.cart = cart;
     let product = await Product.findOne({ slug: req.params.slug });
+    let productID = product._id;
     let comments = await Comment.find({
-      productID: new mongoose.Types.ObjectId(product._id),
+      productID: new mongoose.Types.ObjectId(productID),
     }).populate("userID");
     let pname = product.productName;
     let data = await Product.findOne({ slug: req.params.slug })
@@ -2175,7 +2177,9 @@ app.post("/comment", async (req, res) => {
   if (req.session.guest) {
     let pid = req.body.productID;
     let uid = req.body.userID;
-    let check = Product.find({ $and: [{ _id: pid }, { userID: uid }] });
+    var product = await Product.findOne({_id: pid});
+    var slug = product.slug;
+    let check = await Product.find({ $and: [{ _id: pid }, { userID: uid }] });
     if (check) {
       var comment = Comment({
         productID: pid,
@@ -2187,9 +2191,9 @@ app.post("/comment", async (req, res) => {
           .format("DD/MM/YYYY hh:mm a"),
       });
       comment.save();
-      res.redirect("/product/" + pid);
+      res.redirect("/product/" + slug);
     } else {
-      res.redirect("/product/" + pid);
+      res.redirect("/product/" + slug);
     }
   } else {
     res.redirect("/login");

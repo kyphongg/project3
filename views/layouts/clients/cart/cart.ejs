@@ -111,13 +111,13 @@
                       <p style="color:#DC3545; margin-left: 8px;"><%= VND.format(money) %></p>
                     </div>
                     
-                    <div class="update-cart">
+                    <div class="update-cart" style="visibility:hidden" id="update">
                       <form action="/update_quantity_cart" method="post" id="form">
                         <button type="submit" name="update_quantity" class="btn btn-primary update-quantity btn-updatee">CẬP NHẬT GIỎ HÀNG</button>
                       </form>
                     </div>
 
-                    <div class="pay">
+                    <div class="pay" id="checkout">
                     <a href="/checkout/<%= userid %>">
                         <button class="btn btn-outline-success btn-pay">THANH TOÁN</button>
                     </a>
@@ -143,7 +143,12 @@ function myFunction(event) {
   var rowIndex = event.target.closest('tr').rowIndex;
   var price = table.rows[rowIndex].cells[3].querySelector('input[type="hidden"]').value;
   var input = table.rows[rowIndex].cells[4].querySelector('input[type="number"]').value;
-  var total = table.rows[rowIndex].cells[5].querySelector('p').innerHTML = VND.format(input * price) ;
+  var max = table.rows[rowIndex].cells[4].querySelector('input[type="number"]').max; 
+  var total = table.rows[rowIndex].cells[5].querySelector('p');
+  var checkout = document.getElementById("checkout");
+  var update = document.getElementById("update");
+  checkout.style.visibility = "hidden";
+  update.style.visibility = "visible";
 }
 </script>
     <%- include('../partials/footer') %>
