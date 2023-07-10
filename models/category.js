@@ -5,6 +5,9 @@ var Category = new Schema({
     categoryName:{
         type: String
     },
+    slug:{
+        type: String
+    },
     username:{
         type: Number
     },  

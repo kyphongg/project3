@@ -44,11 +44,11 @@
                                 <tbody>
                                     <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
-                                    <td style="display: none;"><%= danhsach[i]._id %></td>
+                                    <td style="display: none;"><%= danhsach[i].slug %></td>
                                     <td><%= i+1 %></td>
                                     <td><%= danhsach[i].categoryName %></td>
                                     <td>
-                                        <a href="/edit_categories/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
+                                        <a href="/edit_categories/<%= danhsach[i].slug %>" class="active" ui-toggle-class="">
                                             <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
                                         </a>
                                         <button style="border: none; background: none;" type="button" onClick="find(this);" class="js-buy-tickets"><i class="fa-solid fa-square-xmark js-buy-tickets" style="font-size: 25px; color: #D9534F;"></i></button>

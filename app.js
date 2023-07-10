@@ -16,6 +16,7 @@ const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const Swal = require("sweetalert2");
 const csv = require("csvtojson");
+const slugify = require('slugify');
 
 app.use(cors());
 app.use(flash());
@@ -208,10 +209,9 @@ function generateOrderCode() {
 
   return orderCode;
 }
-
 //Client
 //Đăng nhập đăng ký tài khoản
-app.get("/login", (req, res) => {
+app.get("/login", async (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
   } else {
@@ -890,8 +890,8 @@ app.get("/news", async (req, res) => {
   }
 });
 
-app.get("/news/:id", async (req, res) => {
-  let data = await News.find({ _id: req.params.id }).populate("newsProduct");
+app.get("/news/:slug", async (req, res) => {
+  let data = await News.find({ slug: req.params.slug }).populate("newsProduct");
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
@@ -1174,14 +1174,14 @@ app.post("/changePasswordNew", async (req, res) => {
 });
 
 //Trang chi tiết lịch sử đơn hàng
-app.get("/orders_detail/:id", async (req, res) => {
+app.get("/orders_detail/:orderCode", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
     if (user.avatar) {
       avatar = user.avatar;
     }
-    let data = await Order.findOne({ _id: req.params.id }).populate(
+    let data = await Order.findOne({ orderCode: req.params.orderCode }).populate(
       "items.productID"
     );
     let code = data.couponCode;
@@ -1879,11 +1879,11 @@ app.get("/success", async (req, res) => {
   }
 });
 
-app.post("/get_order/:id", async (req, res) => {
+app.post("/get_order/:orderCode", async (req, res) => {
   if (req.session.guest) {
     let uid = req.session.userid;
     await Order.updateOne(
-      { _id: req.params.id },
+      { orderCode: req.params.orderCode },
       {
         $set: {
           orderStatus: 3,
@@ -1895,7 +1895,7 @@ app.post("/get_order/:id", async (req, res) => {
         },
       }
     );
-    let data = await Order.findOne({ _id: req.params.id });
+    let data = await Order.findOne({ orderCode: req.params.orderCode });
     let array = [];
     data.items.forEach(function (id) {
       array.push(id.productID);
@@ -1917,11 +1917,11 @@ app.post("/get_order/:id", async (req, res) => {
   }
 });
 
-app.post("/cancel_order/:id", async (req, res) => {
+app.post("/cancel_order/:orderCode", async (req, res) => {
   if (req.session.guest) {
     let uid = req.session.userid;
-    let order = req.params.id;
-    let check = await Order.findOne({_id: req.params.id});
+    let order = req.params.orderCode;
+    let check = await Order.findOne({orderCode: req.params.orderCode});
     if(check.orderStatus != 0){
       res.redirect("/orders_detail/" + order);
     } else{
@@ -1931,7 +1931,7 @@ app.post("/cancel_order/:id", async (req, res) => {
         res.redirect("/orders_detail/" + order);
       } else {
         await Order.updateOne(
-          { _id: req.params.id },
+          { orderCode: req.params.orderCode },
           {
             $set: {
               orderStatus: 4,
@@ -1943,7 +1943,7 @@ app.post("/cancel_order/:id", async (req, res) => {
             },
           }
         );
-        let data = await Order.findOne({ _id: req.params.id });
+        let data = await Order.findOne({ orderCode: req.params.orderCode });
         if (data.items.length == 1) {
           data.items.forEach(async function (id) {
             let qty = id.quantity;
@@ -2095,7 +2095,7 @@ app.get("/all_product", async (req, res) => {
 });
 
 //Trang chi tiết sản phẩm
-app.get("/product/:id", async (req, res) => {
+app.get("/product/:slug", async (req, res) => {
   if (req.session.guest) {
     const cart = await Cart.aggregate([
       { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
@@ -2117,16 +2117,16 @@ app.get("/product/:id", async (req, res) => {
     ]);
     var sess = req.session;
     sess.cart = cart;
-    let product = await Product.findOne({ _id: req.params.id });
+    let product = await Product.findOne({ slug: req.params.slug });
     let comments = await Comment.find({
-      productID: new mongoose.Types.ObjectId(req.params.id),
+      productID: new mongoose.Types.ObjectId(product._id),
     }).populate("userID");
     let pname = product.productName;
-    let data = await Product.findOne({ _id: req.params.id })
+    let data = await Product.findOne({ slug: req.params.slug })
       .populate("categoryID")
       .populate("producerID");
     let check = await Product.findOne({
-      $and: [{ _id: req.params.id }, { userID: req.session.userid }],
+      $and: [{ slug: req.params.slug }, { userID: req.session.userid }],
     });
     let random = 0;
     if (check) {
@@ -2151,9 +2151,9 @@ app.get("/product/:id", async (req, res) => {
       avatar: avatar,
     });
   } else {
-    let product = await Product.findOne({ _id: req.params.id });
+    let product = await Product.findOne({ slug: req.params.slug });
     let pname = product.productName;
-    let data = await Product.findOne({ _id: req.params.id })
+    let data = await Product.findOne({ slug: req.params.slug })
       .populate("categoryID")
       .populate("producerID");
     res.render("layouts/clients/main/product", {
@@ -2197,7 +2197,7 @@ app.post("/comment", async (req, res) => {
 });
 
 //Trang danh mục theo NSX
-app.get("/producer/:id", async (req, res) => {
+app.get("/producer/:slug", async (req, res) => {
   let page = req.query.page ? parseInt(req.query.page) : 1;
   if (isNaN(page) || page < 1) {
     page = 1;
@@ -2210,21 +2210,17 @@ app.get("/producer/:id", async (req, res) => {
     if (user.avatar) {
       avatar = user.avatar;
     }
-
-    const producerId = new mongoose.Types.ObjectId(req.params.id);
+    const producer = await Producer.findOne({slug: req.params.slug});
+    const producerId = producer._id;
     const count = await Product.countDocuments({ producerID: producerId });
     const totalPages = Math.ceil(count / limit);
     page = Math.min(page, totalPages);
 
     let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId(req.params.id),
+      producerID: new mongoose.Types.ObjectId(producerId),
     })
     .limit(limit)
     .skip((page - 1) * limit);
-
-    let producer = await Producer.findOne({
-      _id: new mongoose.Types.ObjectId(req.params.id),
-    });
     let title = producer.producerName;
     let id = producer._id;
     res.render("layouts/clients/producer/producer", {
@@ -2243,20 +2239,18 @@ app.get("/producer/:id", async (req, res) => {
       avatar: avatar,
     });
   } else {
-    const producerId = new mongoose.Types.ObjectId(req.params.id);
+    const producer = await Producer.findOne({slug: req.params.slug});
+    const producerId = producer._id;
     const count = await Product.countDocuments({ producerID: producerId });
     const totalPages = Math.ceil(count / limit);
     page = Math.min(page, totalPages);
 
     let data = await Product.find({
-      producerID: new mongoose.Types.ObjectId(req.params.id),
+      producerID: new mongoose.Types.ObjectId(producerId),
     })
     .limit(limit)
     .skip((page - 1) * limit);
-
-    let producer = await Producer.findOne({
-      _id: new mongoose.Types.ObjectId(req.params.id),
-    });
+    
     let title = producer.producerName;
     let id = producer._id;
     res.render("layouts/clients/producer/producer", {
@@ -2278,7 +2272,7 @@ app.get("/producer/:id", async (req, res) => {
 });
 
 //Trang category
-app.get("/category/:id", async (req, res) => {
+app.get("/category/:slug", async (req, res) => {
   let page = req.query.page ? parseInt(req.query.page) : 1;
   if (isNaN(page) || page < 1) {
     page = 1;
@@ -2291,21 +2285,18 @@ app.get("/category/:id", async (req, res) => {
     if (user.avatar) {
       avatar = user.avatar;
     }
-
-    const categoryId = new mongoose.Types.ObjectId(req.params.id);
+    const category = await Category.findOne({slug:req.params.slug});
+    const categoryId = category._id;
     const count = await Product.countDocuments({ categoryID: categoryId });
     const totalPages = Math.ceil(count / limit);
     page = Math.min(page, totalPages);
 
     let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId(req.params.id),
+      categoryID: new mongoose.Types.ObjectId(categoryId),
     })
     .limit(limit)
     .skip((page - 1) * limit);
 
-    let category = await Category.findOne({
-      _id: new mongoose.Types.ObjectId(req.params.id),
-    });
     let title = category.categoryName;
     let id = category._id;
     res.render("layouts/clients/category/category", {
@@ -2324,19 +2315,17 @@ app.get("/category/:id", async (req, res) => {
       avatar: avatar,
     });
   } else {
-    const categoryId = new mongoose.Types.ObjectId(req.params.id);
+    const category = await Category.findOne({slug:req.params.slug});
+    const categoryId = category._id;
     const count = await Product.countDocuments({ categoryID: categoryId });
     const totalPages = Math.ceil(count / limit);
     page = Math.min(page, totalPages);
 
     let data = await Product.find({
-      categoryID: new mongoose.Types.ObjectId(req.params.id),
+      categoryID: new mongoose.Types.ObjectId(categoryId),
     })
     .limit(limit)
     .skip((page - 1) * limit);
-    let category = await Category.findOne({
-      _id: new mongoose.Types.ObjectId(req.params.id),
-    });
     let title = category.categoryName;
     let id = category._id;
     res.render("layouts/clients/category/category", {
@@ -2592,6 +2581,7 @@ app.post("/categories_save", async (req, res) => {
     } else {
       await Category({
         categoryName: req.body.categoryName,
+        slug: slugify(req.body.categoryName, {replacement: '-',lower: true}),
       }).save();
       req.flash("success", "Thêm thành công");
       res.redirect("/admin_categories");
@@ -2601,11 +2591,11 @@ app.post("/categories_save", async (req, res) => {
   }
 });
 
-app.get("/edit_categories/:id", async (req, res) => {
+app.get("/edit_categories/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      let data = await Category.findById(req.params.id);
+      let data = await Category.findOne({slug:req.params.slug});
       res.render("layouts/servers/categories/edit_categories", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
@@ -2641,9 +2631,9 @@ app.post("/edit_categories_save", async (req, res) => {
   }
 });
 
-app.get("/delete_categories/:id", async (req, res) => {
+app.get("/delete_categories/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Category.deleteOne({ _id: req.params.id });
+    await Category.deleteOne({ slug: req.params.slug });
     req.flash("success", "Xoá thành công");
     res.redirect("/admin_categories");
   } else {
@@ -2699,6 +2689,7 @@ app.post("/producers_save", async (req, res) => {
     } else {
       await Producer({
         producerName: req.body.producerName,
+        slug: slugify(req.body.producerName, {replacement: '-',lower: true}),
       }).save();
       req.flash("success", "Thêm thành công");
       res.redirect("/admin_producers");
@@ -2708,11 +2699,11 @@ app.post("/producers_save", async (req, res) => {
   }
 });
 
-app.get("/edit_producers/:id", async (req, res) => {
+app.get("/edit_producers/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      let data = await Producer.findById(req.params.id);
+      let data = await Producer.findOne({slug:req.params.slug});
       res.render("layouts/servers/producers/edit_producers", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
@@ -2748,9 +2739,9 @@ app.post("/edit_producers_save", async (req, res) => {
   }
 });
 
-app.get("/delete_producers/:id", async (req, res) => {
+app.get("/delete_producers/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
-    await Producer.deleteOne({ _id: req.params.id });
+    await Producer.deleteOne({ slug: req.params.slug });
     req.flash("success", "Xoá thành công");
     res.redirect("/admin_producers");
   } else {
@@ -2784,13 +2775,13 @@ app.get("/admin_product", async (req, res) => {
   }
 });
 
-app.get("/admin_product/:id", async (req, res) => {
+app.get("/admin_product/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      let product = await Product.findOne({ _id: req.params.id });
+      let product = await Product.findOne({ slug: req.params.slug });
       let prname = product.productName;
-      let data = await Product.findOne({ _id: req.params.id })
+      let data = await Product.findOne({ slug: req.params.slug })
         .populate("categoryID")
         .populate("producerID");
       res.render("layouts/servers/product/product_detail", {
@@ -2844,6 +2835,7 @@ app.post("/save_product", async (req, res) => {
         } else {
           await Product({
             productName: req.body.productName,
+            slug: slugify(req.body.productName, {replacement: '-',lower: true}),
             productDescription: req.body.productDescription,
             productImage: req.file.filename,
             categoryID: req.body.categoryID,
@@ -2913,11 +2905,11 @@ app.post("/save_multiple_product", (req, res) => {
   }
 });
 
-app.get("/edit_product/:id", async (req, res) => {
+app.get("/edit_product/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      let data = await Product.findById(req.params.id)
+      let data = await Product.findOne({slug:req.params.slug})
         .populate("categoryID")
         .populate("producerID");
       res.render("layouts/servers/product/edit_product", {
@@ -3484,11 +3476,11 @@ app.get("/new_orders", async (req, res) => {
   }
 });
 
-app.get("/order_detail/:id", async (req, res) => {
+app.get("/order_detail/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let data = await Order.findOne({ _id: req.params.id }).populate(
+      let data = await Order.findOne({ orderCode: req.params.orderCode }).populate(
         "items.productID"
       );
       let code = data.couponCode;
@@ -3642,11 +3634,11 @@ app.get("/cancel_orders", async (req, res) => {
   }
 });
 
-app.post("/update_status/:id", async (req, res) => {
+app.post("/update_status/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      await Order.updateOne({ _id: req.params.id }, { orderStatus: 1 });
+      await Order.updateOne({ slug: req.params.slug }, { orderStatus: 1 });
       res.redirect("/all_orders");
     } else {
       res.redirect("/admin_home");
@@ -3656,12 +3648,11 @@ app.post("/update_status/:id", async (req, res) => {
   }
 });
 
-app.post("/update_status_1/:id", async (req, res) => {
+app.post("/update_status_1/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      await Order.updateOne({ _id: req.params.id }, { orderStatus: 2 });
-      const order = await Order.find({ orderStatus: 2 }).count();
+      await Order.updateOne({ slug: req.params.slug }, { orderStatus: 2 });
       res.redirect("/all_orders");
     } else {
       res.redirect("/admin_home");
@@ -3671,12 +3662,12 @@ app.post("/update_status_1/:id", async (req, res) => {
   }
 });
 
-app.post("/admin_cancel_order/:id", async (req, res) => {
+app.post("/admin_cancel_order/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
       await Order.updateOne(
-        { _id: req.params.id },
+        { orderCode: req.params.orderCode },
         {
           $set: {
             orderStatus: 4,
@@ -3688,7 +3679,7 @@ app.post("/admin_cancel_order/:id", async (req, res) => {
           },
         }
       );
-      let data = await Order.findOne({ _id: req.params.id });
+      let data = await Order.findOne({ orderCode: req.params.orderCode });
       if (data.items.length == 1) {
         data.items.forEach(async function (id) {
           let qty = id.quantity;

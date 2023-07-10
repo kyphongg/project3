@@ -5,6 +5,9 @@ var Producer = new Schema({
     producerName:{
         type: String
     },
+    slug:{
+        type: String
+    },
     username:{
         type: Number
     },

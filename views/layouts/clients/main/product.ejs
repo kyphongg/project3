@@ -21,7 +21,7 @@
             <div class="url">
                 <a href="/">Trang chủ</a> >
                 <% danhsach.categoryID.forEach(function(id){ %>
-                <a href="/category/<%= id._id %>"><%= id.categoryName %>&nbsp;/</a>
+                <a href="/category/<%= id.slug %>"><%= id.categoryName %>&nbsp;/</a>
                 <% }); %>
             </div>
             <%if(add.length > 0){%>
@@ -35,14 +35,7 @@
                         <a href="/"><button type="button" class="btn btn-outline-dark">Tiếp tục mua hàng!</button></a>
                         <a href="/cart/<%= userid %>"><button type="button" class="btn btn-success">Tới giỏ hàng!</button></a>
                     </div>
-                </div>    
-                <!-- <div class="popupp" id="pop-up">
-                        <img src="/images/404-tick.png" alt="">
-                        <h2>Thành công</h2>
-                        <p>Bạn đã thêm <%= pname %> vào giỏ hàng thành công<br> Cảm ơn bạn!</p>
-                        <button type="button"><a href="/">Tiếp tục mua hàng!</a></button>
-                        <button type="button"><a href="/cart/<%= userid %>">Tới giỏ hàng!</a></button>
-                    </div> -->
+                </div>
             <%}%>
             <div class="pname" name="name"> 
                 <%= danhsach.productName %>
@@ -63,12 +56,12 @@
             <div class="pcategory">
                 <p style="font-weight: bold">Thể loại: &nbsp</p>
                 <% danhsach.categoryID.forEach(function(id){ %>
-                <a style="text-decoration: none; color: black;" href="/category/<%= id._id %>"><p><%= id.categoryName %>&nbsp;</p></a>
+                <a style="text-decoration: none; color: black;" href="/category/<%= id.slug %>"><p><%= id.categoryName %>&nbsp;</p></a>
                 <% }); %>
             </div>
             <div class="pproducer">
                 <p style="font-weight: bold">Nhà sản xuất: &nbsp</p>
-                <a style="text-decoration: none; color: black;" href="/producer/<%= danhsach.producerID._id %>"><p><%= danhsach.producerID.producerName %>&nbsp;</p></a>
+                <a style="text-decoration: none; color: black;" href="/producer/<%= danhsach.producerID.slug %>"><p><%= danhsach.producerID.producerName %>&nbsp;</p></a>
             </div>
             <div class="p-price" name="price">
                 <%= VND.format(danhsach.priceOut) %>

@@ -6,6 +6,9 @@ var Product = new Schema({
     productName:{
         type: String
     },
+    slug:{
+        type: String
+    },
     productDescription:{    
         type: String
     },

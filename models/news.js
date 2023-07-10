@@ -5,6 +5,9 @@ var News = new Schema({
     newsTitle:{
         type: String
     },
+    slug:{
+        type: String
+    },
     newsContent:{
         type: String
     },

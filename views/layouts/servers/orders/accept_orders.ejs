@@ -62,12 +62,12 @@
                                         <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
                                         <td style="text-align: center; color: #FAA200; font-weight: 600;">Đã xác nhận và đóng gói</td>
                                         <td>
-                                            <form action="/update_status_1/<%= danhsach[i]._id %>" method="post">
+                                            <form action="/update_status_1/<%= danhsach[i].orderCode %>" method="post">
                                                 <button class="btn btn-success" style="width: 100px;"><b>Vận chuyển</b></button>
                                             </form>
                                         </td>
                                         <td style="text-align: center;">
-                                            <a class="btn btn-primary" style="text-align: center;" href="/order_detail/<%= danhsach[i]._id %>">
+                                            <a class="btn btn-primary" style="text-align: center;" href="/order_detail/<%= danhsach[i].orderCode %>">
                                                 Xem chi tiết
                                             </a>
                                         </td>
