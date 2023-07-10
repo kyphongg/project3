@@ -34,15 +34,6 @@
                             </div>
 
                             <div class="form-group">
-                                <label >Sản phẩm</label>
-                                <select name="newsProduct" class="form-control m-bot15">
-                                    <% for(let i=0; i < sanpham.length; i++) { %>
-                                        <option value="<%= sanpham[i].id %>"><%= sanpham[i].productName %></option>
-                                    <% } %>  
-                                </select>
-                            </div>
-
-                            <div class="form-group">
                                 <label >Nội dung</label>
                                 <textarea id="editor" class="form-control" name="newsContent" required=""><%- danhsach.newsContent %></textarea>
                             </div>

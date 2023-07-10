@@ -17,10 +17,6 @@ var News = new Schema({
     productImage:{
         type: String
     },
-    newsProduct:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
-    },
     created_date:{
         type: String
     },

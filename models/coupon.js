@@ -8,6 +8,9 @@ var Coupon = new Schema({
     couponCode:{
         type: String
     },
+    slug:{
+        type: String
+    },
     couponQuantity:{
         type: Number
     },

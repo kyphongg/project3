@@ -891,7 +891,7 @@ app.get("/news", async (req, res) => {
 });
 
 app.get("/news/:slug", async (req, res) => {
-  let data = await News.find({ slug: req.params.slug }).populate("newsProduct");
+  let data = await News.find({ slug: req.params.slug });
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
@@ -3860,11 +3860,13 @@ app.get("/warehouse", async (req, res) => {
   }
 });
 
-app.get("/list_warehouse/:id", async (req, res) => {
+app.get("/list_warehouse/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      let data = await Warehouse.find({ productID: req.params.id })
+      let product = await Product.findOne({slug: req.params.slug});
+      let productID = product._id;
+      let data = await Warehouse.find({ productID: productID })
         .populate("productID")
         .populate("created_by");
       res.render("layouts/servers/warehouse/list_warehouse", {
@@ -3882,13 +3884,16 @@ app.get("/list_warehouse/:id", async (req, res) => {
   }
 });
 
-app.get("/sale_history/:id", async (req, res) => {
+app.get("/sale_history/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      let product = await Product.findOne({slug: req.params.slug});
+      let productID = product._id;
+      const name = product.productName;
       const data = await Order.find(
         {
-          $and: [{ "items._id": req.params.id },{ orderStatus: { $lt: 4 } }],
+          $and: [{ "items._id": productID },{ orderStatus: { $lt: 4 } }],
         },
         { "items.$": 1 }
       );
@@ -3903,7 +3908,7 @@ app.get("/sale_history/:id", async (req, res) => {
           money += id.quantity;
         });
       }
-      const name = await Product.findOne({ _id: req.params.id });
+      
       res.render("layouts/servers/warehouse/sale_history", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
@@ -4089,6 +4094,7 @@ app.post("/coupon_save", async (req, res) => {
       var coupon = Coupon({
         couponValue: req.body.couponValue,
         couponCode: req.body.couponCode,
+        slug: slugify(req.body.couponCode, {replacement: '-',lower: true}),
         couponQuantity: req.body.couponQuantity,
         couponType: req.body.couponType,
         couponStatus: req.body.couponStatus,
@@ -4105,11 +4111,11 @@ app.post("/coupon_save", async (req, res) => {
   }
 });
 
-app.get("/edit_coupon/:id", async (req, res) => {
+app.get("/edit_coupon/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 1) {
-      let data = await Coupon.findById(req.params.id);
+      let data = await Coupon.findOne({slug:req.params.slug});
       res.render("layouts/servers/coupon/edit_coupon", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
@@ -4145,129 +4151,12 @@ app.post("/edit_coupon_save", async (req, res) => {
   }
 });
 
-app.get("/delete_coupon/:id", (req, res) => {
-  if (req.session.daDangNhap) {
-    Coupon.deleteOne({ _id: req.params.id }).then(function () {
-      res.redirect("/coupon");
-    });
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-//Trang bảng giá từng thành phố
-app.get("/cities", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 1) {
-      let data = await City.find();
-      res.render("layouts/servers/cities/cities", {
-        adminName: req.session.adminName,
-        admin_id: req.session.admin_id,
-        danhsach: data,
-        VND,
-        admin_role: req.session.admin_role,
-        success: req.flash("success"),
-        error: req.flash("error"),
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.get("/add_cities", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 1) {
-      res.render("layouts/servers/cities/add_cities", {
-        adminName: req.session.adminName,
-        admin_id: req.session.admin_id,
-        admin_role: req.session.admin_role,
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.post("/cities_save", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let check = await City.findOne({ cityName: req.body.cityName });
-    if (check) {
-      req.flash("error", "Thành phố đã tồn tại");
-      res.redirect("/cities");
-    } else {
-      var city = City({
-        cityName: req.body.cityName,
-        price: req.body.price,
-      });
-      city.save().then(function () {
-        req.flash("success", "Thêm thành công");
-        res.redirect("/cities");
-      });
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.get("/edit_cities/:id", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 1) {
-      let data = await City.findById(req.params.id);
-      res.render("layouts/servers/cities/edit_cities", {
-        adminName: req.session.adminName,
-        admin_id: req.session.admin_id,
-        danhsach: data,
-        admin_role: req.session.admin_role,
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.post("/edit_cities_save", async (req, res) => {
-  if (req.session.daDangNhap) {
-    City.updateOne(
-      { _id: req.body.cityId },
-      {
-        price: req.body.price,
-      }
-    ).then(function () {
-      req.flash("success", "Sửa thành công");
-      res.redirect("/cities");
-    });
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.get("/delete_cities/:id", (req, res) => {
-  if (req.session.daDangNhap) {
-    City.deleteOne({ _id: req.params.id }).then(function () {
-      req.flash("success", "Xoá thành công");
-      res.redirect("/cities");
-    });
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
 //Trang quản lý tin tức
 app.get("/admin_news", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 3) {
-      let data = await News.find().populate("newsProduct");
+      let data = await News.find();
       res.render("layouts/servers/news/news", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
@@ -4289,17 +4178,12 @@ app.get("/add_news", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 3) {
-      await Product.find()
-        .populate("categoryID")
-        .populate("producerID")
-        .then((data) => {
-          res.render("layouts/servers/news/add_news", {
-            adminName: req.session.adminName,
-            admin_id: req.session.admin_id,
-            danhsach: data,
-            admin_role: req.session.admin_role,
-          });
-        });
+      res.render("layouts/servers/news/add_news", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        danhsach: data,
+        admin_role: req.session.admin_role,
+      });
     } else {
       res.redirect("/admin_home");
     }
@@ -4325,8 +4209,8 @@ app.post("/news_save", async (req, res) => {
         } else {
           var news = News({
             newsTitle: req.body.newsTitle,
+            slug: slugify(req.body.newsTitle, {replacement: '-',lower: true}),
             newsContent: req.body.newsContent,
-            newsProduct: req.body.newsProduct,
             productImage: req.file.filename,
             newsStatus: req.body.newsStatus,
             created_date: moment
@@ -4346,17 +4230,15 @@ app.post("/news_save", async (req, res) => {
   }
 });
 
-app.get("/edit_news/:id", async (req, res) => {
+app.get("/edit_news/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 3) {
-      let data = await News.findById(req.params.id).populate("newsProduct");
-      let pro = await Product.find();
+      let data = await News.findOne({slug:req.params.slug});
       res.render("layouts/servers/news/edit_news", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         danhsach: data,
-        sanpham: pro,
         admin_role: req.session.admin_role,
       });
     } else {
@@ -4376,6 +4258,7 @@ app.post("/edit_news_save", async (req, res) => {
           { _id: req.body.newsId },
           {
             newsTitle: req.body.newsTitle,
+            slug: slugify(req.body.newsTitle, {replacement: '-',lower: true}),
             newsContent: req.body.newsContent,
             newsProduct: req.body.newsProduct,
             newsStatus: req.body.newsStatus,
@@ -4395,10 +4278,11 @@ app.post("/edit_news_save", async (req, res) => {
         } else if (err) {
           req.flash("error", "Lỗi bất ngờ xảy ra");
         } else {
-          Product.updateOne(
+          News.updateOne(
             { _id: req.body.newsId },
             {
               newsTitle: req.body.newsTitle,
+              slug: slugify(req.body.newsTitle, {replacement: '-',lower: true}),
               newsContent: req.body.newsContent,
               newsProduct: req.body.newsProduct,
               productImage: req.file.filename,
@@ -4414,17 +4298,6 @@ app.post("/edit_news_save", async (req, res) => {
           });
         }
       }
-    });
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.get("/delete_news/:id", (req, res) => {
-  if (req.session.daDangNhap) {
-    News.deleteOne({ _id: req.params.id }).then(function () {
-      req.flash("success", "Xoá thành công");
-      res.redirect("/admin_news");
     });
   } else {
     res.redirect("/admin_login");

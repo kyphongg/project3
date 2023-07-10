@@ -40,10 +40,7 @@
                 <thead>
                   <tr>
                     <th style="width: 50px">STT</th>
-                    <th style="text-align: center; width: 240px" data-orderable="false">
-                      Tiêu đề
-                    </th>
-                    <th style="text-align: center; width: 100px" data-orderable="false">Sản phẩm</th>
+                    <th style="text-align: center; width: 240px" data-orderable="false">Tiêu đề</th>
                     <th style="text-align: center; width: 80px" data-orderable="false">Hình ảnh</th>
                     <th style="text-align: center; width: 220px" data-orderable="false">Nội dung</th>
                     <th style="text-align: center; width: 180px" data-orderable="false">Trạng thái</th>
@@ -55,9 +52,6 @@
                   <tr>
                     <td style="text-align: center"><%= i+1 %></td>
                     <td><%= danhsach[i].newsTitle %></td>
-                    <td>
-                      <%= danhsach[i].newsProduct.productName %>
-                    </td>
                     <td>
                       <img
                         src="/images/<%= danhsach[i].productImage %>"
@@ -92,7 +86,7 @@
                     </td>
 
                     <td style="text-align: center">
-                      <a href="/edit_news/<%= danhsach[i].id %>" class="active" ui-toggle-class="">
+                      <a href="/edit_news/<%= danhsach[i].slug %>" class="active" ui-toggle-class="">
                         <i
                           class="fa-solid fa-square-pen"
                           style="font-size: 25px; color: #5cb85c"
