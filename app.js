@@ -3643,6 +3643,29 @@ app.post("/update_status/:orderCode", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
       await Order.updateOne({ slug: req.params.slug }, { orderStatus: 1 });
+      let find = await Order.findOne({orderCode: req.params.orderCode}).populate("userID");
+      let email = find.userID.email;
+      const emailData = {
+        from: "Gaming Shop",
+        to: email,
+        subject: "Xác nhận đơn hàng",
+        html: `
+        <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+        <img src="https://github.com/lam3531/vietnam/blob/main/gamingstore-logoo.png?raw=true" alt="Logo" style="display: block; margin: 0 auto; max-width: 30%;">
+        <h1 style="color: #333333; text-align: center; margin-bottom: 20px; font-size: 24px;">Xác nhận đơn hàng - [${find.orderCode}]</h1>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 10px;">Chúng tôi rất vui thông báo rằng đơn hàng của bạn đã được xác nhận.</p>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 15px;">
+          Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn
+        </p>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 15px;">Chúng tôi sẽ tiến hành xử lý đơn hàng của bạn và sẽ thông báo cho bạn khi đơn hàng được gửi đi.
+        Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu nào, vui lòng liên hệ với chúng tôi qua thông tin liên hệ bên dưới.</p>
+        <p style="font-size: 16px; margin-top: 20px; text-align: center;">
+          Xin cảm ơn bạn đã mua hàng tại cửa hàng chúng tôi!
+        </p>
+      </div>
+        `,
+      };
+      await transporter.sendMail(emailData);
       res.redirect("/all_orders");
     } else {
       res.redirect("/admin_home");
@@ -3656,7 +3679,30 @@ app.post("/update_status_1/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      await Order.updateOne({ slug: req.params.slug }, { orderStatus: 2 });
+      await Order.updateOne({ orderCode: req.params.orderCode }, { orderStatus: 2 });
+      let find = await Order.findOne({orderCode: req.params.orderCode}).populate("userID");
+      let email = find.userID.email;
+      const emailData = {
+        from: "Gaming Shop",
+        to: email,
+        subject: "Vận chuyển đơn hàng",
+        html: `
+        <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+        <img src="https://github.com/lam3531/vietnam/blob/main/gamingstore-logoo.png?raw=true" alt="Logo" style="display: block; margin: 0 auto; max-width: 30%;">
+        <h1 style="color: #333333; text-align: center; margin-bottom: 20px; font-size: 24px;">Đang vận chuyển đơn hàng - [${find.orderCode}]</h1>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 10px;">Chúng tôi rất vui thông báo rằng đơn hàng của bạn đang được vận chuyển.</p>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 15px;">
+          Bạn có thể theo dõi thông tin đơn hàng tại chi tiết đơn hàng của bạn
+        </p>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 15px;">Đơn hàng của bạn đang được vận chuyển và sẽ thông báo cho bạn khi đơn hàng đến địa chỉ giao hàng.
+        Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu nào, vui lòng liên hệ với chúng tôi qua thông tin liên hệ bên dưới.</p>
+        <p style="font-size: 16px; margin-top: 20px; text-align: center;">
+          Xin cảm ơn bạn đã mua hàng tại cửa hàng chúng tôi!
+        </p>
+      </div>
+        `,
+      };
+      await transporter.sendMail(emailData);
       res.redirect("/all_orders");
     } else {
       res.redirect("/admin_home");
@@ -3683,7 +3729,8 @@ app.post("/admin_cancel_order/:orderCode", async (req, res) => {
           },
         }
       );
-      let data = await Order.findOne({ orderCode: req.params.orderCode });
+      let data = await Order.findOne({ orderCode: req.params.orderCode }).populate("userID");
+      let email = data.userID.email;
       if (data.items.length == 1) {
         data.items.forEach(async function (id) {
           let qty = id.quantity;
@@ -3709,6 +3756,19 @@ app.post("/admin_cancel_order/:orderCode", async (req, res) => {
           );
         }
       }
+      const emailData = {
+        from: "Gaming Shop",
+        to: email,
+        subject: "Huỷ đơn hàng",
+        html: `
+        <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+        <img src="https://github.com/lam3531/vietnam/blob/main/gamingstore-logoo.png?raw=true" alt="Logo" style="display: block; margin: 0 auto; max-width: 30%;">
+        <h1 style="color: #333333; text-align: center; margin-bottom: 20px; font-size: 24px;">Đang vận chuyển đơn hàng - [${data.orderCode}]</h1>
+        <p style="color: #555555; font-size: 16px; margin-bottom: 10px;">Chúng tôi rất xin lỗi vì phải thông báo rằng đơn hàng của bạn đã bị huỷ.</p>
+      </div>
+        `,
+      };
+      await transporter.sendMail(emailData);
       res.redirect("/all_orders");
     } else {
       res.redirect("/admin_home");
