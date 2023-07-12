@@ -79,26 +79,21 @@
                         </a>
                     </li>
                     <%}%>
+
+                    <li class="sub-menu">
+                        <a href="/salesbyyears">
+                            <i class="fa-solid fa-chart-simple"></i>
+                           <span>Doanh thu</span>
+                        </a>
+                    </li>
                     
                     <li class="sub-menu">
                         <a href="/revenue">
                            <i class="fa-solid fa-calculator"></i>
-                           <span>Doanh thu</span>
+                           <span>Doanh thu theo sản phẩm</span>
                         </a>
                     </li>
 
-                    <li class="sub-menu">
-                        <a href="javascript:">
-                           <i class="fa-solid fa-chart-simple"></i>
-                           <span>Biểu đồ doanh thu</span>
-                        </a>
-                        <ul class="sub">
-                            <li><a href="/salesbyday">Doanh thu theo ngày</a></li>
-                            <li><a href="/sales">Doanh thu theo tuần</a></li>
-                            <li><a href="/salesbymonth">Doanh thu theo tháng</a></li>
-                            <li><a href="/salesbyyears">Doanh thu theo năm</a></li>
-                        </ul>
-                    </li>
                     <% if(admin_role == 0|| admin_role == 3 ) { %>
                     <li>
                         <a href="/comment">
