@@ -17,11 +17,12 @@ const bcrypt = require("bcrypt");
 const Swal = require("sweetalert2");
 const csv = require("csvtojson");
 const slugify = require('slugify');
+const socket = require('socket.io');
 
 app.use(cors());
 app.use(flash());
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
@@ -209,6 +210,7 @@ function generateOrderCode() {
 
   return orderCode;
 }
+
 //Client
 //Đăng nhập đăng ký tài khoản
 app.get("/login", async (req, res) => {
@@ -3990,6 +3992,20 @@ app.post("/admin_cancel_order/:orderCode", async (req, res) => {
     res.redirect("/admin_login");
   }
 });
+
+//Tự động cập nhật trạng thái đơn hàng từ đang vận chuyển sang đã nhận hàng
+async function updateOrdersStatus() {
+  const threeDaysAgo = moment().subtract(5, 'days').format('DD/MM/YYYY');
+  const ordersToUpdate = await Order.find({$and:[{day: threeDaysAgo},{orderStatus:2}]});
+  const ids = ordersToUpdate.map((order) => order._id);
+  for (let i = 0; i < ids.length; i++) {
+    await Order.updateMany(
+      { _id: ids[i] },
+      { $set: { orderStatus: 3 } }
+    );
+  }
+}
+setInterval(updateOrdersStatus, 10000);
 
 //Trang doanh thu theo sản phẩm
 app.get("/revenue", async (req, res) => {
