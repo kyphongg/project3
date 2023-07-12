@@ -1686,6 +1686,9 @@ app.post("/creat_new_order", async (req, res) => {
         shippingPhone: mobile,
         total: req.body.total,
         couponCode: code,
+        day: moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .format("DD/MM/YYYY"),
         timeIn: moment
           .tz(Date.now(), "Asia/Ho_Chi_Minh")
           .format("DD/MM/YYYY hh:mm a"),
@@ -2042,12 +2045,12 @@ app.get("/all_product", async (req, res) => {
     let data = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
+      .sort({productName:1})
       .limit(limit)
       .skip((page - 1) * limit)
       .populate("categoryID")
       .populate("producerID")
       .exec();
-
     res.render("layouts/clients/main/all_product", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -2073,6 +2076,7 @@ app.get("/all_product", async (req, res) => {
     let data = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
     })
+      .sort({productName:1})
       .limit(limit)
       .skip((page - 1) * limit)
       .populate("categoryID")
@@ -2223,6 +2227,7 @@ app.get("/producer/:slug", async (req, res) => {
     let data = await Product.find({
       producerID: new mongoose.Types.ObjectId(producerId),
     })
+    .sort({productName:1})
     .limit(limit)
     .skip((page - 1) * limit);
     let title = producer.producerName;
@@ -2252,6 +2257,7 @@ app.get("/producer/:slug", async (req, res) => {
     let data = await Product.find({
       producerID: new mongoose.Types.ObjectId(producerId),
     })
+    .sort({productName:1})
     .limit(limit)
     .skip((page - 1) * limit);
     
@@ -2298,6 +2304,7 @@ app.get("/category/:slug", async (req, res) => {
     let data = await Product.find({
       categoryID: new mongoose.Types.ObjectId(categoryId),
     })
+    .sort({productName:1})
     .limit(limit)
     .skip((page - 1) * limit);
 
@@ -2328,6 +2335,7 @@ app.get("/category/:slug", async (req, res) => {
     let data = await Product.find({
       categoryID: new mongoose.Types.ObjectId(categoryId),
     })
+    .sort({productName:1})
     .limit(limit)
     .skip((page - 1) * limit);
     let title = category.categoryName;
@@ -2423,6 +2431,8 @@ app.get("/admin_logout", (req, res) => {
 app.get("/admin_home", async (req, res) => {
   if (req.session.daDangNhap) {
     const order = await Order.find({ orderStatus: 0 }).count();
+    const today = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+    const orders = await Order.find({$and:[{orderStatus:0},{day:today}]}).count();
     const customer = await User.find().count();
     const employee = await Admin.find().count();
     const comment = await Comment.find().count();
@@ -2522,6 +2532,7 @@ app.get("/admin_home", async (req, res) => {
       number: customer,
       numberal: employee,
       order: order,
+      orders: orders,
       admin_id: req.session.admin_id,
       admin_role: req.session.admin_role,
       VND,
@@ -3428,9 +3439,11 @@ app.get("/all_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
+      const today = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
       let data = await Order.find()
         .populate("userID")
         .sort({ orderStatus: 1, timeIn: -1 });
+      const orderToday = await Order.find({ day: today }).count();
       const orderNew = await Order.find({ orderStatus: 0 }).count();
       const orderAccept = await Order.find({ orderStatus: 1 }).count();
       const orderVroom = await Order.find({ orderStatus: 2 }).count();
@@ -3449,6 +3462,7 @@ app.get("/all_orders", async (req, res) => {
         orderDone: orderDone,
         orderCancel: orderCancel,
         orderCoupon: orderCoupon,
+        orderToday: orderToday,
       });
     } else {
       res.redirect("/admin_home");
@@ -3458,6 +3472,46 @@ app.get("/all_orders", async (req, res) => {
   }
 });
 
+//Đơn hôm nay
+app.get("/all_orders_today", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      const today = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let order = await Order.find({day:today}).count();
+      let data = await Order.find({day:today})
+        .populate("userID")
+        .sort({ orderStatus: 1, timeIn: -1 });
+      const orderNew = await Order.find({$and:[{orderStatus:0},{day:today}]}).count();
+      const orderAccept = await Order.find({$and:[{orderStatus:1},{day:today}]}).count();
+      const orderVroom = await Order.find({$and:[{orderStatus:2},{day:today}]}).count();
+      const orderDone = await Order.find({$and:[{orderStatus:3},{day:today}]}).count();
+      const orderCancel = await Order.find({$and:[{orderStatus:4},{day:today}]}).count();
+      const orderCoupon = await Order.find({$and:[{ couponCode:{$ne : "Không"}},{day:today}]}).count();
+      res.render("layouts/servers/orders/all_orders_today", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        orderNew: orderNew,
+        orderAccept: orderAccept,
+        orderVroom: orderVroom,
+        orderDone: orderDone,
+        orderCancel: orderCancel,
+        orderCoupon: orderCoupon,
+        today,
+        order,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn chưa được xác nhận
 app.get("/new_orders", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3480,6 +3534,268 @@ app.get("/new_orders", async (req, res) => {
   }
 });
 
+//Đơn mới hôm nay
+app.get("/new_orders_today", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      const today = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let data = await Order.find({$and:[{orderStatus:0},{day:today}]}).populate("userID");
+      const order = await Order.find({$and:[{orderStatus:0},{day:today}]}).count();
+      res.render("layouts/servers/orders/new_orders_today", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        order,
+        today,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn đã được xác nhận
+app.get("/accept_orders", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let data = await Order.find({ orderStatus: 1 }).populate("userID");
+      const order = await Order.find({ orderStatus: 1 }).count();
+      res.render("layouts/servers/orders/accept_orders", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        order,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn đã được xác nhận hôm nay
+app.get("/accept_orders_today", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      const today = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let data = await Order.find({$and:[{orderStatus:1},{day:today}]}).populate("userID");
+      const order = await Order.find({$and:[{orderStatus:1},{day:today}]}).count();
+      res.render("layouts/servers/orders/accept_orders_today", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        order,
+        today,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn đang vận chuyển
+app.get("/vroom_orders", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let data = await Order.find({ orderStatus: 2 }).populate("userID");
+      const order = await Order.find({ orderStatus: 2 }).count();
+      res.render("layouts/servers/orders/vroom_orders", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        order,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn đang vận chuyển hôm nay
+app.get("/vroom_orders_today", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      const today = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let data = await Order.find({$and:[{orderStatus:2},{day:today}]}).populate("userID");
+      const order = await Order.find({$and:[{orderStatus:2},{day:today}]}).count();
+      res.render("layouts/servers/orders/vroom_orders_today", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        order,
+        today,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn đã hoàn thành
+app.get("/done_orders", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let data = await Order.find({ orderStatus: 3 }).populate("userID");
+      res.render("layouts/servers/orders/done_orders", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn đã hoàn thành hôm nay
+app.get("/done_orders_today", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      const today = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let data = await Order.find({$and:[{orderStatus:3},{day:today}]}).populate("userID");
+      const order = await Order.find({$and:[{orderStatus:3},{day:today}]}).count();
+      res.render("layouts/servers/orders/done_orders_today", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        today,
+        order,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn bị huỷ
+app.get("/cancel_orders", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let data = await Order.find({ orderStatus: 4 }).populate("userID");
+      res.render("layouts/servers/orders/cancel_orders", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn bị huỷ hôm nay
+app.get("/cancel_orders_today", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      const today = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let data = await Order.find({$and:[{orderStatus:4},{day:today}]}).populate("userID");
+      const order = await Order.find({$and:[{orderStatus:4},{day:today}]}).count();
+      res.render("layouts/servers/orders/cancel_orders_today", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        today,
+        order,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn hàng dùng coupon
+app.get("/coupon_orders", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      let data = await Order.find({ couponCode: { $ne: "Không" } }).populate("userID");
+      const order = await Order.find({ couponCode: { $ne: "Không" } }).count();
+      res.render("layouts/servers/orders/coupon_orders", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        order,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Đơn hàng dùng coupon hôm nay
+app.get("/coupon_orders_today", async (req, res) => {
+  if (req.session.daDangNhap) {
+    let role = req.session.admin_role;
+    if (role == 0 || role == 2) {
+      const today = moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+      let data = await Order.find({$and:[{ couponCode:{$ne : "Không"}},{day:today}]}).populate("userID");
+      const order = await Order.find({$and:[{ couponCode:{$ne : "Không"}},{day:today}]}).count();
+      res.render("layouts/servers/orders/coupon_orders_today", {
+        adminName: req.session.adminName,
+        admin_id: req.session.admin_id,
+        admin_role: req.session.admin_role,
+        danhsach: data,
+        VND,
+        today,
+        order,
+      });
+    } else {
+      res.redirect("/admin_home");
+    }
+  } else {
+    res.redirect("/admin_login");
+  }
+});
+
+//Chi tiết đơn hàng
 app.get("/order_detail/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3532,112 +3848,7 @@ app.get("/order_detail/:orderCode", async (req, res) => {
   }
 });
 
-app.get("/coupon_orders", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 2) {
-      let data = await Order.find({ couponCode: { $ne: "Không" } }).populate("userID");
-      const order = await Order.find({ couponCode: { $ne: "Không" } }).count();
-      res.render("layouts/servers/orders/coupon_orders", {
-        adminName: req.session.adminName,
-        admin_id: req.session.admin_id,
-        admin_role: req.session.admin_role,
-        danhsach: data,
-        VND,
-        order,
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.get("/accept_orders", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 2) {
-      let data = await Order.find({ orderStatus: 1 }).populate("userID");
-      const order = await Order.find({ orderStatus: 1 }).count();
-      res.render("layouts/servers/orders/accept_orders", {
-        adminName: req.session.adminName,
-        admin_id: req.session.admin_id,
-        admin_role: req.session.admin_role,
-        danhsach: data,
-        VND,
-        order,
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.get("/vroom_orders", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 2) {
-      let data = await Order.find({ orderStatus: 2 }).populate("userID");
-      const order = await Order.find({ orderStatus: 2 }).count();
-      res.render("layouts/servers/orders/vroom_orders", {
-        adminName: req.session.adminName,
-        admin_id: req.session.admin_id,
-        admin_role: req.session.admin_role,
-        danhsach: data,
-        VND,
-        order,
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.get("/done_orders", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 2) {
-      let data = await Order.find({ orderStatus: 3 }).populate("userID");
-      res.render("layouts/servers/orders/done_orders", {
-        adminName: req.session.adminName,
-        admin_id: req.session.admin_id,
-        admin_role: req.session.admin_role,
-        danhsach: data,
-        VND,
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.get("/cancel_orders", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 2) {
-      let data = await Order.find({ orderStatus: 4 }).populate("userID");
-      res.render("layouts/servers/orders/cancel_orders", {
-        adminName: req.session.adminName,
-        admin_id: req.session.admin_id,
-        admin_role: req.session.admin_role,
-        danhsach: data,
-        VND,
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
+//Cập nhật trạng thái đơn hàng từ mới sang đã xác nhận
 app.post("/update_status/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3675,6 +3886,7 @@ app.post("/update_status/:orderCode", async (req, res) => {
   }
 });
 
+//Cập nhật trạng thái đơn hàng từ đã xác nhận sang vận chuyển
 app.post("/update_status_1/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3712,6 +3924,7 @@ app.post("/update_status_1/:orderCode", async (req, res) => {
   }
 });
 
+//Cập nhật trạng thái đơn hàng từ mới sang bị huỷ
 app.post("/admin_cancel_order/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;

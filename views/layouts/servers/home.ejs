@@ -61,23 +61,23 @@
                 </div>
                 <%}%>
 
-                <% if(admin_role == 0) { %>
-                <div class="col-md-3 market-update-gd">
-                    <div class="market-update-block clr-block-3">
-                        <a href="/employees">
-                        <div class="col-md-4 market-update-right">
-                            <i class="far fa-address-card"></i>
-                        </div>
-                        <div class="col-md-8 market-update-left">
-                                <h4>Nhân viên</h4>
-                                <h3><%= numberal %></h3>
-                                <p>Số lượng nhân viên</p>
-                        </div>
-                        </a>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-                <%}%>
+                <% if(admin_role == 0|| admin_role == 2 ) { %>
+                  <div class="col-md-3 market-update-gd">
+                      <div class="market-update-block clr-block-4">
+                          <a href="/new_orders_today">
+                          <div class="col-md-4 market-update-right">
+                              <i class="fas fa-file-invoice-dollar"></i>
+                          </div>
+                          <div class="col-md-8 market-update-left">
+                                  <h4>Đơn mới trong ngày</h4>
+                                  <h3><%= orders %></h3>
+                                  <p>Số lượng đơn chưa duyệt</p>
+                          </div>
+                          </a>
+                          <div class="clearfix"></div>
+                      </div>
+                  </div>
+                  <%}%>
 
                 <% if(admin_role == 0|| admin_role == 2 ) { %>
                 <div class="col-md-3 market-update-gd">
@@ -87,7 +87,7 @@
                             <i class="fas fa-file-invoice-dollar"></i>
                         </div>
                         <div class="col-md-8 market-update-left">
-                                <h4>Đơn mới</h4>
+                                <h4>Đơn chưa duyệt</h4>
                                 <h3><%= order %></h3>
                                 <p>Số lượng đơn chưa duyệt</p>
                         </div>

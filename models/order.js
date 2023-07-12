@@ -70,6 +70,9 @@ var Order = new Schema({
   total: {
     type: Number,
   },
+  day: {
+    type: String,
+  },
   timeIn: {
     type: String,
   },

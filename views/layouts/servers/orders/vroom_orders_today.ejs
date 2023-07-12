@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đơn hàng chưa xác nhận</title>
+    <title>Đơn hàng đang vận chuyển hôm nay</title>
     <%- include('../partials/head') %>
 </head>
 <body>
@@ -20,11 +20,12 @@
                 <div class="table-heading">
                     <div class="row">
                         <div class="col">
-                            <h3>Đơn hàng chưa xác nhận</h3>
+                            <h3>Đơn hàng đang vận chuyển hôm nay ngày <%= today %></h3>
                         </div>
                         <div class="col">
                             <div class="order-status" style="text-align: right; margin-right: 15px;">
-                                <a href="/new_orders_today" class="btn btn-primary">Đơn mới ngày hôm nay</a>
+                                <a href="/all_orders_today" class="btn btn-primary">Đơn hôm nay</a>
+                                <a href="/vroom_orders" class="btn btn-primary">Đơn hàng đang vận chuyển</a>
                                 <a href="/all_orders" class="btn btn-primary">Tổng đơn hàng</a>
                             </div>
                         </div>
@@ -34,7 +35,7 @@
                     <% if(order==0){ %>
                         <div class="empty-table">
                             <img src="/images/empty-order.jpg" alt="" width="250" height="250">
-                            <p>Không có đơn hàng mới nào</p>
+                            <p>Không có đơn hàng đang vận chuyển</p>
                         </div>
                     <%}else{%>
                     <div class="table-responsive">
@@ -48,32 +49,26 @@
                                 <th style="text-align: center;" data-orderable="false">Tổng tiền</th>
                                 <th style="text-align: center;" data-orderable="false">Ngày đặt</th>
                                 <th style="text-align: center;" data-orderable="false">Trạng thái</th>
-                                <th style="text-align: center;" data-orderable="false">Tuỳ biến</th>
                                 <th style="text-align: center;" data-orderable="false">Chi tiết</th>
                             </tr>
                             </thead>
                             <tbody>
                                 <% for(let i=0; i < danhsach.length; i++) { %>
-                                <tr>
-                                    <td style="text-align: center;"><%= i+1 %></td>
-                                    <td style="text-align: center;"><%= danhsach[i].orderCode %></td>
-                                    <td style="text-align: center;"><%= danhsach[i].shippingName %></td>
-                                    <td style="text-align: center;"><%= danhsach[i].shippingPhone %></td>
-                                    <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
-                                    <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
-                                    <td style="text-align: center; color: #fbc216; font-weight: 600;">Đang chờ xác nhận</td>
-                                    <td>
-                                        <form action="/update_status/<%= danhsach[i].orderCode %>" method="post">
-                                            <button class="btn btn-success" style="width: 80px;"><b>Xác nhận</b></button>
-                                        </form>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <a class="btn btn-primary" style="text-align: center;" href="/order_detail/<%= danhsach[i].orderCode %>">
-                                            Xem chi tiết
-                                        </a>
-                                    </td>
-                                </tr>
-                                <%}%>
+                                    <tr>
+                                        <td style="text-align: center;"><%= i+1 %></td>
+                                        <td style="text-align: center;"><%= danhsach[i].orderCode %></td>
+                                        <td style="text-align: center;"><%= danhsach[i].shippingName %></td>
+                                        <td style="text-align: center;"><%= danhsach[i].shippingPhone %></td>
+                                        <td style="text-align: center;"><%= VND.format(danhsach[i].total) %></td>
+                                        <td style="text-align: center;"><%= danhsach[i].timeIn %></td>
+                                        <td style="text-align: center; color: #0D99FD; font-weight: 600;">Đang vận chuyển</td>
+                                        <td style="text-align: center;">
+                                            <a class="btn btn-primary" style="text-align: center;" href="/order_detail/<%= danhsach[i].orderCode %>">
+                                                Xem chi tiết
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <%}%>
                             </tbody>
                         </table>
                     </div>

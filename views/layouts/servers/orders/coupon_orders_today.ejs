@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Tổng đơn hàng</title>
+    <title>Đơn hàng dùng mã giảm giá hôm nay</title>
     <%- include('../partials/head') %>
 </head>
 <body>
@@ -20,22 +20,24 @@
                 <div class="table-heading">
                     <div class="row">
                         <div class="col-2">
-                            <h3>Tất cả đơn hàng</h3>
+                            <h3>Đơn hàng dùng mã giảm giá hôm nay</h3>
                         </div>
-                        <div class="col-10" style="display: flex; justify-content: right;">
-                            <div class="order-status">
-                                <a href="/all_orders_today" class="btn btn-newOrder btn-warning">Hôm nay (<%= orderToday %>)</a>
-                                <a href="/new_orders" class="btn btn-newOrder btn-warning">Đơn chưa xác nhận (<%= orderNew %>)</a>
-                                <a href="/accept_orders" class="btn  btn-acceptOrder btn-warning">Đã xác nhận (<%= orderAccept %>)</a>
-                                <a href="/vroom_orders" class="btn btn-delivery">Đang vận chuyển (<%= orderVroom %>)</a>
-                                <a href="/done_orders" class="btn btn-success">Đã hoàn thành (<%= orderDone %>)</a>
-                                <a href="/cancel_orders" class="btn btn-danger">Đã huỷ (<%= orderCancel %>) </a>
-                                <a href="/coupon_orders" class="btn btn-info">Dùng coupon (<%= orderCoupon %>) </a>
+                        <div class="col">
+                            <div class="order-status" style="text-align: right; margin-right: 15px;">
+                                <a href="/all_orders_today" class="btn btn-primary">Đơn hôm nay</a>
+                                <a href="/coupon_orders" class="btn btn-primary">Đơn hàng dùng mã giảm giá</a>
+                                <a href="/all_orders" class="btn btn-primary">Tổng đơn hàng</a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="panel panel-default">
+                    <% if(order==0){ %>
+                        <div class="empty-table">
+                            <img src="/images/empty-order.jpg" alt="" width="250" height="250">
+                            <p>Không có đơn hàng dùng mã giảm giá</p>
+                        </div>
+                    <%}else{%>
                     <div class="table-responsive">
                         <table id="myTable" class="table table-striped table-bordered">
                             <thead>
@@ -82,6 +84,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <% } %>
                 </div>
             </div>
         </section>
