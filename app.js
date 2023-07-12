@@ -2493,30 +2493,6 @@ app.get("/admin_home", async (req, res) => {
       { $limit: 5 },
     ]).sort({ totalCount: -1 });
 
-    let monthlyDataIn = [];
-    for (let i = 0; i < 12; i++) {
-      let data = await Order.find({ month: i }).populate("items.productID");
-      let monthlyRevenueIn = 0;
-      for (let j = 0; j < data.length; j++) {
-        data[j].items.forEach(function (id) {
-          monthlyRevenueIn += (id.quantity * id.productID.priceIn);
-        });
-      }
-      monthlyDataIn.push(monthlyRevenueIn);
-    }
-
-    let monthlyDataOut = [];
-    for (let i = 0; i < 12; i++) {
-      let data = await Order.find({ month: i }).populate("items.productID");
-      let monthlyRevenueOut = 0;
-      for (let j = 0; j < data.length; j++) {
-        data[j].items.forEach(function (id) {
-          monthlyRevenueOut += (id.quantity * id.productID.priceOut);
-        });
-      }
-      monthlyDataOut.push(monthlyRevenueOut);
-    }
-
     let monthlyData = [];
     for (let i = 0; i < 12; i++) {
       let data = await Order.find({ month: i }).populate("items.productID");
@@ -2541,8 +2517,6 @@ app.get("/admin_home", async (req, res) => {
       bestSale,
       outOfStock,
       comment,
-      monthlyDataIn,
-      monthlyDataOut,
       monthlyData,
     });
   } else {
@@ -4055,12 +4029,38 @@ app.get("/salesbyyears", async (req, res) => {
       }
     monthlyData.push(monthlyRevenue);
     }
+
+    let monthlyDataIn = [];
+    for (let i = 0; i < 12; i++) {
+      let data = await Order.find({ month: i }).populate("items.productID");
+      let monthlyRevenueIn = 0;
+      for (let j = 0; j < data.length; j++) {
+        data[j].items.forEach(function (id) {
+          monthlyRevenueIn += (id.quantity * id.productID.priceIn);
+        });
+      }
+      monthlyDataIn.push(monthlyRevenueIn);
+    }
+
+    let monthlyDataOut = [];
+    for (let i = 0; i < 12; i++) {
+      let data = await Order.find({ month: i }).populate("items.productID");
+      let monthlyRevenueOut = 0;
+      for (let j = 0; j < data.length; j++) {
+        data[j].items.forEach(function (id) {
+          monthlyRevenueOut += (id.quantity * id.productID.priceOut);
+        });
+      }
+      monthlyDataOut.push(monthlyRevenueOut);
+    }
       res.render("layouts/servers/sales/salesbyyears", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
         admin_role: req.session.admin_role,
         VND,
         monthlyData,
+        monthlyDataOut,
+        monthlyDataIn,
       });
     } else {
       res.redirect("/admin_home");
@@ -4089,6 +4089,7 @@ app.get("/monthlySale/:id", async (req, res) => {
         convert,
         VND,
         admin_role: req.session.admin_role,
+        money,
       });
     } else {
       res.redirect("/admin_home");
