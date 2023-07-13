@@ -3829,7 +3829,7 @@ app.post("/update_status/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      await Order.updateOne({ slug: req.params.slug }, { orderStatus: 1 });
+      await Order.updateOne({ orderCode: req.params.orderCode }, { orderStatus: 1 });
       let find = await Order.findOne({orderCode: req.params.orderCode}).populate("userID");
       let email = find.userID.email;
       const emailData = {
