@@ -23,6 +23,43 @@
             <div class="cart-heading">
                 <h3>Kết quả tìm kiếm</h3>
             </div>
+
+            <div class="filter-catergory">
+                <p>Lọc sản phẩm theo: </p>
+                <div class="by-category">
+                    <select class="select-category">
+                        <option>Chọn thể loại</option>
+                        <option>Hành Động</option>
+                        <option>Thể Thao</option>
+                        <option>Mô Phỏng</option>
+                        <option>Chiến Thuật</option>
+                        <option>Phiêu Lưu</option>
+                        <option>Nhập vai</option>
+                    </select>
+                </div>
+    
+                <div class="by-producer">
+                    <select class="select-producer">
+                        <option>Chọn nhà sản xuất</option>
+                        <option>PS5</option>
+                        <option>PS4</option>
+                        <option>Nintendo</option>
+                        <option>Xbox</option>
+                    </select>
+                </div>
+    
+                <div class="by-price">
+                    <select class="select-price">
+                        <option>Chọn mức giá tiền</option>
+                        <option>100.000 - 300.000</option>
+                        <option>300.000 - 700.000</option>
+                        <option>700.000 - 1.000.000</option>
+                        <option>1.000.000 - 3.000.000</option>
+                    </select>
+                </div>
+    
+                <button class="btn btn-primary btn-filter"><i class="fa-solid fa-filter" style="margin-right: 10px;"></i> Lọc</button>
+            </div>
             
             <% if (danhsach.length> 0){ %>
             <div class="row row-cols-4">

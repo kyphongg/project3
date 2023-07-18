@@ -2027,5 +2027,59 @@ input:focus{
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);    margin-top: 16px;
 }
 
+.filter-catergory{
+    display: flex;
+    margin-left: 25px;
+    margin-top: 15px;
+}
 
+.filter-catergory p{
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: -3px;
+}
+
+.by-category, 
+.by-producer,
+.by-price,
+.btn-filter {
+    margin-left: 15px;
+    margin-right: 10px;
+    margin-top: -10px;
+}
+
+.select-category,
+.select-producer,
+.select-price {
+    padding: 10px 5px;
+    border-color: #d1d5db;
+    border-width: 1px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #000;
+    text-align: left;
+    width: 200px; 
+}
+
+.select-category:hover,
+.select-producer:hover,
+.select-price:hover {
+    border-color: #2579f2;
+}
+
+.select-category:focus,
+.select-producer:focus,
+.select-price:focus {
+    outline: none;
+    border-color: #2579f2; /* Màu xanh dương */
+    box-shadow: 0 0 3px #2579f2; /* Đổ bóng khi chọn */
+}
+
+.btn-filter{
+    font-size: 14px;
+    font-weight: 600;
+    width: 80px;
+    height: 41.6px;
+    border-radius: 8px;
+}
 
