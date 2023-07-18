@@ -57,10 +57,16 @@ body{
     background: #0A59CC;
     margin-right: 15px;
     cursor: pointer;
+    border-radius: 0px 8px 8px 0px;
 }
 
 .search-form button:hover{
     background-color: #0B61DE;
+}
+
+.btn-check:focus+.btn, .btn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0 rgba(13,110,253,.25);
 }
 
 input:focus{
@@ -75,6 +81,7 @@ input:focus{
     font-size: 16px;
     text-transform: none;
     border: 1px solid #2579F2;
+    border-radius: 8px 0px 0px 8px;
 }
 
 .icon{
