@@ -35,12 +35,9 @@
                 </div>
             </div>
             <p style="display: none;" id="length"><%= danhsach.length %></p>
-            <div class="row row-cols-4">
-                <ul class="items">
+            <div class="row row-cols-4 items">
                 <% for(let i=0; i < danhsach.length; i++) { %>
-                    
-                        <li data-price="">
-                    <div class="col-product"> 
+                    <div class="col-product" data-price="<%= danhsach[i].priceOut %>">
                         <div class="sp-box">
                             <a href="/product/<%= danhsach[i].slug %>">
                                 <img src="/images/<%= danhsach[i].productImage %>" style="text-align: center" height="300px" width="100px" alt="">
@@ -52,12 +49,8 @@
                                 </div>
                             </a>
                         </div>
-                        <h4 id="last<%= i %>" style="display: none;"><%= danhsach[i].priceOut %></h4>
                     </div>
-                </li>
-
                 <% } %>  
-            </ul> 
             </div>
             <% } else { %>
                 <div class="cart-table">
@@ -71,48 +64,49 @@
             <% } %>
         </div>
         </div>
-        <script>
-            let field = document.querySelector('.items');
-let li = Array.from(field.querySelectorAll('li'));
+<script>
+    let field = document.querySelector('.items');
+let products = Array.from(field.querySelectorAll('.col-product'));
 let length = document.getElementById("length").innerHTML;
 let select = document.getElementById('select');
 
-    let ar = [];
-    for (let i = 0; i < length; i++) {
-        let last = document.getElementById("last" + i).innerHTML;
-        ar.push(last);
-    }
-    for (let i = 0; i < length; i++) {
-        li[i].setAttribute("data-price", ar[i]);
-    }
-    this.run = () => {
-        sortingValue();
-    }
-    function sortingValue() {
-        if (select.value == 'Default') {
-            while (field.firstChild) {
-                field.removeChild(field.firstChild);
-            }
-            field.append(...li);
-        } else if (select.value == 'HighToLow') {
-            SortElem(field, li, true);
-        } else if (select.value == 'LowToHigh') {
-            SortElem(field, li, false);
-        }
-    }
-    function SortElem(field, li, asc) {
-        let dm = asc ? -1 : 1;
-        let sortli = li.sort((a, b) => {
-            const ax = Number(a.getAttribute('data-price'));
-            const bx = Number(b.getAttribute('data-price'));
-            return ax > bx ? (1 * dm) : (-1 * dm);
-        });
+let prices = [];
+for (let i = 0; i < length; i++) {
+    let price = products[i].getAttribute("data-price");
+    prices.push(price);
+}
+
+for (let i = 0; i < length; i++) {
+    products[i].setAttribute("data-price", prices[i]);
+}
+
+function sortingValue() {
+    if (select.value == 'Default') {
         while (field.firstChild) {
             field.removeChild(field.firstChild);
         }
-        field.append(...sortli);
+        field.append(...products);
+    } else if (select.value == 'HighToLow') {
+        sortProducts(field, products, true);
+    } else if (select.value == 'LowToHigh') {
+        sortProducts(field, products, false);
     }
-        </script>
+}
+
+function sortProducts(field, products, asc) {
+    let dm = asc ? -1 : 1;
+    let sortedProducts = products.sort((a, b) => {
+        const priceA = Number(a.getAttribute('data-price'));
+        const priceB = Number(b.getAttribute('data-price'));
+        return priceA > priceB ? (1 * dm) : (-1 * dm);
+    });
+    while (field.firstChild) {
+        field.removeChild(field.firstChild);
+    }
+    field.append(...sortedProducts);
+}
+field.classList.add('row-cols-4');
+</script>
     <%- include('../partials/footer') %>
 </body>
 </html>
