@@ -1333,14 +1333,33 @@ input:focus{
     margin-left: 20px;
 }
 
-.orders p{
-    margin-left: 20px;
-}
-
 .orders-table{
     padding-left: 15px;
     padding-right: 15px;
     padding-bottom: 15px;
+    margin-top: 15px; 
+    margin-left: 5px;
+}
+
+a.my_links {
+    position: relative;
+}
+
+a.my_links:first-child:hover::after {
+    content: "Xem chi tiết";
+    display: block;
+    font-size: 12px;
+    position: absolute;
+    top: 20px;
+    width: 80px;
+    left: -25px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    z-index: 1;
+}
+
+.order-heading p{
+    margin-left: 20px;
 }
 
 .security{
