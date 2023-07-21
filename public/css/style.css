@@ -3780,3 +3780,33 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     border-color: #2579f2; /* Màu xanh dương */
     box-shadow: 0 0 3px #2579f2; /* Đổ bóng khi chọn */
 }
+
+a.my_links {
+    position: relative;
+}
+  
+a.my_links:first-child:hover::after {
+    content: "Xem chi tiết";
+    display: block;
+    font-size: 12px;
+    position: absolute;
+    top: 20px;
+    width: 80px;
+    left: -25px;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+a.my_links:last-child:hover::after {
+    content: "Sửa thông tin";
+    display: block;
+    font-size: 12px;
+    position: absolute;
+    top: 20px;
+    width: 85px;
+    left: -25px;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+}

@@ -1985,7 +1985,7 @@ app.post("/cancel_order/:orderCode", async (req, res) => {
 
 //Trang tìm kiếm
 app.get("/search", async (req, res) => {
-  let kw = req.query.kw;
+  let kw = req.query.kw.trim();
   if (req.session.guest) {
     let data = await Product.find({
       productName: { $regex: ".*" + kw + ".*", $options: "i" },
