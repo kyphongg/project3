@@ -21,49 +21,25 @@
     <div class="container">
         <div class="cart-p">
             <div class="cart-heading">
-                <h3>Kết quả tìm kiếm</h3>
+                <h3>Kết quả tìm kiếm cho từ khoá: <b style="color: black;">"<%= kw %>"</b></h3>
             </div>
-
+            <% if (danhsach.length> 0){ %>
             <div class="filter-catergory">
                 <p>Lọc sản phẩm theo: </p>
-                <div class="by-category">
-                    <select class="select-category">
-                        <option>Chọn thể loại</option>
-                        <option>Hành Động</option>
-                        <option>Thể Thao</option>
-                        <option>Mô Phỏng</option>
-                        <option>Chiến Thuật</option>
-                        <option>Phiêu Lưu</option>
-                        <option>Nhập vai</option>
-                    </select>
-                </div>
-    
-                <div class="by-producer">
-                    <select class="select-producer">
-                        <option>Chọn nhà sản xuất</option>
-                        <option>PS5</option>
-                        <option>PS4</option>
-                        <option>Nintendo</option>
-                        <option>Xbox</option>
-                    </select>
-                </div>
-    
                 <div class="by-price">
-                    <select class="select-price">
-                        <option>Chọn mức giá tiền</option>
-                        <option>100.000 - 300.000</option>
-                        <option>300.000 - 700.000</option>
-                        <option>700.000 - 1.000.000</option>
-                        <option>1.000.000 - 3.000.000</option>
+                    <select class="select-price" id="select" onchange="sortingValue()">
+                        <option value="Default">Chọn mức giá tiền</option>
+                        <option value="LowToHigh">Tăng dần</option>
+                        <option value="HighToLow">Giảm dần</option>
                     </select>
                 </div>
-    
-                <button class="btn btn-primary btn-filter"><i class="fa-solid fa-filter" style="margin-right: 10px;"></i> Lọc</button>
             </div>
-            
-            <% if (danhsach.length> 0){ %>
+            <p style="display: none;" id="length"><%= danhsach.length %></p>
             <div class="row row-cols-4">
+                <ul class="items">
                 <% for(let i=0; i < danhsach.length; i++) { %>
+                    
+                        <li data-price="">
                     <div class="col-product"> 
                         <div class="sp-box">
                             <a href="/product/<%= danhsach[i].slug %>">
@@ -76,8 +52,12 @@
                                 </div>
                             </a>
                         </div>
+                        <h4 id="last<%= i %>" style="display: none;"><%= danhsach[i].priceOut %></h4>
                     </div>
-                <% } %>
+                </li>
+
+                <% } %>  
+            </ul> 
             </div>
             <% } else { %>
                 <div class="cart-table">
@@ -89,9 +69,50 @@
                     </div>
                 </div>
             <% } %>
+        </div>
+        </div>
+        <script>
+            let field = document.querySelector('.items');
+let li = Array.from(field.querySelectorAll('li'));
+let length = document.getElementById("length").innerHTML;
+let select = document.getElementById('select');
 
-        </div>
-        </div>
+    let ar = [];
+    for (let i = 0; i < length; i++) {
+        let last = document.getElementById("last" + i).innerHTML;
+        ar.push(last);
+    }
+    for (let i = 0; i < length; i++) {
+        li[i].setAttribute("data-price", ar[i]);
+    }
+    this.run = () => {
+        sortingValue();
+    }
+    function sortingValue() {
+        if (select.value == 'Default') {
+            while (field.firstChild) {
+                field.removeChild(field.firstChild);
+            }
+            field.append(...li);
+        } else if (select.value == 'HighToLow') {
+            SortElem(field, li, true);
+        } else if (select.value == 'LowToHigh') {
+            SortElem(field, li, false);
+        }
+    }
+    function SortElem(field, li, asc) {
+        let dm = asc ? -1 : 1;
+        let sortli = li.sort((a, b) => {
+            const ax = Number(a.getAttribute('data-price'));
+            const bx = Number(b.getAttribute('data-price'));
+            return ax > bx ? (1 * dm) : (-1 * dm);
+        });
+        while (field.firstChild) {
+            field.removeChild(field.firstChild);
+        }
+        field.append(...sortli);
+    }
+        </script>
     <%- include('../partials/footer') %>
 </body>
 </html>

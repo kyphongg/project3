@@ -2003,6 +2003,7 @@ app.get("/search", async (req, res) => {
       VND,
       cart: req.session.cart,
       avatar: avatar,
+      kw,
     });
   } else {
     let data = await Product.find({
@@ -2016,6 +2017,7 @@ app.get("/search", async (req, res) => {
       VND,
       cart: 0,
       avatar: "user (2).png",
+      kw,
     });
   }
 });
@@ -2067,7 +2069,6 @@ app.get("/all_product", async (req, res) => {
       avatar: avatar,
     });
   } else {
-
     let count = await Product.find({
       $or: [{ productStatus: 0 }, { productStatus: 1 }],
     }).countDocuments();
