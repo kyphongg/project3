@@ -43,9 +43,9 @@
                               <td style="text-align: center;"><%= comments[i].commentDate %></td>
                               <td style="text-align: center;"><%= comments[i].productID.productName %></td>
                               <% if(comments[i].commentStatus == 0){ %>
-                                <td style="text-align: center;">Ẩn</td>
+                                <td style="text-align: center;"><b style="color: rgb(90, 90, 90);">Ẩn</b></td>
                               <% }else if(comments[i].commentStatus == 1){ %>
-                                <td style="text-align: center;">Hiển thị</td>
+                                <td style="text-align: center;"><b style="color: rgb(64, 196, 64);">Hiển thị</b></td>
                               <%}%>
                               <% if(comments[i].commentStatus == 0){ %>
                                 <td style="text-align: center;">
