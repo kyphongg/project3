@@ -1986,10 +1986,16 @@ app.post("/cancel_order/:orderCode", async (req, res) => {
 //Trang tìm kiếm
 app.get("/search", async (req, res) => {
   let kw = req.query.kw.trim();
+  let data = [];
   if (req.session.guest) {
-    let data = await Product.find({
-      productName: { $regex: ".*" + kw + ".*", $options: "i" },
-    });
+    if(kw==""){
+      data = [];
+    } else {
+      let find = await Product.find({
+        productName: { $regex: ".*" + kw + ".*", $options: "i" },
+      });
+      data.push(find);
+    }
     let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
     if (user.avatar) {
@@ -2006,9 +2012,14 @@ app.get("/search", async (req, res) => {
       kw,
     });
   } else {
-    let data = await Product.find({
-      productName: { $regex: ".*" + kw + ".*", $options: "i" },
-    });
+    if(kw==""){
+      data = [];
+    } else {
+      let find = await Product.find({
+        productName: { $regex: ".*" + kw + ".*", $options: "i" },
+      });
+      data.push(find);
+    }
     res.render("layouts/clients/main/search", {
       fullname: 1,
       userid: 1,
