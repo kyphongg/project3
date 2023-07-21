@@ -26,9 +26,32 @@
             <% if (danhsach.length> 0){ %>
             <div class="filter-catergory">
                 <p>Lọc sản phẩm theo: </p>
+                <div class="by-category">
+                    <label for=""><b>Thể Loại</b></label>
+                    <select class="select-category" id="selectCategory" onchange="sortingCategory()">
+                        <option>Mặc định</option>
+                        <option>Hành động</option>
+                        <option>Thể thao</option>
+                        <option>Mô phỏng</option>
+                        <option>Chiến thuật</option>
+                        <option>Phiêu lưu</option>
+                        <option>Nhập vai</option>
+                    </select>
+                </div>
+                <div class="by-producer">
+                    <label for=""><b>Nhà Sản Xuất</b></label>
+                    <select class="select-producer" id="selectProducer" onchange="sortingProducer()">
+                        <option>Mặc định</option>
+                        <option>PS5</option>
+                        <option>PS4</option>
+                        <option>Nintendo</option>
+                        <option>Xbox</option>
+                    </select>
+                </div>
                 <div class="by-price">
-                    <select class="select-price" id="select" onchange="sortingValue()">
-                        <option value="Default">Chọn mức giá tiền</option>
+                    <label for=""><b>Giá tiền</b></label>
+                    <select class="select-price" id="selectPrice" onchange="sortingValue()">
+                        <option value="Default">Mặc định</option>
                         <option value="LowToHigh">Tăng dần</option>
                         <option value="HighToLow">Giảm dần</option>
                     </select>
@@ -37,7 +60,8 @@
             <p style="display: none;" id="length"><%= danhsach.length %></p>
             <div class="row row-cols-4 items">
                 <% for(let i=0; i < danhsach.length; i++) { %>
-                    <div class="col-product" data-price="<%= danhsach[i].priceOut %>">
+                    <div class="col-product" data-price="<%= danhsach[i].priceOut %>" data-category="<%= danhsach[i].categoryName %>" 
+                        data-producer="<%= danhsach[i].producerName %>">
                         <div class="sp-box">
                             <a href="/product/<%= danhsach[i].slug %>">
                                 <img src="/images/<%= danhsach[i].productImage %>" style="text-align: center" height="300px" width="100px" alt="">
@@ -65,47 +89,136 @@
         </div>
         </div>
 <script>
-    let field = document.querySelector('.items');
-let products = Array.from(field.querySelectorAll('.col-product'));
+let field = document.querySelector(".items");
+let products = Array.from(field.querySelectorAll(".col-product"));
 let length = document.getElementById("length").innerHTML;
-let select = document.getElementById('select');
+let selectPrice = document.getElementById("selectPrice");
+let categorySelect = document.getElementById("selectCategory");
+const categoryArray = ["Mô phỏng", "Hành động", "Thể thao", "Phiêu lưu", "Chiến thuật", "Nhập vai"];
+let producerSelect = document.getElementById("selectProducer");
+
 
 let prices = [];
 for (let i = 0; i < length; i++) {
     let price = products[i].getAttribute("data-price");
     prices.push(price);
 }
-
 for (let i = 0; i < length; i++) {
     products[i].setAttribute("data-price", prices[i]);
 }
 
-function sortingValue() {
-    if (select.value == 'Default') {
-        while (field.firstChild) {
-            field.removeChild(field.firstChild);
-        }
-        field.append(...products);
-    } else if (select.value == 'HighToLow') {
-        sortProducts(field, products, true);
-    } else if (select.value == 'LowToHigh') {
-        sortProducts(field, products, false);
-    }
+function filterByProducer(products, selectedProducer) {
+    return products.filter((product) => {
+        return selectedProducer === 'Mặc định' || product.getAttribute('data-producer') === selectedProducer;
+    });
 }
 
-function sortProducts(field, products, asc) {
+function filterByCategory(products, selectedCategory) {
+  return products.filter(product => {
+    const categories = product.getAttribute('data-category').split(',');
+    return selectedCategory === 'Mặc định' || categories.includes(selectedCategory);
+  });
+}
+
+function sortProductsByTitle(products, asc) {
+    let dm = asc ? 1 : -1;
+    return products.sort((a, b) => {
+        const titleA = a.querySelector('.p-title p').innerText.toUpperCase();
+        const titleB = b.querySelector('.p-title p').innerText.toUpperCase();
+        return titleA.localeCompare(titleB) * dm;
+    });
+}
+
+function sortProductsByPrice(products, asc) {
     let dm = asc ? -1 : 1;
-    let sortedProducts = products.sort((a, b) => {
+    return products.sort((a, b) => {
         const priceA = Number(a.getAttribute('data-price'));
         const priceB = Number(b.getAttribute('data-price'));
-        return priceA > priceB ? (1 * dm) : (-1 * dm);
+        return (priceA - priceB) * dm;
     });
+}
+
+function updateProductsDisplay(products) {
     while (field.firstChild) {
         field.removeChild(field.firstChild);
     }
-    field.append(...sortedProducts);
+    field.append(...products);
 }
-field.classList.add('row-cols-4');
+
+function sortingValue() {
+    let selectedProducer = producerSelect.value;
+    let selectedCategory = categorySelect.value;
+    let filteredProducts = filterByProducer(products, selectedProducer);
+    filteredProducts = filterByCategory(filteredProducts, selectedCategory);
+    if (selectPrice.value == 'Default') {
+        filteredProducts = sortProductsByTitle(filteredProducts, true);
+    } else if (selectPrice.value == 'HighToLow') {
+        filteredProducts = sortProductsByPrice(filteredProducts, true);
+    } else if (selectPrice.value == 'LowToHigh') {
+        filteredProducts = sortProductsByPrice(filteredProducts, false);
+    }
+    updateProductsDisplay(filteredProducts);
+}
+
+function sortingProducer() {
+    let selectedProducer = producerSelect.value;
+    let selectedCategory = categorySelect.value;
+    let filteredProducts = filterByProducer(products, selectedProducer);
+    filteredProducts = filterByCategory(filteredProducts, selectedCategory);
+    let sortedProducts = sortProductsByTitle(filteredProducts, true);
+    if (selectPrice.value == 'HighToLow') {
+        sortedProducts = sortProductsByPrice(filteredProducts, true);
+    } else if (selectPrice.value == 'LowToHigh') {
+        sortedProducts = sortProductsByPrice(filteredProducts, false);
+    }
+    updateProductsDisplay(sortedProducts);
+}
+
+function sortingCategory() {
+    const selectedProducer = producerSelect.value;
+    const selectedCategory = categorySelect.value;
+    let filteredProducts = filterByCategory(products, selectedCategory);
+    filteredProducts = filterByProducer(filteredProducts, selectedProducer);
+    let sortedProducts = sortProductsByTitle(filteredProducts, true);
+    if (selectPrice.value == 'HighToLow') {
+        sortedProducts = sortProductsByPrice(filteredProducts, true);
+    } else if (selectPrice.value == 'LowToHigh') {
+        sortedProducts = sortProductsByPrice(filteredProducts, false);
+    }
+    updateProductsDisplay(sortedProducts);
+}
+
+// function sortingValue() {
+//     if (selectPrice.value == "Default") {
+//         products = products.sort((a, b) => {
+//             const titleA = a.querySelector(".p-title p").innerText.toUpperCase();
+//             const titleB = b.querySelector(".p-title p").innerText.toUpperCase();
+//             return titleA.localeCompare(titleB);
+//         });
+//         while (field.firstChild) {
+//             field.removeChild(field.firstChild);
+//         }
+//         field.append(...products);
+//     } else if (selectPrice.value == "HighToLow") {
+//         sortProducts(field, products, true);
+//     } else if (selectPrice.value == "LowToHigh") {
+//         sortProducts(field, products, false);
+//     }
+// }
+
+// function sortProducts(field, products, asc) {
+//     let dm = asc ? -1 : 1;
+//     let sortedProducts = products.sort((a, b) => {
+//         const priceA = Number(a.getAttribute("data-price"));
+//         const priceB = Number(b.getAttribute("data-price"));
+//         return priceA > priceB ? (1 * dm) : (-1 * dm);
+//     });
+//     while (field.firstChild) {
+//         field.removeChild(field.firstChild);
+//     }
+//     field.append(...sortedProducts);
+// }
+// field.classList.add("row-cols-4");
 </script>
     <%- include('../partials/footer') %>
 </body>

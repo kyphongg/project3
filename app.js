@@ -1993,8 +1993,12 @@ app.get("/search", async (req, res) => {
     } else {
       let find = await Product.find({
         productName: { $regex: ".*" + kw + ".*", $options: "i" },
+      }).sort({productName:1});
+      data = find.map(({ productName, producerID, categoryID }) => {
+        let categoryNames = categoryID.map(({ categoryName }) => categoryName);
+        let categoryNameString = categoryNames.join(", ");
+        return { productName, producerName: producerID.producerName, categoryName: categoryNameString };
       });
-      data.push(find);
     }
     let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
@@ -2017,8 +2021,15 @@ app.get("/search", async (req, res) => {
     } else {
       let find = await Product.find({
         productName: { $regex: ".*" + kw + ".*", $options: "i" },
+      })
+      .populate("producerID")
+      .populate("categoryID")
+      .sort({productName:1});
+      data = find.map(({ productImage, productName, slug, priceOut, producerID, categoryID }) => {
+        let categoryNames = categoryID.map(({ categoryName }) => categoryName);
+        let categoryNameString = categoryNames.join(", ");
+        return { productImage, productName, slug, priceOut, producerName: producerID.producerName, categoryName: categoryNameString };
       });
-      data.push(find);
     }
     res.render("layouts/clients/main/search", {
       fullname: 1,
