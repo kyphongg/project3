@@ -94,7 +94,6 @@ let products = Array.from(field.querySelectorAll(".col-product"));
 let length = document.getElementById("length").innerHTML;
 let selectPrice = document.getElementById("selectPrice");
 let categorySelect = document.getElementById("selectCategory");
-const categoryArray = ["Mô phỏng", "Hành động", "Thể thao", "Phiêu lưu", "Chiến thuật", "Nhập vai"];
 let producerSelect = document.getElementById("selectProducer");
 
 
@@ -115,7 +114,7 @@ function filterByProducer(products, selectedProducer) {
 
 function filterByCategory(products, selectedCategory) {
   return products.filter(product => {
-    const categories = product.getAttribute('data-category').split(',');
+    const categories = product.getAttribute('data-category').split(', ');
     return selectedCategory === 'Mặc định' || categories.includes(selectedCategory);
   });
 }
