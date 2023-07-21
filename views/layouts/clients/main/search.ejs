@@ -187,38 +187,6 @@ function sortingCategory() {
     }
     updateProductsDisplay(sortedProducts);
 }
-
-// function sortingValue() {
-//     if (selectPrice.value == "Default") {
-//         products = products.sort((a, b) => {
-//             const titleA = a.querySelector(".p-title p").innerText.toUpperCase();
-//             const titleB = b.querySelector(".p-title p").innerText.toUpperCase();
-//             return titleA.localeCompare(titleB);
-//         });
-//         while (field.firstChild) {
-//             field.removeChild(field.firstChild);
-//         }
-//         field.append(...products);
-//     } else if (selectPrice.value == "HighToLow") {
-//         sortProducts(field, products, true);
-//     } else if (selectPrice.value == "LowToHigh") {
-//         sortProducts(field, products, false);
-//     }
-// }
-
-// function sortProducts(field, products, asc) {
-//     let dm = asc ? -1 : 1;
-//     let sortedProducts = products.sort((a, b) => {
-//         const priceA = Number(a.getAttribute("data-price"));
-//         const priceB = Number(b.getAttribute("data-price"));
-//         return priceA > priceB ? (1 * dm) : (-1 * dm);
-//     });
-//     while (field.firstChild) {
-//         field.removeChild(field.firstChild);
-//     }
-//     field.append(...sortedProducts);
-// }
-// field.classList.add("row-cols-4");
 </script>
     <%- include('../partials/footer') %>
 </body>

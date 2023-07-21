@@ -1994,10 +1994,10 @@ app.get("/search", async (req, res) => {
       let find = await Product.find({
         productName: { $regex: ".*" + kw + ".*", $options: "i" },
       }).sort({productName:1});
-      data = find.map(({ productName, producerID, categoryID }) => {
+      data = find.map(({ productImage, productName, slug, priceOut, producerID, categoryID }) => {
         let categoryNames = categoryID.map(({ categoryName }) => categoryName);
         let categoryNameString = categoryNames.join(", ");
-        return { productName, producerName: producerID.producerName, categoryName: categoryNameString };
+        return { productImage, productName, slug, priceOut, producerName: producerID.producerName, categoryName: categoryNameString };
       });
     }
     let user = await User.findOne({ _id: req.session.userid });
@@ -2257,6 +2257,7 @@ app.get("/producer/:slug", async (req, res) => {
     .skip((page - 1) * limit);
     let title = producer.producerName;
     let id = producer._id;
+    
     res.render("layouts/clients/producer/producer", {
       fullname: req.session.fullname,
       userid: req.session.userid,
@@ -2285,7 +2286,7 @@ app.get("/producer/:slug", async (req, res) => {
     .sort({productName:1})
     .limit(limit)
     .skip((page - 1) * limit);
-    
+
     let title = producer.producerName;
     let id = producer._id;
     res.render("layouts/clients/producer/producer", {
