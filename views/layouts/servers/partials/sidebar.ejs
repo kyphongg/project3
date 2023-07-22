@@ -65,7 +65,7 @@
                                 <li><a href="/admin_categories"><i class="fas fa-list"></i>Thể loại</a></li>
                                 <li><a href="/admin_producers"><i class="fas fa-registered"></i>Nhà sản xuất</a></li>
                                 <li><a href="/admin_product"><i class="fas fa-archive"></i>Sản phẩm</a></li>
-                                <li><a href="/coupon"><i class="fas fa-images"></i>Mã giảm giá</a></li>
+                                <li><a href="/coupon"><i class="fa-solid fa-percent"></i>Mã giảm giá</a></li>
                                 <li><a href="/warehouse"><i class="fa-solid fa-boxes-stacked"></i>Kho</a></li>
                             </ul>
                         </li>
@@ -73,10 +73,14 @@
                     
                     <% if(admin_role == 0|| admin_role == 2 ) { %>
                     <li class="sub-menu">
-                         <a href="/all_orders">
+                         <a href="javascript:">
                             <i class="fas fa-cart-plus"></i>
                             <span>Quản lý đơn hàng</span>
                         </a>
+                        <ul class="sub">
+                            <li><a href="/all_orders_today"><i class="fa-solid fa-calendar-day"></i>Đơn hàng hôm nay</a></li>
+                            <li><a href="/all_orders"><i class="fas fa-list"></i>Tổng đơn hàng</a></li>
+                        </ul>
                     </li>
                     <%}%>
 
