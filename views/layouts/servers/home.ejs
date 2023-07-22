@@ -62,15 +62,15 @@
 
                 <% if(admin_role == 0|| admin_role == 2 ) { %>
                   <div class="col-md-3 market-update-gd">
-                      <div class="market-update-block clr-block-4">
+                      <div class="market-update-block clr-block-3">
                           <a href="/new_orders_today">
                           <div class="col-md-4 market-update-right">
-                              <i class="fas fa-file-invoice-dollar"></i>
+                            <i style="color: white;" class="fa-solid fa-truck-ramp-box fa-3x" aria-hidden="true"></i>
                           </div>
                           <div class="col-md-8 market-update-left">
-                                  <h4>Đơn mới trong ngày</h4>
-                                  <h3><%= orders %></h3>
-                                  <p>Số lượng đơn chưa duyệt</p>
+                                  <h4 style="width:170px; margin-left: -5px;">Đơn mới trong ngày</h4>
+                                  <h3 style="margin-left: -5px;"><%= orders %></h3>
+                                  <p style="margin-left: -5px;">Số lượng đơn chưa duyệt</p>
                           </div>
                           </a>
                           <div class="clearfix"></div>
@@ -83,7 +83,7 @@
                     <div class="market-update-block clr-block-4">
                         <a href="/new_orders">
                         <div class="col-md-4 market-update-right">
-                            <i class="fas fa-file-invoice-dollar"></i>
+                          <i style="color: white;" class="fa-solid fa-boxes-packing fa-3x"></i>
                         </div>
                         <div class="col-md-8 market-update-left">
                                 <h4>Đơn chưa duyệt</h4>
@@ -98,25 +98,23 @@
 
                 <% if(admin_role == 0) { %>
                 <div class="graphBox">
-                  <div class="box" style="padding: 0;">
+                  <div class="box" style="height: 525px;">
                     <div class="bestSells-Box">
-                      <div class="table-agile-info">
+                      <div class="table-agile-info" style="padding: 0;">
                         <h3 style="text-align: center;">Sản phẩm bán chạy nhất</h3>
                         <div class="table-responsive">
-                          <table class="table table-striped table-bordered table-bestSells">
+                          <table class="table table-striped table-bestSells">
                             <thead>
-                              <th>Sản phẩm</th>
-                              <th>Hình ảnh</th>
-                              <th>Số lượng bán ra</th>
+                              <tr></tr>
                             </thead>
     
                             <tbody>
                               <% for(let i=0; i < bestSale.length; i++) { %>
                                 <% bestSale[i].productList.forEach(function(id) { %>
                               <tr>
-                                <td style="text-align: left;"><%= id.productName %></td>
-                                <td><img src="/images/<%= id.productImage %>"   width="50" height="80" alt=""></td>
-                                <td><%= bestSale[i].totalCount %></td>
+                                <td><img src="/images/<%= id.productImage %>"   width="40" height="70" alt=""></td>
+                                <td style="text-align: left; width: 162px;"><%= id.productName %></td>
+                                <td><p class="btn btn-primary"><%= bestSale[i].totalCount %> sản phẩm</p></td>
                               </tr>
                               <% }); %>
                               <% } %>
@@ -129,7 +127,7 @@
                   <div class="box">
                     <h3 style="text-align: center;">Doanh thu từng tháng năm 2023</h3>
                     <p id="monthlyData" style="display: none;"><%= monthlyData %></p>
-                    <canvas id="myChart" style="margin-top: 15px;"></canvas>
+                    <canvas id="myChart" style="margin-top: 15px; height: 445.8px; width: 745.6px;"></canvas>
                   </div>
                 </div>
                 <%}%>
@@ -142,11 +140,11 @@
                         <div class="table-responsive">
                           <table id="myTable" class="table table-striped table-bordered table-outOfStock">
                             <thead>
-                              <th>STT</th>
-                              <th>Tên sản phẩm</th>
-                              <th>Hình ảnh</th>
-                              <th>Số lượng</th>
-                              <th>Trạng thái</th>
+                              <th style="text-align: center;">STT</th>
+                              <th style="text-align: center;" data-orderable="false">Tên sản phẩm</th>
+                              <th style="text-align: center;"data-orderable="false">Hình ảnh</th>
+                              <th style="text-align: center;"data-orderable="false">Số lượng</th>
+                              <th style="text-align: center;"data-orderable="false">Trạng thái</th>
                             </thead>
     
                             <tbody>
@@ -157,7 +155,7 @@
                                 <td><img src="/images/<%= outOfStock[i].productImage %>"   width="50" height="80" alt=""></td>
                                 <td><%= outOfStock[i].productQuantity %></td>
                                 <td><% if(outOfStock[i].productQuantity == 0){ %>
-                                  <p class="btn btn-warning">Hết hàng</p>
+                                  <p class="btn btn-danger">Hết hàng</p>
                                 <%} else { %>
                                   <p class="btn btn-warning">Sắp hết hàng</p>
                                   <%}%>
