@@ -4020,7 +4020,12 @@ async function updateOrdersStatus() {
   for (let i = 0; i < ids.length; i++) {
     await Order.updateMany(
       { _id: ids[i] },
-      { $set: { orderStatus: 3 } }
+      { $set: { orderStatus: 3,
+        timeOut: moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .format("DD/MM/YYYY hh:mm a"),
+      time: moment.tz(Date.now(), "Asia/Ho_Chi_Minh").format("DD/MM/YYYY"),
+      month: moment.tz(Date.now(), "Asia/Ho_Chi_Minh").month(), } }
     );
   }
 }
