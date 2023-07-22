@@ -193,21 +193,36 @@ function makeid(length) {
 let previousDate = null;
 let counter = 1;
 
-function generateOrderCode() {
+async function generateOrderCode() {
   const currentDate = moment().format("DD-MM-YYYY");
 
+  let uniqueId = counter.toString().padStart(2, "0");
+  let orderCode = `GSLP-${currentDate}-${uniqueId}`;
+
+  let isUnique = false;
+  while (!isUnique) {
+    // Kiểm tra xem mã đơn hàng đã tồn tại trong MongoDB hay chưa
+    const result = await Order.findOne({ orderCode: orderCode });
+    if (!result) {
+      isUnique = true;
+    } else {
+      // Tăng giá trị counter và tạo lại mã đơn hàng
+      counter++;
+      if (counter === 100) {
+        counter = 1;
+      }
+      uniqueId = counter.toString().padStart(2, "0");
+      orderCode = `GSLP-${currentDate}-${uniqueId}`;
+    }
+  }
+
+  // Cập nhật lại giá trị previousDate nếu cần thiết
   if (previousDate === null || currentDate !== previousDate) {
     counter = 1;
     previousDate = currentDate;
   }
 
-  const uniqueId = counter.toString().padStart(2, "0");
-  const orderCode = `GSLP-${currentDate}-${uniqueId}`;
-
   counter++;
-  if (counter === 100) {
-    counter = 1;
-  }
 
   return orderCode;
 }
@@ -1590,7 +1605,7 @@ app.post("/creat_new_order", async (req, res) => {
   const quantity = req.body.quantity_hidden;
   const uid = req.body.user_id_hidden;
   const code = req.body.couponCode;
-  var orderCode = generateOrderCode();
+  var orderCode = await generateOrderCode();
 
   let errorForm = 0;
 
@@ -3845,6 +3860,14 @@ app.get("/order_detail/:orderCode", async (req, res) => {
     res.redirect("/admin_login");
   }
 });
+
+//Tự động cập nhật đơn hàng :D
+// async function update(){
+//   await Order.updateMany({ orderStatus: 0 }, { orderStatus: 1 });
+//   await Order.updateMany({ orderStatus: 1 }, { orderStatus: 2 });
+// }
+
+// setInterval(update, 10000);
 
 //Cập nhật trạng thái đơn hàng từ mới sang đã xác nhận
 app.post("/update_status/:orderCode", async (req, res) => {
