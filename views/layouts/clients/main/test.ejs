@@ -29,11 +29,18 @@
         </div>
         <p id="test" style="display: none;"><%= data %></p>
         <p style="display: none;" id="length"><%= data.length %></p>
-        <div class="product-grid row row-cols-4"></div>
-        <div class="pagination">
-            <button class="prev">Prev</button>
-            <button class="next">Next</button>
+        <div class="product-grid row row-cols-4">
+   
         </div>
+        <div class="paginationn">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Trang trước</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Trang sau</a></li>   
+          </ul>
+      </div>
     </div>
     <script>
 const VND = new Intl.NumberFormat("vi-VN", {
@@ -66,16 +73,21 @@ function displayProductsOnCurrentPage(sortedProducts = products) {
     productItem.classList.add('col', 'mb-4', 'col-product');
     productItem.setAttribute('data-price', product.priceOut);
     productItem.innerHTML = `
-      <div class="card h-100">
+    <div class="col product">
+      <div class="sp-box">
         <a href="/product/${product.slug}">
           <img src="images/${product.productImage}" class="card-img-top" alt="">
+
+          <div class="p-title">
+            <p>${product.productName}</p>
+          </div>
+          
+          <div class="price">
+            <p id="price">${VND.format(product.priceOut)}</p>
+          </div>
         </a>
-        <div class="card-body">
-          <h5 class="card-title">${product.productName}</h5>
-          <p class="card-text">${VND.format(product.priceOut)}</p>
-        </div>
       </div>
-    `;
+    </div>`;
     productGrid.appendChild(productItem);
   });
 
