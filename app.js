@@ -2063,6 +2063,22 @@ app.get("/search", async (req, res) => {
   }
 });
 
+app.get("/test", async (req, res) => {
+  let data = await Product.find({
+    $or: [{ productStatus: 0 }, { productStatus: 1 }],
+  }).sort({productName:1}).select('-_id productName priceOut slug productImage');
+
+  res.render("layouts/clients/main/test", {
+    fullname: 1,
+    userid: 1,
+    sID: req.session.sessionID,
+    data,
+    VND,
+    cart: 0,
+    avatar: "user (2).png",
+  });
+});
+
 //Trang tất cả các sản phẩm
 app.get("/all_product", async (req, res) => {
   let page = req.query.page ? parseInt(req.query.page) : 1;
