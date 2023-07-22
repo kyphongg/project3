@@ -90,6 +90,7 @@ const Order = require("./models/order.js");
 const News = require("./models/news.js");
 const Password = require("./models/password.js");
 const Comment = require("./models/comment.js");
+const Sale = require("./models/sale.js");
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -2520,16 +2521,10 @@ app.get("/admin_home", async (req, res) => {
       { $limit: 5 },
     ]).sort({ totalCount: -1 });
 
+    let sale = await Sale.find();
     let monthlyData = [];
-    for (let i = 0; i < 12; i++) {
-      let data = await Order.find({ month: i }).populate("items.productID");
-      let monthlyRevenue = 0;
-      for (let j = 0; j < data.length; j++) {
-        data[j].items.forEach(function (id) {
-        monthlyRevenue += (id.quantity * (id.productID.priceOut - id.productID.priceIn) + data[j].shippingFee);
-        });
-      }
-    monthlyData.push(monthlyRevenue);
+    for(let i = 0; i < 12; i++){
+      monthlyData.push(sale[i].revenue);
     }
 
     res.render("layouts/servers/home", {
@@ -4008,6 +4003,61 @@ async function updateOrdersStatus() {
 }
 setInterval(updateOrdersStatus, 10000);
 
+//Tự động cập nhật doanh thu
+async function moneyInUpdate(){
+  let monthlyDataIn = [];
+  for (let i = 0; i < 12; i++) {
+    let data = await Order.find({ month: i }).populate("items.productID");
+    let monthlyRevenueIn = 0;
+    for (let j = 0; j < data.length; j++) {
+      data[j].items.forEach(function (id) {
+        monthlyRevenueIn += (id.quantity * id.productID.priceIn);
+      });
+    }
+    monthlyDataIn.push(monthlyRevenueIn);
+  }
+  for (let i = 0; i < 12; i++){
+    await Sale.updateMany({month:i},{moneyIn:monthlyDataIn[i]});
+  }
+}
+setInterval(moneyInUpdate, 10000);
+
+async function moneyOutUpdate(){
+  let monthlyDataOut = [];
+  for (let i = 0; i < 12; i++) {
+    let data = await Order.find({ month: i }).populate("items.productID");
+    let monthlyRevenueOut = 0;
+    for (let j = 0; j < data.length; j++) {
+      data[j].items.forEach(function (id) {
+        monthlyRevenueOut += (id.quantity * id.productID.priceOut);
+      });
+    }
+    monthlyDataOut.push(monthlyRevenueOut);
+  }
+  for (let i = 0; i < 12; i++){
+    await Sale.updateMany({month:i},{moneyOut:monthlyDataOut[i]});
+  }
+}
+setInterval(moneyOutUpdate, 10000);
+
+async function moneyRevenueUpdate(){
+  let monthlyData = [];
+  for (let i = 0; i < 12; i++) {
+    let data = await Order.find({ month: i }).populate("items.productID");
+    let monthlyRevenue = 0;
+    for (let j = 0; j < data.length; j++) {
+      data[j].items.forEach(function (id) {
+      monthlyRevenue += (id.quantity * (id.productID.priceOut - id.productID.priceIn) + data[j].shippingFee);
+      });
+    }
+  monthlyData.push(monthlyRevenue);
+  }
+  for (let i = 0; i < 12; i++){
+    await Sale.updateMany({month:i},{revenue:monthlyData[i]});
+  }
+}
+setInterval(moneyRevenueUpdate, 10000);
+
 //Trang doanh thu theo sản phẩm
 app.get("/revenue", async (req, res) => {
   if (req.session.daDangNhap) {
@@ -4045,40 +4095,14 @@ app.get("/salesbyyears", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-    let monthlyData = [];
-    for (let i = 0; i < 12; i++) {
-      let data = await Order.find({ month: i }).populate("items.productID");
-      let monthlyRevenue = 0;
-      for (let j = 0; j < data.length; j++) {
-        data[j].items.forEach(function (id) {
-        monthlyRevenue += (id.quantity * (id.productID.priceOut - id.productID.priceIn) + data[j].shippingFee);
-        });
-      }
-    monthlyData.push(monthlyRevenue);
-    }
-
+    let sale = await Sale.find();
     let monthlyDataIn = [];
-    for (let i = 0; i < 12; i++) {
-      let data = await Order.find({ month: i }).populate("items.productID");
-      let monthlyRevenueIn = 0;
-      for (let j = 0; j < data.length; j++) {
-        data[j].items.forEach(function (id) {
-          monthlyRevenueIn += (id.quantity * id.productID.priceIn);
-        });
-      }
-      monthlyDataIn.push(monthlyRevenueIn);
-    }
-
     let monthlyDataOut = [];
-    for (let i = 0; i < 12; i++) {
-      let data = await Order.find({ month: i }).populate("items.productID");
-      let monthlyRevenueOut = 0;
-      for (let j = 0; j < data.length; j++) {
-        data[j].items.forEach(function (id) {
-          monthlyRevenueOut += (id.quantity * id.productID.priceOut);
-        });
-      }
-      monthlyDataOut.push(monthlyRevenueOut);
+    let monthlyData = [];
+    for(let i = 0; i < 12; i++){
+      monthlyDataIn.push(sale[i].moneyIn);
+      monthlyDataOut.push(sale[i].moneyOut);
+      monthlyData.push(sale[i].revenue);
     }
       res.render("layouts/servers/sales/salesbyyears", {
         adminName: req.session.adminName,
