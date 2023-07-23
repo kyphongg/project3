@@ -1798,6 +1798,9 @@ app.post("/creat_new_order", async (req, res) => {
         shippingPhone: mobile,
         total: req.body.total,
         couponCode: code,
+        day: moment
+        .tz(Date.now(), "Asia/Ho_Chi_Minh")
+        .format("DD/MM/YYYY"),
         timeIn: moment
           .tz(Date.now(), "Asia/Ho_Chi_Minh")
           .format("DD/MM/YYYY hh:mm a"),
