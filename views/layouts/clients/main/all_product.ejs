@@ -9,7 +9,9 @@
 </head>
 <style>
     .pagination{
-        padding-left: 90%;
+        float: right;
+        margin-right: 35px;
+        margin-bottom: 20px;
     }
 .page-numbers{
     border: none;
@@ -33,7 +35,7 @@
   background-color: #007bff;
   color: #fff;
   border-radius: 50%;
-  padding: 3px 7px;
+  padding: 3px 10px;
 }
 </style>
 <body>
@@ -60,9 +62,11 @@
         <p style="display: none;" id="length"><%= data.length %></p>
         <div class="product-grid row row-cols-4"></div>
         <div class="pagination">
-            <button class="page-numbers"></button>
+            <button class="page-numbers" style="background-color: #F3F4F6;"></button>
         </div>
     </div>
+
+    <div style="width: 100%; background-color: #F3F4F6; margin-top: 55px;"></div>
 <script>
 const VND = new Intl.NumberFormat("vi-VN", {
   style: "currency",
