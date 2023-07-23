@@ -4507,7 +4507,6 @@ app.get("/add_news", async (req, res) => {
       res.render("layouts/servers/news/add_news", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
-        danhsach: data,
         admin_role: req.session.admin_role,
       });
     } else {
