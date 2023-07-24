@@ -31,7 +31,7 @@
                     <button class="btn btn-primary"><i class="fa-solid fa-plus"></i>  Thêm mã giảm giá</button>
                 </a>
                 <div class="panel panel-default">
-                    <div class="table-responsive" style="text-align: center;">
+                    <div class="table-responsive" style="text-align: center; overflow-y: hidden;">
                         <table class="table table-bordered">
                             <thead >
                             <tr>
@@ -49,7 +49,7 @@
                                 <tbody>
                                 <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
-                                    <td><%= i+1 %></td>
+                                    <td style="height: 76px;"><%= i+1 %></td>
                                     <td><%= danhsach[i].couponCode %></td>
                                     <td><%= danhsach[i].couponQuantity %></td>
                                     <td><% if(danhsach[i].couponType == 0){ %> Giảm tiền <% }else
@@ -61,7 +61,7 @@
                                     <td><%= danhsach[i].start_date %></td>
                                     <td><%= danhsach[i].end_date %></td>
                                     <td>
-                                        <a href="/edit_coupon/<%= danhsach[i].slug %>" class="my_linkss" ui-toggle-class="">
+                                        <a href="/edit_coupon/<%= danhsach[i].slug %>" class="my_link" ui-toggle-class="">
                                             <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
                                         </a>
                                     </td>

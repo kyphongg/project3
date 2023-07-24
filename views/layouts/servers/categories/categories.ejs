@@ -31,7 +31,7 @@
                     <button class="btn btn-primary"><i class="fa-solid fa-plus"></i>  Thêm thể loại</button>
                 </a>
                 <div class="panel panel-default">
-                    <div class="table-responsive" style="text-align: center;">
+                    <div class="table-responsive" style="text-align: center;overflow-y: hidden;">
                         <table class="table table-bordered">
                             <thead >
                             <tr>
@@ -45,10 +45,10 @@
                                     <% for(let i=0; i < danhsach.length; i++) { %>
                                 <tr>
                                     <td style="display: none;"><%= danhsach[i].slug %></td>
-                                    <td><%= i+1 %></td>
+                                    <td style="height: 76px;"><%= i+1 %></td>
                                     <td><%= danhsach[i].categoryName %></td>
                                     <td>
-                                        <a href="/edit_categories/<%= danhsach[i].slug %>" class="my_linkss" ui-toggle-class="">
+                                        <a href="/edit_categories/<%= danhsach[i].slug %>" class="my_linkss" style="margin-right: 8px;"ui-toggle-class="">
                                             <i class="fa-solid fa-square-pen" style="font-size: 25px; color: #5CB85C;"></i>
                                         </a>
                                         <a onClick="find(this);" class="js-buy-tickets my_linkss"><i class="fa-solid fa-square-xmark js-buy-tickets" style="font-size: 25px; color: #D9534F;"></i></a>

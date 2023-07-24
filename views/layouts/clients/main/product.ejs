@@ -10,6 +10,16 @@
 <body>
     <%- include('../partials/header') %>
     <div class="product-box">
+        <%if(success.length > 0){%>
+            <div class="alert alert-success" style="margin-top: 15px;">
+                <%= success %>
+            </div>
+            <%} else if(error.length > 0){%>
+                <div class="alert alert-danger" style="margin-top: 15px;">
+                    <%= error %>
+                </div>
+                <%}%>
+
         <div class="p-left">
             <div class="big-img">
                 <img src="/images/<%= danhsach.productImage %>" style="text-align: center" height="300px"
