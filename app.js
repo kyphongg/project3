@@ -2087,6 +2087,84 @@ app.get("/test", async (req, res) => {
     $or: [{ productStatus: 0 }, { productStatus: 1 }],
   }).sort({productName:1}).select('-_id productName priceOut slug productImage');
 
+  async function getBestSalesByMonth() {
+    let bestSalesByMonth = await Order.aggregate([
+      { $match: { orderStatus: 3 } },
+      {
+        $project: {
+          month: { $toInt: "$month" },
+          items: 1,
+        },
+      },
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: { month: "$month", productID: "$items._id" },
+          totalCount: { $sum: "$items.quantity" },
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id.productID",
+          foreignField: "_id",
+          as: "productList",
+        },
+      },
+      {
+        $project: {
+          month: "$_id.month",
+          product: { $arrayElemAt: ["$productList", 0] },
+          totalCount: 1,
+        },
+      },
+      { $sort: { month: 1 } },
+      {
+        $group: {
+          _id: "$month",
+          bestSales: {
+            $push: {
+              product: "$product",
+              totalCount: "$totalCount",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id",
+          bestSales: { $slice: ["$bestSales", 5] },
+        },
+      },
+    ]);
+  
+    return bestSalesByMonth;
+  }
+  getBestSalesByMonth().then((result) => {
+    let monthsData = result.reduce((acc, cur) => {
+      let month = cur.month;
+      let bestSales = cur.bestSales.slice(0, 5);
+      if (!acc[month]) {
+        acc[month] = {
+          month: month,
+          sales: [],
+        };
+      }
+      for (let j = 0; j < bestSales.length; j++) {
+        acc[month].sales.push({
+          productName: bestSales[j].product.productName,
+          totalCount: bestSales[j].totalCount,
+        });
+      }
+      return acc;
+    }, {});
+    let a = Object.values(monthsData);
+  }).catch((error) => {
+    console.log(error);
+    throw error;
+  });
+
   res.render("layouts/clients/main/test", {
     fullname: 1,
     userid: 1,
@@ -2424,55 +2502,82 @@ app.get("/admin_home", async (req, res) => {
       { productQuantity: 1 }
     );
 
-    let limit = await Order.aggregate([
-      { $match: { orderStatus: 3 } },
-      {
-        $unwind: "$items",
-      },
-      {
-        $unwind: "$items._id",
-      },
-      {
-        $group: {
-          _id: "$items._id",
-          totalCount: {
-            $sum: "$items.quantity",
+    async function getBestSalesByMonth() {
+      let bestSalesByMonth = await Order.aggregate([
+        { $match: { orderStatus: 3 } },
+        {
+          $project: {
+            month: { $toInt: "$month" },
+            items: 1,
           },
         },
-      },
-    ]);
-    let sum = 0;
-    for (let i = 0; i < limit.length; i++) {
-      sum += limit[i].totalCount;
+        { $unwind: "$items" },
+        {
+          $group: {
+            _id: { month: "$month", productID: "$items._id" },
+            totalCount: { $sum: "$items.quantity" },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id.productID",
+            foreignField: "_id",
+            as: "productList",
+          },
+        },
+        {
+          $project: {
+            month: "$_id.month",
+            product: { $arrayElemAt: ["$productList", 0] },
+            totalCount: 1,
+          },
+        },
+        { $sort: { month: 1 } },
+        {
+          $group: {
+            _id: "$month",
+            bestSales: {
+              $push: {
+                product: "$product",
+                totalCount: "$totalCount",
+              },
+            },
+          },
+        },
+        {
+          $sort: { _id: 1 }
+        },
+        {
+          $project: {
+            _id: 0,
+            month: "$_id",
+            bestSales: { $slice: ["$bestSales", 5] },
+          },
+        },
+      ]);
+      return bestSalesByMonth;
     }
-    let tb = sum / limit.length;
-    let bestSale = await Order.aggregate([
-      { $match: { orderStatus: 3 } },
-      {
-        $unwind: "$items",
-      },
-      {
-        $unwind: "$items._id",
-      },
-      {
-        $group: {
-          _id: "$items._id",
-          totalCount: {
-            $sum: "$items.quantity",
-          },
-        },
-      },
-      { $match: { totalCount: { $gt: tb } } },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id",
-          foreignField: "_id",
-          as: "productList",
-        },
-      },
-      { $limit: 5 },
-    ]).sort({ totalCount: -1 });
+    let result = await getBestSalesByMonth();
+    let monthsData = result.reduce((acc, cur) => {
+      let month = cur.month;
+      let bestSales = cur.bestSales.slice(0, 5);
+      if (!acc[month]) {
+        acc[month] = {
+          month: month,
+          sales: [],
+        };
+      }
+      for (let j = 0; j < bestSales.length; j++) {
+        acc[month].sales.push({
+          productName: bestSales[j].product.productName,
+          productImage: bestSales[j].product.productImage,
+          totalCount: bestSales[j].totalCount,
+        });
+      }
+      return acc;
+    }, {});
+    let bestSale = Object.values(monthsData);
 
     let sale = await Sale.find();
     let monthlyData = [];

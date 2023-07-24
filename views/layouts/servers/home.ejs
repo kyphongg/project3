@@ -15,6 +15,13 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
 </head>
+<style>
+  #sales-table-body img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+</style>
 <body>
     <!--sidebar start-->
     <%- include('partials/sidebar') %>
@@ -104,40 +111,34 @@
                         <h3 style="text-align: center;">Sản phẩm bán chạy nhất</h3>
                         <div class="sale-monthly" style="margin-top: 25px;">
                           <div class="by-monthly">
-                            <select class="select-monthly" id="value" onchange="func()">
+                            <div id="best-sale-data" data-bestsale='<%- JSON.stringify(bestSale) %>'></div>
+                            <select class="select-monthly" id="month-select" onchange="updateTable()">
                               <option disabled selected hidden>Chọn tháng</option>
-                              <option>Tháng 1</option>
-                              <option>Tháng 2</option>
-                              <option>Tháng 3</option>
-                              <option>Tháng 4</option>
-                              <option>Tháng 5</option>
-                              <option>Tháng 6</option>
-                              <option>Tháng 7</option>
-                              <option>Tháng 8</option>
-                              <option>Tháng 9</option>
-                              <option>Tháng 10</option>
-                              <option>Tháng 11</option>
-                              <option>Tháng 12</option>
+                              <option value="1">Tháng 1</option>
+                              <option value="2">Tháng 2</option>
+                              <option value="3">Tháng 3</option>
+                              <option value="4">Tháng 4</option>
+                              <option value="5">Tháng 5</option>
+                              <option value="6">Tháng 6</option>
+                              <option value="7">Tháng 7</option>
+                              <option value="8">Tháng 8</option>
+                              <option value="9">Tháng 9</option>
+                              <option value="10">Tháng 10</option>
+                              <option value="11">Tháng 11</option>
+                              <option value="12">Tháng 12</option>
                             </select>
                           </div>
                         </div>
                         <div class="table-responsive">
-                          <table class="table table-bestSells">
+                          <table id="sales-table">
                             <thead>
-                              <tr></tr>
-                            </thead>
-    
-                            <tbody>
-                              <% for(let i=0; i < bestSale.length; i++) { %>
-                                <% bestSale[i].productList.forEach(function(id) { %>
                               <tr>
-                                <td><img src="/images/<%= id.productImage %>"   width="45" height="60" alt=""></td>
-                                <td style="text-align: left; width: 162px;"><%= id.productName %></td>
-                                <td><p class="btn btn-primary"><%= bestSale[i].totalCount %> sản phẩm</p></td>
+                                <th>Hình ảnh sản phẩm</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Doanh số</th>
                               </tr>
-                              <% }); %>
-                              <% } %>
-                            </tbody>
+                            </thead>
+                            <tbody id="sales-table-body"></tbody>
                           </table>
                         </div>
                       </div>
@@ -189,9 +190,56 @@
                 </div>
             </div>
     </section>
-    <!-- Biểu đồ cột -->
-    <script src="../../../public/js/vi.js"></script>
-    <script>
+
+<script>
+// Dữ liệu bán hàng cho các tháng
+let salesDataEl = document.getElementById('best-sale-data');
+let salesData = salesDataEl ? JSON.parse(salesDataEl.getAttribute('data-bestsale')) : [];
+// Hàm tạo bảng hiển thị dữ liệu bán hàng cho tháng được chọn
+function createSalesTable(month) {
+  let salesDataForMonth = salesData.find(item => item.month === month - 1);
+  let salesTableBody = document.getElementById('sales-table-body');
+  salesTableBody.innerHTML = '';
+
+  if (salesDataForMonth) {
+    salesDataForMonth.sales.forEach(item => {
+      let row = document.createElement('tr');
+      row.innerHTML = `
+        <td><img src="/images/${item.productImage}" alt="${item.productName} style="width=20%""></td>
+        <td>${item.productName}</td>
+        <td>${item.totalCount}</td>
+      `;
+      salesTableBody.appendChild(row);
+    });
+  } else {
+    let row = document.createElement('tr');
+    row.innerHTML = `
+      <td colspan="3">Không có dữ liệu</td>
+    `;
+    salesTableBody.appendChild(row);
+  }
+}
+
+// Hàm cập nhật dữ liệu bán hàng khi tháng được chọn thay đổi
+function updateSalesTable() {
+  let monthSelect = document.getElementById('month-select');
+  let selectedMonth = parseInt(monthSelect.value);
+  createSalesTable(selectedMonth);
+}
+
+// Đặt giá trị mặc định cho thẻ select
+let today = new Date();
+let currentMonth = today.getMonth()+1;
+let monthSelect = document.getElementById('month-select');
+monthSelect.value = currentMonth.toString();
+
+// Gán sự kiện onchange cho thẻ select
+monthSelect.addEventListener('change', updateSalesTable);
+
+// Hiển thị bảng cho tháng đầu tiên khi trang được tải lần đầu
+createSalesTable(currentMonth);
+</script>
+<script>
         const value = document.getElementById("monthlyData").innerHTML;
         const monthlyData = value.split(",");
         const [var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12] = monthlyData;
@@ -240,19 +288,9 @@
         };
         // render init block
         const myChart = new Chart(document.getElementById("myChart"), config);
-        // Instantly assign Chart.js version
-        const chartVersion = document.getElementById("chartVersion");
-        chartVersion.innerText = Chart.version;
-    </script>
+</script>
     <!--main content end-->
     <%- include('partials/footer') %>
 </body>
-
-
-<!-- Filter date -->
-
-<!-- Biểu đồ -->
-
-
 </html>
 
