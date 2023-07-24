@@ -111,7 +111,7 @@
                                             <button class="btn btn-success" style="width: 220px; font-size: 25px; font-weight: 500; margin-right: 15px;"><b>Nhận đơn hàng</b></button>
                                         </form>
                                 <%}%>
-                                <%if(danhsach.orderStatus == 0){%>
+                                <%if(limit!=0 && danhsach.orderStatus == 0){%>
                                         
                                     <button class="btn btn-secondary btn-cancel btn-danger js-buy-tickets" style="font-size: 25px; font-weight: 500;">Huỷ đơn hàng</button>
                                         

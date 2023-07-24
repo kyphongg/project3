@@ -20,6 +20,9 @@ var User = new Schema({
     avatar: {
         type: String
     },
+    limit: {
+        type: Number
+    },
 })
   
 User.plugin(passportLocalMongoose);

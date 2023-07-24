@@ -18,6 +18,7 @@ const Swal = require("sweetalert2");
 const csv = require("csvtojson");
 const slugify = require('slugify');
 const socket = require('socket.io');
+const cron = require('node-cron');
 
 app.use(cors());
 app.use(flash());
@@ -1195,6 +1196,7 @@ app.post("/changePasswordNew", async (req, res) => {
 app.get("/orders_detail/:orderCode", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
+    let limit  = user.limit;
     let avatar = "user (2).png";
     if (user.avatar) {
       avatar = user.avatar;
@@ -1223,6 +1225,7 @@ app.get("/orders_detail/:orderCode", async (req, res) => {
         couponType,
         avatar: avatar,
         formError: req.flash("formError"),
+        limit,
       });
     } else if (code != "Không") {
       let coupon = await Coupon.findOne({ couponCode: code });
@@ -1246,6 +1249,7 @@ app.get("/orders_detail/:orderCode", async (req, res) => {
         couponType,
         avatar: avatar,
         formError: req.flash("formError"),
+        limit,
       });
     }
   } else {
@@ -1945,11 +1949,15 @@ app.post("/get_order/:orderCode", async (req, res) => {
 app.post("/cancel_order/:orderCode", async (req, res) => {
   if (req.session.guest) {
     let uid = req.session.userid;
+    let user = await User.findOne({_id:uid});
+    let limit = user.limit;
     let order = req.params.orderCode;
     let check = await Order.findOne({orderCode: req.params.orderCode});
     if(check.orderStatus != 0){
       res.redirect("/orders_detail/" + order);
-    } else{
+    } else if(limit == 0){
+      res.redirect("/orders_detail/" + order);
+    } else {
       let check = req.body.cancelReason;
       if(check == ""){
         req.flash("formError", "Bạn chưa điền lý do huỷ đơn hàng!");
@@ -1968,6 +1976,9 @@ app.post("/cancel_order/:orderCode", async (req, res) => {
             },
           }
         );
+        if (limit > 0) {
+          await User.updateOne({_id:uid},{$inc:{limit:-1}});
+        }
         let data = await Order.findOne({ orderCode: req.params.orderCode });
         if (data.items.length == 1) {
           data.items.forEach(async function (id) {
@@ -2000,6 +2011,11 @@ app.post("/cancel_order/:orderCode", async (req, res) => {
   } else {
     res.redirect("/login");
   }
+});
+
+//Hàm cập nhật số lần huỷ đơn hàng của User
+cron.schedule('0 0 1 * *', async () => {
+  await User.updateMany({}, { $set: { limit: 2 } });
 });
 
 //Trang tìm kiếm
@@ -3783,7 +3799,7 @@ app.get("/order_detail/:orderCode", async (req, res) => {
   }
 });
 
-//Tự động cập nhật đơn hàng :D
+// Tự động cập nhật đơn hàng :D
 // async function update(){
 //   await Order.updateMany({ orderStatus: 0 }, { orderStatus: 1 });
 //   await Order.updateMany({ orderStatus: 1 }, { orderStatus: 2 });
