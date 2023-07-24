@@ -24,7 +24,7 @@ app.use(cors());
 app.use(flash());
 
 const server = app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`App is running on port ${port}`);
 });
 
 const dateVietNam = moment
@@ -882,7 +882,7 @@ app.get("/terms_of_service", async (req, res) => {
 });
 
 app.get("/news", async (req, res) => {
-  let data = await News.find().populate("newsProduct");
+  let data = await News.find();
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
