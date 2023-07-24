@@ -3810,3 +3810,67 @@ a.my_links:last-child:hover::after {
     padding: 5px;
     border: 1px solid #ccc;
 }
+
+a.my_linkss {
+    position: relative;
+}
+  
+a.my_linkss:first-child:hover::after {
+    content: "Sửa thông tin";
+    display: block;
+    font-size: 12px;
+    position: absolute;
+    top: 20px;
+    width: 85px;
+    left: -25px;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    z-index: 1;
+}
+
+a.my_linkss:last-child:hover::after {
+    content: "Xóa thông tin";
+    display: block;
+    font-size: 12px;
+    position: absolute;
+    top: 20px;
+    width: 85px;
+    left: -25px;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    z-index: 1;
+}
+
+a.my_linksss {
+    position: relative;
+}
+  
+a.my_linksss:first-child:hover::after {
+    content: "Xem thông tin";
+    display: block;
+    font-size: 12px;
+    position: absolute;
+    top: 20px;
+    width: 90px;
+    left: -25px;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    z-index: 1;
+}
+
+a.my_linksss:last-child:hover::after {
+    content: "Xem thông tin";
+    display: block;
+    font-size: 12px;
+    position: absolute;
+    top: 20px;
+    width: 90px;
+    left: -25px;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    z-index: 1;
+}
