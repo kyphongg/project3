@@ -18,8 +18,7 @@
 <style>
   #sales-table-body img {
   width: 50px;
-  height: 50px;
-  object-fit: cover;
+  height: 70px;
 }
 </style>
 <body>
@@ -129,13 +128,10 @@
                             </select>
                           </div>
                         </div>
-                        <div class="table-responsive">
-                          <table id="sales-table">
+                        <div class="table-responsive" style="margin-top: 15px;">
+                          <table id="table table-bordered sales-table ">
                             <thead>
                               <tr>
-                                <th>Hình ảnh sản phẩm</th>
-                                <th>Tên sản phẩm</th>
-                                <th>Doanh số</th>
                               </tr>
                             </thead>
                             <tbody id="sales-table-body"></tbody>
@@ -172,7 +168,7 @@
                               <tr>
                                 <td><%= i+1 %></td>
                                 <td><%= outOfStock[i].productName %></td>
-                                <td><img src="/images/<%= outOfStock[i].productImage %>"   width="50" height="80" alt=""></td>
+                                <td><img src="/images/<%= outOfStock[i].productImage %>" width="50" height="80" alt=""></td>
                                 <td><%= outOfStock[i].productQuantity %></td>
                                 <td><% if(outOfStock[i].productQuantity == 0){ %>
                                   <p class="btn btn-danger">Hết hàng</p>
@@ -205,9 +201,9 @@ function createSalesTable(month) {
     salesDataForMonth.sales.forEach(item => {
       let row = document.createElement('tr');
       row.innerHTML = `
-        <td><img src="/images/${item.productImage}" alt="${item.productName} style="width=20%""></td>
-        <td>${item.productName}</td>
-        <td>${item.totalCount}</td>
+        <td style="height: 75px; width: 70px;"><img src="/images/${item.productImage}" alt="${item.productName}  style="width:100px; height:80px;" ></td>
+        <td style="width: 200px;">${item.productName}</td>
+        <td style="text-align: right;"><p class="btn btn-primary">${item.totalCount} sản phẩm</td>
       `;
       salesTableBody.appendChild(row);
     });
