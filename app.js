@@ -3970,59 +3970,53 @@ async function updateOrdersStatus() {
 setInterval(updateOrdersStatus, 10000);
 
 //Tự động cập nhật doanh thu
-async function moneyInUpdate(){
+async function moneyUpdate() {
   let monthlyDataIn = [];
-  for (let i = 0; i < 12; i++) {
-    let data = await Order.find({ month: i }).populate("items.productID");
-    let monthlyRevenueIn = 0;
-    for (let j = 0; j < data.length; j++) {
-      data[j].items.forEach(function (id) {
-        monthlyRevenueIn += (id.quantity * id.productID.priceIn);
-      });
-    }
-    monthlyDataIn.push(monthlyRevenueIn);
-  }
-  for (let i = 0; i < 12; i++){
-    await Sale.updateMany({month:i},{moneyIn:monthlyDataIn[i]});
-  }
-}
-setInterval(moneyInUpdate, 10000);
-
-async function moneyOutUpdate(){
   let monthlyDataOut = [];
+  let monthlyDataRevenue = [];
   for (let i = 0; i < 12; i++) {
     let data = await Order.find({ month: i }).populate("items.productID");
-    let monthlyRevenueOut = 0;
-    for (let j = 0; j < data.length; j++) {
-      data[j].items.forEach(function (id) {
-        monthlyRevenueOut += (id.quantity * id.productID.priceOut);
-      });
-    }
-    monthlyDataOut.push(monthlyRevenueOut);
-  }
-  for (let i = 0; i < 12; i++){
-    await Sale.updateMany({month:i},{moneyOut:monthlyDataOut[i]});
-  }
-}
-setInterval(moneyOutUpdate, 10000);
+    function calculateOrderStats(order) {
+      let totalPriceIn = 0;
+      let totalPriceOut = 0;
 
-async function moneyRevenueUpdate(){
-  let monthlyData = [];
-  for (let i = 0; i < 12; i++) {
-    let data = await Order.find({ month: i }).populate("items.productID");
-    let monthlyRevenue = 0;
-    for (let j = 0; j < data.length; j++) {
-      data[j].items.forEach(function (id) {
-      monthlyRevenue += (id.quantity * (id.productID.priceOut - id.productID.priceIn) + data[j].shippingFee);
-      });
+      for (let i = 0; i < order.items.length; i++) {
+        const item = order.items[i];
+        totalPriceIn += item.quantity * item.productID.priceIn;
+        totalPriceOut += item.quantity * item.productID.priceOut;
+      }
+      return {
+        totalPriceIn,
+        totalPriceOut,
+      };
     }
-  monthlyData.push(monthlyRevenue);
+    for (let j = 0; j < data.length; j++) { // sửa lỗi biến j
+      const order = data[j];
+      const stats = calculateOrderStats(order);
+      const totalPriceIn = stats.totalPriceIn;
+      const totalPriceOut = stats.totalPriceOut;
+      const revenue = stats.totalPriceOut - stats.totalPriceIn + order.shippingFee;
+      monthlyDataIn[i] = monthlyDataIn[i] || 0; // Kiểm tra dữ liệu đã tồn tại chưa
+      monthlyDataOut[i] = monthlyDataOut[i] || 0;
+      monthlyDataRevenue[i] = monthlyDataRevenue[i] || 0;
+      monthlyDataIn[i] += totalPriceIn;
+      monthlyDataOut[i] += totalPriceOut;
+      monthlyDataRevenue[i] += revenue;
+    }
   }
-  for (let i = 0; i < 12; i++){
-    await Sale.updateMany({month:i},{revenue:monthlyData[i]});
+  for (let i = 0; i < 12; i++) {
+    await Sale.updateMany(
+      { month: i },
+      {
+        moneyIn: monthlyDataIn[i] || 0,
+        moneyOut: monthlyDataOut[i] || 0,
+        revenue: monthlyDataRevenue[i] || 0,
+      }
+    );
   }
 }
-setInterval(moneyRevenueUpdate, 10000);
+
+setInterval(moneyUpdate, 10000);
 
 //Trang doanh thu theo sản phẩm
 app.get("/revenue", async (req, res) => {
@@ -4099,10 +4093,45 @@ app.get("/monthlySale/:id", async (req, res) => {
       for (let i = 0; i < data.length; i++) {
         money += data[i].total;
       }
+      function calculateOrderStats(order) {
+        let totalPriceIn = 0;
+        let totalPriceOut = 0;
+      
+        for (let i = 0; i < order.items.length; i++) {
+          const item = order.items[i];
+          totalPriceIn += item.quantity * item.productID.priceIn;
+          totalPriceOut += item.quantity * item.productID.priceOut;
+        }
+        return {
+          totalPriceIn,
+          totalPriceOut,
+        };
+      }
+      const orderStats = [];
+      for (let i = 0; i < data.length; i++) {
+        const order = data[i];
+        const stats = calculateOrderStats(order);
+        const orderCode = order.orderCode;
+        const timeOut = order.timeOut;
+        const total = order.total;
+        const totalPriceIn = stats.totalPriceIn;
+        const totalPriceOut = stats.totalPriceOut;
+        const shippingFee = order.shippingFee;
+        const revenue = stats.totalPriceOut - stats.totalPriceIn + order.shippingFee;
+        orderStats.push({
+          orderCode,
+          timeOut,
+          total,
+          totalPriceIn,
+          totalPriceOut,
+          shippingFee,
+          revenue
+        });
+      }
       res.render("layouts/servers/sales/monthlySale", {
         adminName: req.session.adminName,
         admin_id: req.session.admin_id,
-        danhsach: data,
+        danhsach: orderStats,
         convert,
         VND,
         admin_role: req.session.admin_role,
@@ -4117,11 +4146,11 @@ app.get("/monthlySale/:id", async (req, res) => {
 });
 
 //Trang chi tiết danh sách bán hàng
-app.get("/sales_detail/:id", async (req, res) => {
+app.get("/sales_detail/:orderCode", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
     if (role == 0 || role == 2) {
-      let data = await Order.findOne({ _id: req.params.id }).populate(
+      let data = await Order.findOne({ orderCode: req.params.orderCode }).populate(
         "items.productID"
       );
       let code = data.couponCode;
