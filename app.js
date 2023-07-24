@@ -3799,7 +3799,7 @@ app.get("/order_detail/:orderCode", async (req, res) => {
   }
 });
 
-// Tự động cập nhật đơn hàng :D
+// Tự động cập nhật đơn hàng
 // async function update(){
 //   await Order.updateMany({ orderStatus: 0 }, { orderStatus: 1 });
 //   await Order.updateMany({ orderStatus: 1 }, { orderStatus: 2 });
