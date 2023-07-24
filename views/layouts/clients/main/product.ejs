@@ -126,11 +126,15 @@
                         <button form="commentForm" type="submit" class="send-comment"><i class="fa-solid fa-location-arrow"></i> Gửi bình luận
                         </button>
                     </form>
-                    <%}else{%>
+                    <%}else if(fullname==1){%>
                     <div class="noti-comment">
-                        <p>Vui lòng mua sản phẩm để bình luận</p>
+                        <p>Vui lòng đăng nhập để bình luận</p>
                     </div>
-                    <%}%>
+                    <%} else {%>
+                        <div class="noti-comment">
+                            <p>Vui lòng mua sản phẩm để bình luận</p>
+                        </div>
+                    <% } %>
                     <% for(let i=0; i < comments.length; i++) { %>
                         <% if(comments[i].commentStatus == 1){ %>
                     <div class="row style_comment" style="margin-top: 30px;">

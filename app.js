@@ -2273,6 +2273,10 @@ app.get("/product/:slug", async (req, res) => {
     });
   } else {
     let product = await Product.findOne({ slug: req.params.slug });
+    let productID = product._id;
+    let comments = await Comment.find({
+      productID: new mongoose.Types.ObjectId(productID),
+    }).populate("userID");
     let pname = product.productName;
     let data = await Product.findOne({ slug: req.params.slug })
       .populate("categoryID")
@@ -2285,6 +2289,8 @@ app.get("/product/:slug", async (req, res) => {
       VND,
       cart: 0,
       pname,
+      random: 0,
+      comments,
       add: req.flash("add"),
       avatar: "user (2).png",
       success: req.flash("success"),
