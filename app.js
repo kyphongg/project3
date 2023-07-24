@@ -2190,6 +2190,8 @@ app.get("/product/:slug", async (req, res) => {
       add: req.flash("add"),
       random,
       avatar: avatar,
+      success: req.flash("success"),
+      error: req.flash("error"),
     });
   } else {
     let product = await Product.findOne({ slug: req.params.slug });
@@ -2207,6 +2209,8 @@ app.get("/product/:slug", async (req, res) => {
       pname,
       add: req.flash("add"),
       avatar: "user (2).png",
+      success: req.flash("success"),
+      error: req.flash("error"),
     });
   }
 });
@@ -2230,6 +2234,7 @@ app.post("/comment", async (req, res) => {
           .format("DD/MM/YYYY hh:mm a"),
       });
       comment.save();
+      req.flash("success", "Bình luận thành công!");
       res.redirect("/product/" + slug);
     } else {
       res.redirect("/product/" + slug);
@@ -4692,6 +4697,8 @@ app.get("/comment", async (req, res) => {
         comments,
         notAcceptComment,
         acceptComment,
+        success: req.flash("success"),
+        error: req.flash("error"),
       });
     } else {
       res.redirect("/comment");
@@ -4706,6 +4713,7 @@ app.post("/update_commentStatus/:id", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 3) {
       await Comment.updateOne({ _id: req.params.id }, { commentStatus: 1 });
+      req.flash("success", "Duyệt thành công");
       res.redirect("/comment");
     } else {
       res.redirect("/admin_home");
@@ -4720,6 +4728,7 @@ app.post("/update_commentStatus_1/:id", async (req, res) => {
     let role = req.session.admin_role;
     if (role == 0 || role == 3) {
       await Comment.updateOne({ _id: req.params.id }, { commentStatus: 0 });
+      req.flash("success", "Hủy duyệt thành công");
       res.redirect("/comment");
     } else {
       res.redirect("/admin_home");
