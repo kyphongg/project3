@@ -3204,7 +3204,7 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     display: grid;
     grid-template-columns: 0.5fr 1fr;
     grid-gap: 30px;
-    min-height: 200px;
+    min-height: 250px;
 }
 
 .graphBox .box{

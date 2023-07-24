@@ -4106,7 +4106,7 @@ async function moneyUpdate() {
         totalPriceOut,
       };
     }
-    for (let j = 0; j < data.length; j++) { // sửa lỗi biến j
+    for (let j = 0; j < data.length; j++) {
       const order = data[j];
       const stats = calculateOrderStats(order);
       const totalPriceIn = stats.totalPriceIn;

@@ -20,6 +20,9 @@
   width: 50px;
   height: 70px;
 }
+table, td, th {
+  border: 1px solid;
+}
 </style>
 <body>
     <!--sidebar start-->
@@ -104,7 +107,7 @@
 
                 <% if(admin_role == 0) { %>
                 <div class="graphBox">
-                  <div class="box" style="height: 525px;">
+                  <div class="box" style="height: 600px;">
                     <div class="bestSells-Box">
                       <div class="table-agile-info" style="padding: 0;">
                         <h3 style="text-align: center;">Sản phẩm bán chạy nhất</h3>
@@ -192,6 +195,7 @@
 let salesDataEl = document.getElementById('best-sale-data');
 let salesData = salesDataEl ? JSON.parse(salesDataEl.getAttribute('data-bestsale')) : [];
 // Hàm tạo bảng hiển thị dữ liệu bán hàng cho tháng được chọn
+console.log(salesData);
 function createSalesTable(month) {
   let salesDataForMonth = salesData.find(item => item.month === month - 1);
   let salesTableBody = document.getElementById('sales-table-body');
@@ -201,9 +205,9 @@ function createSalesTable(month) {
     salesDataForMonth.sales.forEach(item => {
       let row = document.createElement('tr');
       row.innerHTML = `
-        <td style="height: 75px; width: 70px;"><img src="/images/${item.productImage}" alt="${item.productName}  style="width:100px; height:80px;" ></td>
-        <td style="width: 200px;">${item.productName}</td>
-        <td style="text-align: right;"><p class="btn btn-primary">${item.totalCount} sản phẩm</td>
+        <td style="height: 75px; width: 70px;padding:10px"><img src="/images/${item.productImage}" alt="${item.productName}  style="width:100px; height:80px;" ></td>
+        <td style="width: 200px;padding:10px">${item.productName}</td>
+        <td style="padding:10px;"><p>${item.totalCount} sản phẩm</p></td>
       `;
       salesTableBody.appendChild(row);
     });
