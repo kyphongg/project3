@@ -3781,6 +3781,23 @@ div#graph1, div#graph4, div#graph5, div#graph6, div#graph7, div#graph8, div#grap
     box-shadow: 0 0 3px #2579f2; /* Đổ bóng khi chọn */
 }
 
+a.my_link {
+    position: relative;
+}
+  
+a.my_link:hover::after {
+    content: "Sửa chi tiết";
+    display: block;
+    font-size: 12px;
+    position: absolute;
+    top: 20px;
+    width: 80px;
+    left: -25px;
+    background-color: #fff;
+    padding: 2px;
+    border: 1px solid #ccc;
+}
+
 a.my_links {
     position: relative;
 }
@@ -3824,7 +3841,7 @@ a.my_linkss:first-child:hover::after {
     width: 85px;
     left: -25px;
     background-color: #fff;
-    padding: 5px;
+    padding: 2px;
     border: 1px solid #ccc;
     z-index: 1;
 }
@@ -3838,7 +3855,21 @@ a.my_linkss:last-child:hover::after {
     width: 85px;
     left: -25px;
     background-color: #fff;
-    padding: 5px;
+    padding: 2px;
+    border: 1px solid #ccc;
+    z-index: 1;
+}
+
+a.js-buy-tickets:hover::after {
+    content: "Xóa thông tin";
+    display: block;
+    font-size: 12px;
+    position: absolute;
+    top: 20px;
+    width: 85px;
+    left: -25px;
+    background-color: #fff;
+    padding: 2px;
     border: 1px solid #ccc;
     z-index: 1;
 }
@@ -3846,22 +3877,8 @@ a.my_linkss:last-child:hover::after {
 a.my_linksss {
     position: relative;
 }
-  
-a.my_linksss:first-child:hover::after {
-    content: "Xem thông tin";
-    display: block;
-    font-size: 12px;
-    position: absolute;
-    top: 20px;
-    width: 90px;
-    left: -25px;
-    background-color: #fff;
-    padding: 5px;
-    border: 1px solid #ccc;
-    z-index: 1;
-}
 
-a.my_linksss:last-child:hover::after {
+a.my_linksss:hover::after {
     content: "Xem thông tin";
     display: block;
     font-size: 12px;
@@ -3870,7 +3887,7 @@ a.my_linksss:last-child:hover::after {
     width: 90px;
     left: -25px;
     background-color: #fff;
-    padding: 5px;
+    padding: 2px;
     border: 1px solid #ccc;
     z-index: 1;
 }
