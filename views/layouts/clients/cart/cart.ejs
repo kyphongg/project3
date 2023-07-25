@@ -70,7 +70,7 @@
                     </td>
                     <td style="width: 120px; height: 96.75px;">
                       <input form="form" name="product_id_hidden" type="hidden" value="<%= pid._id %>"/>
-                      <input form="form" type="number" id="quantity" min="1" max="<%= pid.productID.productQuantity %>" onchange="myFunction(event)" value="<%= pid.quantity %>" name="quantity" style="width: 45px; height: 30px; padding-left: 10px"/>
+                      <input form="form" type="number" id="quantity" min="0" max="<%= pid.productID.productQuantity %>" onchange="myFunction(event)" value="<%= pid.quantity %>" name="quantity" style="width: 45px; height: 30px; padding-left: 10px"/>
                     </td>
                     <td style="width: 125px;">
                       <p style="color: #dc4e45"><%= VND.format(pid.productID.priceOut * parseInt(pid.quantity)) %></p>

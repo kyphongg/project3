@@ -1341,6 +1341,7 @@ app.post("/add_to_cart", async (req, res) => {
             },
           }
         );
+        req.flash("add", "Thêm vào giỏ thành công");
       } else {
         if (cartE[0].items[isE].quantity == qty.productQuantity) {
           req.flash("error", "Số lượng của sản phẩm trong giỏ đã đầy");
@@ -1366,8 +1367,8 @@ app.post("/add_to_cart", async (req, res) => {
           );
           req.flash("add", "Thêm vào giỏ thành công");
         }
-        res.redirect("/product/" + slug);
       }
+      res.redirect("/product/" + slug);
     } else {
       var cartData = Cart({
         _id: uid,
@@ -1397,15 +1398,24 @@ app.post("/update_quantity_cart", async (req, res) => {
     const data = collect(productId);
     const total = data.count();
     if (total == 1) {
-      await Cart.updateOne(
-        {
-          userID: uid,
-          items: { $elemMatch: { _id: productId } },
-        },
-        { "items.$.quantity": quantity }
-      );
+      if(quantity > 0){
+        await Cart.updateOne(
+          {
+            userID: uid,
+            items: { $elemMatch: { _id: productId } },
+          },
+          { "items.$.quantity": quantity }
+        );
+      } else {
+        await Cart.deleteOne({
+          userID: new mongoose.Types.ObjectId(uid),
+        });
+      }
     } else {
+      let allQuantitiesAreZero = true;
       for (let i = 0; i < productId.length; i++) {
+        if(quantity[i]>0){
+          allQuantitiesAreZero = false;
         await Cart.updateOne(
           {
             userID: uid,
@@ -1413,6 +1423,19 @@ app.post("/update_quantity_cart", async (req, res) => {
           },
           { "items.$.quantity": quantity[i] }
         );
+        } else {
+          await Cart.updateOne(
+            {
+              userID: uid,
+              items: { $elemMatch: { _id: productId[i] } },
+            },
+            { $pull: { items: { _id: productId[i] } } },
+            { multi: true }
+          );
+        }
+      }
+      if (allQuantitiesAreZero) {
+        await Cart.deleteOne({ userID: uid });
       }
     }
     res.redirect("/cart/" + uid);
