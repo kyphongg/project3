@@ -40,12 +40,16 @@
                 <div class="modal-poppup" id="pop-up">
                     <div class="poppup-container">
                         <img src="/images/404-tick.png" alt="">
+                        <p style="cursor:pointer; text-align: right;font-weight: bold;" onclick="del()">x</p>
                         <h2>Thành công</h2>
                         <p>Bạn đã thêm <b><%= pname %></b> vào giỏ hàng thành công<br> Cảm ơn bạn!</p>
                         <a href="/"><button type="button" class="btn btn-outline-dark">Tiếp tục mua hàng!</button></a>
                         <a href="/cart/<%= userid %>"><button type="button" class="btn btn-success">Tới giỏ hàng!</button></a>
                     </div>
                 </div>
+            <%}%>
+            <%if(error.length > 0){%>
+                <p style="font-size: 14px; font-weight:600; color: red; margin: 2.5px 0px 0px 5px;">Thêm vào giỏ hàng không thành công!</p>
             <%}%>
             <div class="pname" name="name"> 
                 <%= danhsach.productName %>
@@ -155,7 +159,12 @@
                     <% } %> 
                 </div>
             </div>
-
+            <script>
+                function del() {
+                  const popup = document.getElementById("pop-up");
+                  popup.style.display = "none";
+                }
+                </script>
 <%- include('../partials/footer') %>
 </body>
 </html>

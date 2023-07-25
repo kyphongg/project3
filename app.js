@@ -1355,6 +1355,7 @@ app.post("/add_to_cart", async (req, res) => {
             },
             { $set: { "items.$.quantity": qty.productQuantity } }
           );
+          req.flash("error", "Số lượng của sản phẩm trong giỏ đã đầy");
         } else {
           await Cart.updateOne(
             {
@@ -1363,10 +1364,10 @@ app.post("/add_to_cart", async (req, res) => {
             },
             { $inc: { "items.$.quantity": convert } }
           );
+          req.flash("add", "Thêm vào giỏ thành công");
         }
+        res.redirect("/product/" + slug);
       }
-      req.flash("add", "Thêm vào giỏ thành công");
-      res.redirect("/product/" + slug);
     } else {
       var cartData = Cart({
         _id: uid,

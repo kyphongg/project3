@@ -62,7 +62,7 @@
                       />
                     </td>
                     <td style="width: 320px;">
-                      <a href="/product/<%= pid.productID._id %>" style="text-decoration: none; color: #000;"><p style="line-height: 30px"><%= pid.productID.productName %></p></a>
+                      <a href="/product/<%= pid.productID.slug %>" style="text-decoration: none; color: #000;"><p style="line-height: 30px"><%= pid.productID.productName %></p></a>
                     </td>
                     <td style="width: 125px">
                       <p style="color: #dc4e45"><%= VND.format(pid.productID.priceOut) %> </p>
