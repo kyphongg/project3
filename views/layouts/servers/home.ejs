@@ -20,8 +20,8 @@
   width: 50px;
   height: 70px;
 }
-table, td, th {
-  border: 1px solid;
+table, td{
+  border-bottom: 1px solid #DDD;
 }
 </style>
 <body>
@@ -208,7 +208,7 @@ function createSalesTable(month) {
       row.innerHTML = `
         <td style="height: 75px; width: 70px;padding:10px"><img src="/images/${item.productImage}" alt="${item.productName}  style="width:100px; height:80px;" ></td>
         <td style="width: 200px;padding:10px">${item.productName}</td>
-        <td style="padding:10px;"><p>${item.totalCount} sản phẩm</p></td>
+        <td style="text-align: center;"><p>${item.totalCount} <br>sản phẩm</p></td>
       `;
       salesTableBody.appendChild(row);
     });
