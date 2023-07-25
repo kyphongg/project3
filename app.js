@@ -2563,9 +2563,34 @@ app.get("/admin_home", async (req, res) => {
           $project: {
             _id: 0,
             month: "$_id",
-            bestSales: { $slice: ["$bestSales", 5] },
+            bestSales: {
+              $slice: ["$bestSales", 5]
+            },
           },
         },
+        {
+          $unwind: "$bestSales"
+        },
+        {
+          $sort: {
+            "bestSales.totalCount": -1
+          }
+        },
+        {
+          $group: {
+            _id: "$month",
+            bestSales: {
+              $push: "$bestSales"
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            month: "$_id",
+            bestSales: 1
+          }
+        }
       ]);
       return bestSalesByMonth;
     }
