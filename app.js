@@ -4866,7 +4866,7 @@ app.get("/comment", async (req, res) => {
         error: req.flash("error"),
       });
     } else {
-      res.redirect("/comment");
+      res.redirect("/admin_home");
     }
   } else {
     res.redirect("/admin_login");

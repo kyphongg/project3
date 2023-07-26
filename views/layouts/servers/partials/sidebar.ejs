@@ -12,17 +12,15 @@
         <div class="top-nav clearfix">
             <!--search & user info start-->
             <ul class="nav pull-right top-menu">
-                <li>
-                    <input type="text" class="form-control search" placeholder=" Search">
-                </li>
                 <!-- user login dropdown start-->
                 <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
                         <img alt="" src="/images/userr.png">
                         <span class="username">
                            <%= adminName %>
                         </span>
-                    </a>
+                    </button>
                     <ul class="dropdown-menu extended logout">
                         <li><a href="/admin_profile/<%= admin_id %>"><i class="far fa-address-card"></i> Hồ sơ cá nhân</a></li>
                         <li><a href="/admin_setting/<%= admin_id %>"><i class="fas fa-lock"></i> Cài đặt</a></li>
