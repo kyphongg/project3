@@ -4752,7 +4752,7 @@ app.post("/news_save", async (req, res) => {
             slug: slugify(req.body.newsTitle, {replacement: '-',lower: true}),
             newsContent: req.body.newsContent,
             productImage: req.file.filename,
-            newsStatus: req.body.newsStatus,
+            newsStatus: 0,
             created_date: moment
               .tz(Date.now(), "Asia/Ho_Chi_Minh")
               .format("DD/MM/YYYY hh:mm a"),
@@ -4844,6 +4844,14 @@ app.post("/edit_news_save", async (req, res) => {
   }
 });
 
+//Tự động cập nhật trạng thái của tin tức
+async function updateNewsStatus() {
+  await News.updateMany(
+    { created_date: { $lt: moment().subtract(7, 'days').toDate() } },
+    { $set: { newsStatus: 1 } }
+  );
+}
+setInterval(updateNewsStatus, 10000);
 //Danh sách bình luận
 app.get("/comment", async (req, res) => {
   if (req.session.daDangNhap) {
