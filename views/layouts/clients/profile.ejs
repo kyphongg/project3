@@ -33,28 +33,30 @@
                     <div class="account">
                         <h3>Tổng quan</h3>
                         <div class="row user-detail">
-                            <div class="col-3">
-                                <p style="text-align: center;">Họ và tên</p>
-                                <p style="font-weight: 600; text-align: center;"><%= fullname %></p>
+                            <div class="col-3" style="text-align: center;">
+                                <p>Họ và tên</p>
+                                <p style="font-weight: 600;"><%= fullname %></p>
                             </div>
-                            <div class="col-4">
-                                <p style="text-align: center;">Địa chỉ email</p>
-                                <p style="font-weight: 600; text-align: center;"><%= email %></p>
+                            <div class="col-4" style="text-align: center;">
+                                <p>Địa chỉ email</p>
+                                <p style="font-weight: 600;"><%= email %></p>
                             </div>
                             <div class="col-2">
-                                <p style="text-align: center;">Số điện thoại</p>
-                                <p style="font-weight: 600; text-align: center;"><%= phone %></p>
+                                <p>Số điện thoại</p>
+                                <p style="font-weight: 600;"><%= phone %></p>
                             </div>
-                            <div class="form-group">
-                                <label>Avatar</label>
-                                <div class="avatar-style">
-                                    <form id="avatarForm" action="/saveAvatar" method="post" enctype="multipart/form-data">
-                                    <img id="preview" src="/avatars/<%= avatar %>" alt="" width="120" height="120" style="border-radius: 50%;">
-                                    <span class="btn btn-primary btn-file">Chọn ảnh<input type="file" name="avatar" id="imageInput" onchange="previewImage(event)"></span>
-                                    <button id="removeImageButton" onclick="removeImage(event)" style="display: none; background-color: #f44336; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">Xoá hình ảnh</button>
-                                    <input type="hidden" name="newImageName" id="hiddenInput" value="/avatars/<%= avatar %>">
-                                    <button id="saveImageButton" class="save-img" type="submit" style="display: none;">Lưu ảnh</button>
-                                    </form>
+                            <div class="col-3" style="border-left: 1px solid #666666;">
+                                <div class="form-group" style="text-align: center;">
+                                    <label>Avatar</label>
+                                    <div class="avatar-style">
+                                        <form id="avatarForm" action="/saveAvatar" method="post" enctype="multipart/form-data">
+                                        <img id="preview" src="/avatars/<%= avatar %>" alt="" width="120" height="120" style="border-radius: 50%;">
+                                        <span class="btn btn-primary btn-file">Chọn ảnh<input type="file" name="avatar" id="imageInput" onchange="previewImage(event)"></span><br>
+                                        <button id="removeImageButton" onclick="removeImage(event)" style="display: none; padding: 5px 18px; margin-top: 10px; margin-bottom: 10px;" class="btn btn-danger">Xoá ảnh</button><br>
+                                        <input type="hidden" name="newImageName" id="hiddenInput" value="/avatars/<%= avatar %>">
+                                        <button id="saveImageButton" class="save-img" type="submit" style="display: none;">Lưu ảnh</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
