@@ -45,19 +45,15 @@
                                 <p style="text-align: center;">Số điện thoại</p>
                                 <p style="font-weight: 600; text-align: center;"><%= phone %></p>
                             </div>
-                            <div class="col-3 avatar">
+                            <div class="form-group">
+                                <label>Avatar</label>
                                 <div class="avatar-style">
-                                    <img src="/avatars/<%= avatar %>" alt="" width="120" height="120" style="border-radius: 50%;">
-                                    <form action="/saveAvatar" method="post" enctype="multipart/form-data">
-                                        <div class="form-group">
-                                            <div class="header">
-                                                <label style="margin-top: 15px; font-weight: 500;">Avatar tài khoản</label>
-                                            </div>
-                                            <span class="btn btn-primary btn-file">
-                                                Chọn ảnh <input type="file" name="avatar">
-                                            </span>
-                                        </div>
-                                        <button class="save-img" type="submit">Lưu ảnh</button>
+                                    <form id="avatarForm" action="/saveAvatar" method="post" enctype="multipart/form-data">
+                                    <img id="preview" src="/avatars/<%= avatar %>" alt="" width="120" height="120" style="border-radius: 50%;">
+                                    <span class="btn btn-primary btn-file">Chọn ảnh<input type="file" name="avatar" id="imageInput" onchange="previewImage(event)"></span>
+                                    <button id="removeImageButton" onclick="removeImage(event)" style="display: none; background-color: #f44336; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">Xoá hình ảnh</button>
+                                    <input type="hidden" name="newImageName" id="hiddenInput" value="/avatars/<%= avatar %>">
+                                    <button id="saveImageButton" class="save-img" type="submit" style="display: none;">Lưu ảnh</button>
                                     </form>
                                 </div>
                             </div>
@@ -67,7 +63,49 @@
             </div>
         </div>
     </div>
-
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+        
+            reader.onload = function() {
+                const preview = document.getElementById('preview');
+                if (file) {
+                    preview.src = reader.result;
+                } else {
+                    preview.removeAttribute('src');
+                }
+            };
+        
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        
+            const removeImageButton = document.getElementById('removeImageButton');
+            removeImageButton.style.display = file ? 'inline-block' : 'none';
+            const saveImageButton = document.getElementById('saveImageButton');
+            saveImageButton.style.display = file ? 'inline-block' : 'none';
+        }
+        
+        function removeImage() {
+        event.preventDefault();
+        const preview = document.getElementById('preview');
+        const hiddenInput = document.getElementById('hiddenInput');
+        
+    
+        if (hiddenInput.value) {
+            // If a new file was selected but not yet saved, remove it from the input field
+            const fileInput = document.getElementById('imageInput');
+            fileInput.value = '';
+        }
+    
+        // Update the preview image with the original image source
+        preview.src = hiddenInput.value;
+    
+        const removeImageButton = document.getElementById('removeImageButton');
+        removeImageButton.style.display = 'none';
+    }
+    </script>
      <%- include('partials/footer') %>
 </body>
 

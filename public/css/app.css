@@ -1261,6 +1261,20 @@ input:focus{
     background-color: #F6F6F6;
 }
 
+.remove-img{
+    width: 95px;
+    height: 35px;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid #e2e2e2;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.remove-img:hover{
+    background-color: #F6F6F6;
+}
+
 .user-infomation{
     border-radius: 5px;
     padding-left: 20px;
