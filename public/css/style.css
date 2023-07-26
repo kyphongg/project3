@@ -470,7 +470,7 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     font-size:13px;
     color:#000000;
 }
-.top-nav ul.top-menu>li>a {
+.top-nav ul.top-menu>li>button {
     border-radius: 100px;
     -webkit-border-radius: 100px;
     padding: 0px;
@@ -479,12 +479,12 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     border: 1px solid #BCBCBC;
     background: #FFFFFF;
 }
-.top-nav ul.top-menu>li.language>a {
+.top-nav ul.top-menu>li.language>button {
     margin-top:-2px;
     padding:4px 12px;
     line-height:20px;
 }
-.top-nav ul.top-menu>li.language>a img {
+.top-nav ul.top-menu>li.language>button img {
     border-radius:0;
     -webkit-border-radius:0;
     width:18px;
@@ -497,7 +497,7 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
 .top-nav ul.top-menu>li {
     margin-left:10px;
 }
-.top-nav ul.top-menu>li>a:hover,.top-nav ul.top-menu>li>a:focus {
+.top-nav ul.top-menu>li>button:hover,.top-nav ul.top-menu>li>button:focus {
     border: 1px solid #D9D9D9;
     background:#CCCCCC !important;
     border-radius:100px;
@@ -507,10 +507,10 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     top:50px;
 }
 .top-nav .nav .caret {
-    border-bottom-color:#A4AABA;
-    border-top-color:#A4AABA;
+    border-bottom-color:#000;
+    border-top-color:#000;
 }
-.top-nav ul.top-menu>li>a:hover .caret {
+.top-nav ul.top-menu>li>button:hover .caret {
     border-bottom-color:#000;
     border-top-color: #000;
 }
