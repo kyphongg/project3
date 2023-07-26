@@ -94,7 +94,6 @@
         const preview = document.getElementById('preview');
         const hiddenInput = document.getElementById('hiddenInput');
         
-    
         if (hiddenInput.value) {
             // If a new file was selected but not yet saved, remove it from the input field
             const fileInput = document.getElementById('imageInput');
@@ -106,6 +105,8 @@
     
         const removeImageButton = document.getElementById('removeImageButton');
         removeImageButton.style.display = 'none';
+        const saveImageButton = document.getElementById('saveImageButton');
+        saveImageButton.style.display = 'none';
     }
     </script>
      <%- include('partials/footer') %>
