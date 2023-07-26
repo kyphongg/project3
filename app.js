@@ -702,7 +702,7 @@ app.get("/", async (req, res) => {
   if (req.session.guest) {
     const news = await News.find({
       $or: [{ newsStatus: 0 }, { newsStatus: 1 }],
-    });
+    }).sort({newsStatus:1,updated_date:1});
     const cart = await Cart.aggregate([
       { $match: { userID: new mongoose.Types.ObjectId(req.session.userid) } },
       {
@@ -766,7 +766,7 @@ app.get("/", async (req, res) => {
   } else {
     const news = await News.find({
       $or: [{ newsStatus: 0 }, { newsStatus: 1 }],
-    });
+    }).sort({newsStatus:1,updated_date:1});
     const data = await Product.aggregate([
       {
         $match: {
@@ -882,7 +882,7 @@ app.get("/terms_of_service", async (req, res) => {
 });
 
 app.get("/news", async (req, res) => {
-  let data = await News.find();
+  let data = await News.find().sort({newsStatus:1,updated_date:1});
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
     let avatar = "user (2).png";
