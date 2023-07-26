@@ -2533,7 +2533,7 @@ app.get("/admin_home", async (req, res) => {
     const employee = await Admin.find().count();
     const comment = await Comment.find().count();
 
-    let outOfStock = await Product.find({ productQuantity: { $lte: 9 } }).sort(
+    let outOfStock = await Product.find({ productQuantity: { $lte: 5 } }).sort(
       { productQuantity: 1 }
     );
 

@@ -26,7 +26,7 @@
                                 <th style="width: 30px;">STT</th>
                                 <th>Tên khách hàng</th>
                                 <th>Email</th>
-                                <th>Tùy biến</th>
+                                <th>Số điện thoại</th>
                             </tr>
                             </thead>
                                 <tbody>
@@ -35,11 +35,7 @@
                                     <td style="text-align: center;"><%= i+1 %></td>
                                     <td><%= nhanvat[i].fullname %></td>
                                     <td><%= nhanvat[i].email %></td>
-                                    <td>
-                                        <a href="#" class="active">
-                                            <i class="fa-solid fa-square-check" style="font-size: 25px; color: #337AB7;"></i>
-                                        </a>
-                                    </td>
+                                    <td><%= nhanvat[i].phone %></td>    
                                 </tr>
                                 <% } %>
                                 </tbody>
