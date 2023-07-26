@@ -85,7 +85,7 @@
             <form action="/add_to_cart" method="post" id="cartForm">
             <div class="quantity">
                     <p>Số lượng :</p>
-                    <input form="cartForm" name="quantity" type="number" min="1" max="<%= danhsach.productQuantity %>" value="1">
+                    <input form="cartForm" name="quantity" type="number" min="1" max="<%= danhsach.productQuantity %>" value="1" required="">
                     <input form="cartForm" name="product_id_hidden" type="hidden" value="<%= danhsach._id %>">
                     <input form="cartForm" name="username" type="hidden" class="form-control" value="0">
                     <input form="cartForm" name="user_id_hidden" type="hidden" value="<%= userid %>">
