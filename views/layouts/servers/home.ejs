@@ -147,7 +147,7 @@ table, td{
                     <h3 style="text-align: center;">Doanh thu từng tháng năm 2023</h3>
                     <p id="monthlyData" style="display: none;"><%= monthlyData %></p>
                     <br><br>
-                    <canvas id="myChart" style="margin-top: 15px; height: 445.8px; width: 745.6px;"></canvas>
+                    <canvas id="myChart" style="height: 445.8px; width: 745.6px;"></canvas>
                   </div>
                 </div>
                 <%}%>
@@ -208,7 +208,7 @@ function createSalesTable(month) {
       row.innerHTML = `
         <td style="height: 75px; width: 70px;padding:10px"><img src="/images/${item.productImage}" alt="${item.productName}  style="width:100px; height:80px;" ></td>
         <td style="width: 200px;padding:10px">${item.productName}</td>
-        <td style="text-align: center;"><p>${item.totalCount} <br>sản phẩm</p></td>
+        <td style="text-align: center; color: #3C82B8;"><p>${item.totalCount} <br>sản phẩm</p></td>
       `;
       salesTableBody.appendChild(row);
     });
