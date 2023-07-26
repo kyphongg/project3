@@ -2493,12 +2493,17 @@ app.post("/admin_login", async (req, res) => {
         } else {
           const result = req.body.password === admin.password;
           if (result) {
-            var sess = req.session;
-            sess.daDangNhap = true;
-            sess.adminName = admin.fullname;
-            sess.admin_id = admin._id;
-            sess.admin_role = admin.role;
-            res.redirect("/admin_home");
+            if(admin.status != 0){
+              e++;
+              req.flash("error", "Tài khoản chưa được kích hoạt!");
+            } else {
+              var sess = req.session;
+              sess.daDangNhap = true;
+              sess.adminName = admin.fullname;
+              sess.admin_id = admin._id;
+              sess.admin_role = admin.role;
+              res.redirect("/admin_home");
+            }
           } else {
             req.flash("error", "Sai mật khẩu");
             req.flash("errorEmail", errorEmail);
