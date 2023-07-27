@@ -1,3 +1,4 @@
+//Import các thư viện
 const express = require("express");
 const ejs = require("ejs");
 const app = express();
@@ -1000,6 +1001,7 @@ app.get("/support", async (req, res) => {
   }
 });
 
+//Trang hotline
 app.get("/hotline", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -1025,6 +1027,7 @@ app.get("/hotline", async (req, res) => {
   }
 });
 
+//Trang CSKH
 app.get("/customer_care", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -1050,7 +1053,7 @@ app.get("/customer_care", async (req, res) => {
   }
 });
 
-//Trang profile, lịch sử đơn hàng, mật khẩu
+//Trang profile
 app.get("/profile/:id", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -1072,6 +1075,7 @@ app.get("/profile/:id", async (req, res) => {
   }
 });
 
+//Lưu Avatar
 app.post("/saveAvatar", async (req, res) => {
   if (req.session.guest) {
     let userid = req.session.userid;
@@ -1094,6 +1098,7 @@ app.post("/saveAvatar", async (req, res) => {
   }
 });
 
+//Trang lịch sử đơn hàng
 app.get("/orders/:id", async (req, res) => {
   if (req.session.guest) {
     let data = await Order.find({ userID: req.session.userid }).sort({
@@ -1120,6 +1125,7 @@ app.get("/orders/:id", async (req, res) => {
   }
 });
 
+//Trang cập nhật lại mật khẩu
 app.get("/password/:id", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -1144,6 +1150,7 @@ app.get("/password/:id", async (req, res) => {
   }
 });
 
+//Lưu mật khẩu mới
 app.post("/changePasswordNew", async (req, res) => {
   var userid = req.body.userid;
   var password1 = req.body.password1;
@@ -1326,6 +1333,7 @@ app.get("/cart/:id", async (req, res) => {
   }
 });
 
+//Thêm sản phẩm vào giỏ hàng
 app.post("/add_to_cart", async (req, res) => {
   if (req.session.guest) {
     const productId = req.body.product_id_hidden;
@@ -1403,6 +1411,7 @@ app.post("/add_to_cart", async (req, res) => {
   }
 });
 
+//Cập nhật số lượng sản phẩm trong giỏ hàng
 app.post("/update_quantity_cart", async (req, res) => {
   if (req.session.guest) {
     const uid = req.session.userid;
@@ -1457,6 +1466,7 @@ app.post("/update_quantity_cart", async (req, res) => {
   }
 });
 
+//Xoá sản phẩm khỏi giỏ hàng
 app.get("/delete_cart_items/:id", async (req, res) => {
   if (req.session.guest) {
     const uid = req.session.userid;
@@ -1504,6 +1514,7 @@ app.get("/delete_cart_items/:id", async (req, res) => {
   }
 });
 
+//Trang thanh toán
 app.get("/checkout/:id", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -1565,6 +1576,7 @@ app.get("/checkout/:id", async (req, res) => {
   }
 });
 
+//Thêm mã giảm giá vào lúc thanh toán
 app.post("/add_coupon_checkout", async (req, res) => {
   if (req.session.guest) {
     let uid = req.session.userid;
@@ -1640,6 +1652,7 @@ app.post("/add_coupon_checkout", async (req, res) => {
   }
 });
 
+//Tạo đơn hàng mới 
 app.post("/creat_new_order", async (req, res) => {
   const productName = req.body.product_name_hidden;
   const productId = req.body.product_id_hidden;
@@ -1906,6 +1919,7 @@ app.post("/creat_new_order", async (req, res) => {
   }
 });
 
+//Đặt hàng thành công
 app.get("/success", async (req, res) => {
   if (req.session.guest) {
     const cart = await Cart.aggregate([
@@ -1945,6 +1959,7 @@ app.get("/success", async (req, res) => {
   }
 });
 
+//Nhận hàng
 app.post("/get_order/:orderCode", async (req, res) => {
   if (req.session.guest) {
     let uid = req.session.userid;
@@ -1983,6 +1998,7 @@ app.post("/get_order/:orderCode", async (req, res) => {
   }
 });
 
+//Huỷ đơn hàng
 app.post("/cancel_order/:orderCode", async (req, res) => {
   if (req.session.guest) {
     let uid = req.session.userid;
@@ -2050,7 +2066,7 @@ app.post("/cancel_order/:orderCode", async (req, res) => {
   }
 });
 
-//Hàm cập nhật số lần huỷ đơn hàng của User
+//Hàm cập nhật số lần huỷ đơn hàng của trong 1 tháng của khách hàng
 cron.schedule('0 0 1 * *', async () => {
   await User.updateMany({}, { $set: { limit: 2 } });
 });
@@ -2119,6 +2135,7 @@ app.get("/search", async (req, res) => {
   }
 });
 
+//Trang test
 app.get("/test", async (req, res) => {
   let data = await Product.find({
     $or: [{ productStatus: 0 }, { productStatus: 1 }],
@@ -2704,6 +2721,7 @@ app.get("/admin_categories", async (req, res) => {
   }
 });
 
+//Trang thêm thể loại
 app.get("/add_categories", (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -2721,6 +2739,7 @@ app.get("/add_categories", (req, res) => {
   }
 });
 
+//Lưu thể loại mới
 app.post("/categories_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var check = await Category.findOne({ categoryName: req.body.categoryName });
@@ -2740,6 +2759,7 @@ app.post("/categories_save", async (req, res) => {
   }
 });
 
+//Sửa thể loại
 app.get("/edit_categories/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -2759,6 +2779,7 @@ app.get("/edit_categories/:slug", async (req, res) => {
   }
 });
 
+//Lưu thể loại sau khi sửa
 app.post("/edit_categories_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var check = await Category.findOne({ categoryName: req.body.categoryName });
@@ -2780,6 +2801,7 @@ app.post("/edit_categories_save", async (req, res) => {
   }
 });
 
+//Xoá thể loại
 app.get("/delete_categories/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     await Category.deleteOne({ slug: req.params.slug });
@@ -2812,6 +2834,7 @@ app.get("/admin_producers", async (req, res) => {
   }
 });
 
+//Trang thêm nhà sản xuất
 app.get("/add_producers", (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -2829,6 +2852,7 @@ app.get("/add_producers", (req, res) => {
   }
 });
 
+//Lưu nhà sản xuất mới
 app.post("/producers_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var check = await Producer.findOne({ producerName: req.body.producerName });
@@ -2848,6 +2872,7 @@ app.post("/producers_save", async (req, res) => {
   }
 });
 
+//Sửa nhà sản xuất
 app.get("/edit_producers/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -2867,6 +2892,7 @@ app.get("/edit_producers/:slug", async (req, res) => {
   }
 });
 
+//Lưu nhà sản xuất sau khi sửa
 app.post("/edit_producers_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var check = await Producer.findOne({ producerName: req.body.producerName });
@@ -2888,6 +2914,7 @@ app.post("/edit_producers_save", async (req, res) => {
   }
 });
 
+//Xoá nhà sản xuất
 app.get("/delete_producers/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     await Producer.deleteOne({ slug: req.params.slug });
@@ -2924,6 +2951,7 @@ app.get("/admin_product", async (req, res) => {
   }
 });
 
+//Trang chi tiết sản phẩm
 app.get("/admin_product/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -2949,6 +2977,7 @@ app.get("/admin_product/:slug", async (req, res) => {
   }
 });
 
+//Trang thêm sản phẩm
 app.get("/add_product", (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -2967,6 +2996,7 @@ app.get("/add_product", (req, res) => {
   }
 });
 
+//Lưu sản phẩm mới
 app.post("/save_product", async (req, res) => {
   if (req.session.daDangNhap) {
     upload(req, res, async function (err) {
@@ -3008,52 +3038,7 @@ app.post("/save_product", async (req, res) => {
   }
 });
 
-app.get("/add_multiple_product", async (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 1) {
-      var category = await Category.find();
-      var producer = await Producer.find();
-      res.render("layouts/servers/product/add_multiple_product", {
-        adminName: req.session.adminName,
-        admin_id: req.session.admin_id,
-        VND,
-        admin_role: req.session.admin_role,
-        category,
-        producer,
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
-app.post("/save_multiple_product", (req, res) => {
-  if (req.session.daDangNhap) {
-    let role = req.session.admin_role;
-    if (role == 0 || role == 1) {
-      excelUpload(req, res, async function (err) {
-        if (err instanceof multer.MulterError) {
-          req.flash("error", "Lỗi Multer khi upload ảnh");
-        } else if (err) {
-          req.flash("error", "Lỗi bất ngờ xảy ra");
-        } else {
-          const jsonArray = await csv().fromFile(req.file.filename);
-          await Product.insertMany(jsonArray);
-          req.flash("success", "Thêm thành công");
-          res.redirect("/admin_product");
-        }
-      });
-    } else {
-      res.redirect("/admin_home");
-    }
-  } else {
-    res.redirect("/admin_login");
-  }
-});
-
+//Trang sửa sản phẩm
 app.get("/edit_product/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3076,6 +3061,7 @@ app.get("/edit_product/:slug", async (req, res) => {
   }
 });
 
+//Lưu sản phẩm sau khi sửa
 app.post("/edit_product_save", async (req, res) => {
   if (req.session.daDangNhap) {
     let check = await Product.findOne({ productName: req.body.productName });
@@ -3181,6 +3167,7 @@ app.get("/employees", async (req, res) => {
   }
 });
 
+//Trang thông tin cá nhân của nhân viên
 app.get("/admin_profile/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await Admin.findById({ _id: req.params.id });
@@ -3195,6 +3182,7 @@ app.get("/admin_profile/:id", async (req, res) => {
   }
 });
 
+//Trang cập nhập mật khẩu của nhân viên 
 app.get("/admin_setting/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let data = await Admin.findById({ _id: req.params.id });
@@ -3213,6 +3201,7 @@ app.get("/admin_setting/:id", async (req, res) => {
   }
 });
 
+//Trang thêm nhân viên
 app.get("/add_employee", (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3240,6 +3229,7 @@ app.get("/add_employee", (req, res) => {
   }
 });
 
+//Lưu nhân viên
 app.post("/admin_save", async (req, res) => {
   if (req.session.daDangNhap) {
     var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -3333,6 +3323,7 @@ app.post("/admin_save", async (req, res) => {
   }
 });
 
+//Trang sửa thông tin nhân viên
 app.get("/edit/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3362,6 +3353,7 @@ app.get("/edit/:id", async (req, res) => {
   }
 });
 
+//Lưu thông tin sau khi sửa
 app.post("/edit_save", async (req, res) => {
   if (req.session.daDangNhap) {
     let id = req.body.id;
@@ -3471,6 +3463,7 @@ app.post("/edit_save", async (req, res) => {
   }
 });
 
+//Xoá nhân viên
 app.get("/delete/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     await Admin.deleteOne({ _id: req.params.id });
@@ -3481,6 +3474,7 @@ app.get("/delete/:id", async (req, res) => {
   }
 });
 
+//Trang thông tin nhân viên kho
 app.get("/employees_store", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3500,6 +3494,7 @@ app.get("/employees_store", async (req, res) => {
   }
 });
 
+//Trang thông tin nhân viên đơn hàng
 app.get("/employees_order", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3519,6 +3514,7 @@ app.get("/employees_order", async (req, res) => {
   }
 });
 
+//Trang thông tin nhân viên CSKH
 app.get("/employees_customer_care", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -3538,6 +3534,7 @@ app.get("/employees_customer_care", async (req, res) => {
   }
 });
 
+//Lưu mật khẩu mới cho nhân viên
 app.post("/adminSaveNewPw", async (req, res) => {
   var adminid = req.session.admin_id;
   var password1 = req.body.password1;
@@ -4445,6 +4442,7 @@ app.get("/warehouse", async (req, res) => {
   }
 });
 
+//Trang lịch sử nhập của sản phẩm trong kho 
 app.get("/list_warehouse/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -4469,6 +4467,7 @@ app.get("/list_warehouse/:slug", async (req, res) => {
   }
 });
 
+//Trang lịch sử bán của sản phẩm trong kho
 app.get("/sale_history/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -4511,6 +4510,7 @@ app.get("/sale_history/:slug", async (req, res) => {
   }
 });
 
+//Thêm số lượng cho 1 sản phẩm
 app.get("/add_warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -4535,6 +4535,7 @@ app.get("/add_warehouse", async (req, res) => {
   }
 });
 
+//Lưu số lượng của sản phẩm
 app.post("/save_warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
     var productId = req.body.productID;
@@ -4652,6 +4653,7 @@ app.get("/coupon", async (req, res) => {
   }
 });
 
+//Trang thêm mã giảm giá
 app.get("/add_coupon", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -4669,6 +4671,7 @@ app.get("/add_coupon", async (req, res) => {
   }
 });
 
+//Lưu mã giảm giá
 app.post("/coupon_save", async (req, res) => {
   if (req.session.daDangNhap) {
     let check = await Coupon.findOne({ couponCode: req.body.couponCode });
@@ -4696,6 +4699,7 @@ app.post("/coupon_save", async (req, res) => {
   }
 });
 
+//Trang cập nhật mã giảm giá
 app.get("/edit_coupon/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -4715,6 +4719,7 @@ app.get("/edit_coupon/:slug", async (req, res) => {
   }
 });
 
+//Lưu thông tin mã giảm giá sau khi sửa
 app.post("/edit_coupon_save", async (req, res) => {
   if (req.session.daDangNhap) {
     Coupon.updateOne(
@@ -4759,6 +4764,7 @@ app.get("/admin_news", async (req, res) => {
   }
 });
 
+//Trang thêm tin tức
 app.get("/add_news", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -4776,6 +4782,7 @@ app.get("/add_news", async (req, res) => {
   }
 });
 
+//Lưu tin tức
 app.post("/news_save", async (req, res) => {
   if (req.session.daDangNhap) {
     upload(req, res, async function (err) {
@@ -4814,6 +4821,7 @@ app.post("/news_save", async (req, res) => {
   }
 });
 
+//Trang sửa tin tức
 app.get("/edit_news/:slug", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -4833,6 +4841,7 @@ app.get("/edit_news/:slug", async (req, res) => {
   }
 });
 
+//Lưu tin tức sau khi sửa
 app.post("/edit_news_save", async (req, res) => {
   if (req.session.daDangNhap) {
     upload(req, res, function (err) {
@@ -4888,12 +4897,16 @@ app.post("/edit_news_save", async (req, res) => {
   }
 });
 
-//Tự động cập nhật trạng thái của tin tức
+//Tự động cập nhật trạng thái của tin tức và mã giảm giá
 async function updateNewsStatus() {
   await News.updateMany(
     { created_date: { $lt: moment().subtract(7, 'days').toDate() } },
     { $set: { newsStatus: 1 } }
   );
+  await Coupon.updateMany(
+    { end_date: { $lt: new Date() }, status: 0 },
+    { $set: { couponStatus: 1 } }
+  )
 }
 setInterval(updateNewsStatus, 10000);
 //Danh sách bình luận
@@ -4925,6 +4938,7 @@ app.get("/comment", async (req, res) => {
   }
 });
 
+//Cập nhật trạng thái bình luận (Chưa duyệt -> Duyệt)
 app.post("/update_commentStatus/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
@@ -4940,6 +4954,7 @@ app.post("/update_commentStatus/:id", async (req, res) => {
   }
 });
 
+//Cập nhật trạng thái bình luận (Duyệt -> Huỷ duyệt)
 app.post("/update_commentStatus_1/:id", async (req, res) => {
   if (req.session.daDangNhap) {
     let role = req.session.admin_role;
