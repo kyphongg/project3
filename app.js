@@ -229,7 +229,7 @@ async function generateOrderCode() {
 }
 
 //Client
-//Đăng nhập đăng ký tài khoản
+//Đăng nhập tài khoản
 app.get("/login", async (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
@@ -246,6 +246,7 @@ app.get("/login", async (req, res) => {
   }
 });
 
+//Đăng ký tài khoản
 app.get("/signup", (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
@@ -275,6 +276,7 @@ app.get("/signup", (req, res) => {
   }
 });
 
+//Lưu tài khoản khi đăng ký
 app.post("/save", async (req, res) => {
   var box = req.body.checkbox;
   var name = req.body.fullname;
@@ -510,6 +512,7 @@ app.get("/forget", (req, res) => {
   }
 });
 
+//Gửi yêu cầu cấp lại mã đổi mật khẩu
 app.post("/requestPasswordReset", async (req, res) => {
   let errorEmail = req.body.email;
   let email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -562,6 +565,7 @@ app.post("/requestPasswordReset", async (req, res) => {
   }
 });
 
+//Trang thông báo cấp mã thành công
 app.get("/doneRequest", (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
@@ -575,6 +579,7 @@ app.get("/doneRequest", (req, res) => {
   }
 });
 
+//Trang đổi mật khẩu theo id của người dùng
 app.get("/changePassword/:id", async (req, res) => {
   if (req.session.guest) {
     res.redirect("/");
@@ -608,6 +613,7 @@ app.get("/changePassword/:id", async (req, res) => {
   }
 });
 
+//Lưu mật khẩu mới
 app.post("/saveNewPassword", async (req, res) => {
   var userid = req.body.userid;
   var code = req.body.code;
@@ -670,6 +676,7 @@ app.post("/saveNewPassword", async (req, res) => {
   }
 });
 
+//Trang thông báo đổi mật khẩu thành công
 app.get("/success-changepwd", (req, res) => {
   if (req.session.guest) {
     req.session.destroy();
@@ -805,7 +812,7 @@ app.get("/", async (req, res) => {
   }
 });
 
-//Trang giới thiệu, tin tức, tuyển dụng, hỗ trợ
+//Trang giới thiệu
 app.get("/about", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -831,6 +838,7 @@ app.get("/about", async (req, res) => {
   }
 });
 
+//Trang chính sách
 app.get("/privacy_policy", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -856,6 +864,7 @@ app.get("/privacy_policy", async (req, res) => {
   }
 });
 
+//Trang điều khoản dịch vụ
 app.get("/terms_of_service", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -881,6 +890,7 @@ app.get("/terms_of_service", async (req, res) => {
   }
 });
 
+//Trang tổng tin tức
 app.get("/news", async (req, res) => {
   let data = await News.find().sort({newsStatus:1,updated_date:1});
   if (req.session.guest) {
@@ -909,6 +919,7 @@ app.get("/news", async (req, res) => {
   }
 });
 
+//Trang chi tiết tin tức
 app.get("/news/:slug", async (req, res) => {
   let data = await News.find({ slug: req.params.slug });
   if (req.session.guest) {
@@ -937,6 +948,7 @@ app.get("/news/:slug", async (req, res) => {
   }
 });
 
+//Trang tuyển dụng
 app.get("/hiring", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -962,6 +974,7 @@ app.get("/hiring", async (req, res) => {
   }
 });
 
+//Trang hỗ trợ
 app.get("/support", async (req, res) => {
   if (req.session.guest) {
     let user = await User.findOne({ _id: req.session.userid });
@@ -3338,6 +3351,8 @@ app.get("/edit/:id", async (req, res) => {
         usernameED: req.flash("usernameED"),
         errorUsername: req.flash("errorUsername"),
         errorEmail: req.flash("errorEmail"),
+        passwordError: req.flash("passwordError"),
+        passwordED: req.flash("passwordED"),
       });
     } else {
       res.redirect("/admin_home");
@@ -3351,14 +3366,21 @@ app.post("/edit_save", async (req, res) => {
   if (req.session.daDangNhap) {
     let id = req.body.id;
     var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var vnp_regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/gm;
     var vnn_regex =
       /^[a-zA-Z'-'\saAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ]*$/g;
     let errorForm = 0;
     var name = req.body.fullname;
     var email = req.body.email;
     var username = req.body.username;
+    var password = req.body.password;
     if (name == "") {
       req.flash("nameError", "Bạn chưa điền họ và tên!");
+      errorForm++;
+    }
+    if (password == "") {
+      req.flash("passwordError", "Bạn chưa điền mật khẩu!");
       errorForm++;
     }
     if (email == "") {
@@ -3377,6 +3399,19 @@ app.post("/edit_save", async (req, res) => {
       } else {
         let nameED = name;
         req.flash("nameED", nameED);
+      }
+    }
+    if (password != "") {
+      if (vnp_regex.test(password) == false) {
+        req.flash(
+          "passwordError",
+          "Mật khẩu tối thiểu tám ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt!"
+        );
+        req.flash("passwordED", password);
+        errorForm++;
+      } else {
+        let passwordED = password;
+        req.flash("passwordED", passwordED);
       }
     }
     if (email != "") {
@@ -3417,6 +3452,7 @@ app.post("/edit_save", async (req, res) => {
           username: req.body.username,
           role: req.body.role,
           status: req.body.status,
+          password: req.body.password,
         }
       );
       req.flash("success", "Sửa thành công");
