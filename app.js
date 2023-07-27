@@ -3410,6 +3410,7 @@ app.post("/edit_save", async (req, res) => {
         req.flash("passwordED", password);
         errorForm++;
       } else {
+
         let passwordED = password;
         req.flash("passwordED", passwordED);
       }
@@ -3426,8 +3427,15 @@ app.post("/edit_save", async (req, res) => {
           req.flash("emailED", email);
           errorForm++;
         } else {
+          let check = await Admin.findOne({email:email});
+          if(check){
+            req.flash("emailError", "Email đã tồn tại!");
+            req.flash("emailED", email);
+            errorForm++;
+          } else {
           let emailED = email;
           req.flash("emailED", emailED);
+          }
         }
       }
     }
