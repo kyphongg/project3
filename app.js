@@ -4904,7 +4904,7 @@ async function updateNewsStatus() {
     { $set: { newsStatus: 1 } }
   );
   await Coupon.updateMany(
-    { end_date: { $lt: new Date() }, status: 0 },
+    { end_date: { $gt: new Date() }},
     { $set: { couponStatus: 1 } }
   )
 }
