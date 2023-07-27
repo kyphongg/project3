@@ -4898,17 +4898,18 @@ app.post("/edit_news_save", async (req, res) => {
 });
 
 //Tự động cập nhật trạng thái của tin tức và mã giảm giá
-async function updateNewsStatus() {
-  await News.updateMany(
-    { created_date: { $lt: moment().subtract(7, 'days').toDate() } },
-    { $set: { newsStatus: 1 } }
-  );
+async function updateStatus() {
   await Coupon.updateMany(
     { end_date: { $gt: new Date() }},
     { $set: { couponStatus: 1 } }
   )
+  let date = moment().subtract(7, 'days').format("DD/MM/YYYY hh:mm a");
+  await News.updateMany(
+    { created_date: { $lte: date } },
+    { $set: { newsStatus: 1 } }
+  );
 }
-setInterval(updateNewsStatus, 10000);
+setInterval(updateStatus, 10000);
 //Danh sách bình luận
 app.get("/comment", async (req, res) => {
   if (req.session.daDangNhap) {
