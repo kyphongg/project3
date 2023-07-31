@@ -4408,7 +4408,7 @@ app.get("/sales_detail/:orderCode", async (req, res) => {
     res.redirect("/admin_login");
   }
 });
-
+  
 //Trang kho
 app.get("/warehouse", async (req, res) => {
   if (req.session.daDangNhap) {
